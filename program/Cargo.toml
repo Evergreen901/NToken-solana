@@ -1,0 +1,30 @@
+[package]
+name = "spl-token"
+version = "3.1.0"
+description = "Nova finance nToken"
+authors = ["Nova Fianace Maintainers <bacem.bergaoui@gmail.com>"]
+developers = ["<korbosli.jawaher@gmail.com> <zouaoui.karima09@gmail.com>"]
+repository = "https://git-codecommit.us-east-2.amazonaws.com/v1/repos/nova"
+license = "Apache-2.0"
+edition = "2018"
+exclude = ["js/**"]
+
+[features]
+no-entrypoint = []
+
+[dependencies]
+arrayref = "0.3.6"
+num-derive = "0.3"
+num-traits = "0.2"
+num_enum = "0.5.1"
+solana-program = "1.6.7"
+thiserror = "1.0"
+
+[dev-dependencies]
+solana-sdk = "1.6.7"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
