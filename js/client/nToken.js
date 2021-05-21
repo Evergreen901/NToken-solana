@@ -286,9 +286,9 @@ const MultisigLayout = BufferLayout.struct([
 ]);
 
 /**
- * An ERC20-like Token
+ * An ERC20-like nToken
  */
-export class Token {
+export class nToken {
   /**
    * @private
    */
@@ -300,12 +300,12 @@ export class Token {
   publicKey: PublicKey;
 
   /**
-   * Program Identifier for the Token program
+   * Program Identifier for the nToken program
    */
   programId: PublicKey;
 
   /**
-   * Program Identifier for the Associated Token program
+   * Program Identifier for the Associated nToken program
    */
   associatedProgramId: PublicKey;
 
@@ -315,7 +315,7 @@ export class Token {
   payer: Account;
 
   /**
-   * Create a Token object attached to the specific mint
+   * Create a nToken object attached to the specific mint
    *
    * @param connection The connection to use
    * @param token Public key of the mint
@@ -386,7 +386,7 @@ export class Token {
    * @param freezeAuthority Optional account or multisig that can freeze token accounts
    * @param decimals Location of the decimal place
    * @param programId Optional token programId, uses the system programId by default
-   * @return Token object for the newly minted token
+   * @return nToken object for the newly minted token
    */
   static async createMint(
     connection: Connection,
@@ -397,9 +397,9 @@ export class Token {
     programId: PublicKey,
     programIdAsset:PublicKey,
     programIdSwap:PublicKey
-  ): Promise<Token> {
+  ): Promise<nToken> {
     const mintAccount = new Account();
-    const token = new Token(
+    const token = new nToken(
       connection,
       mintAccount.publicKey,
       programId,
@@ -407,7 +407,7 @@ export class Token {
     );
 
     // Allocate memory for the account
-    const balanceNeeded = await Token.getMinBalanceRentForExemptMint(
+    const balanceNeeded = await nToken.getMinBalanceRentForExemptMint(
       connection,
     );
 
@@ -423,7 +423,7 @@ export class Token {
       }),
     );
   
-    let instruction =  Token.createInitMintInstruction(
+    let instruction =  nToken.createInitMintInstruction(
       programId,
       mintAccount.publicKey,
       decimals,
@@ -448,19 +448,19 @@ export class Token {
     return token;
   }
 
-/// createDeposit version jawaher
+/// createDeposit 
    async createDeposit(
      account:PublicKey,
     amount:any,
     volatility:any,
     payer: Account
-  ): Promise<Token> {
+  ): Promise<nToken> {
 
  
 
     
     // Allocate memory for the account
-    const balanceNeeded = await Token.getMinBalanceRentForExemptMint(
+    const balanceNeeded = await nToken.getMinBalanceRentForExemptMint(
       this.connection,
     );
 
@@ -470,7 +470,7 @@ export class Token {
 
 
     transaction.add(
-      Token.createDepositInstruction(
+      nToken.createDepositInstruction(
         this.programId,
         account,
         payer,
@@ -492,68 +492,6 @@ export class Token {
   }
 
 
-  
-
-/// createDeposit version becem 
-  // async createDeposit(
-     
-  //   amount:any,
-  //   volatility:any,
-   
-  // ): Promise<Token> {
-
- 
-	
-  //   const newAccount = new Account();	
-
-    
-  //   // Allocate memory for the account
-  //   const balanceNeeded = await Token.getMinBalanceRentForExemptMint(
-  //     this.connection,
-  //   );
-  //   let programAddress = await PublicKey.createProgramAddress(	
-  //     [Buffer.from("Albert Einstein") , Buffer.from("Silvester Stalone")],	
-  //    this.programId	
-  //   );	
-
-
-  //   const transaction = new Transaction();
-   
-  //   transaction.add(	
-  //     SystemProgram.createAccount({	
-  //       fromPubkey: this.payer.publicKey,	
-  //       newAccountPubkey: newAccount.publicKey,	
-  //       lamports: balanceNeeded,	
-  //       space: AccountLayout.span,	
-  //       programId:this.programId,	
-  //     }),	
-  //   );
-
-  //   transaction.add(
-  //     Token.createDepositInstruction(
-  //       this.programId,	
-  //       newAccount.publicKey,	
-  //       this.payer.publicKey,	
-  //       amount,	
-  //       volatility,	
-  //       programAddress	
-  //       ),	
-  //   );	
-  //   // Send the two instructions	
-  //   await sendAndConfirmTransaction(	
-  //     'createAccount and InitializeMint',	
-  //     this.connection,	
-  //     transaction,	
-  //     this.payer,	
-  //     newAccount	
-  //   );	
-
-
-   
-  // }
-
-
-//// withdraw version jawaher
 
   /**
    * WithDraw tokens
@@ -572,25 +510,16 @@ export class Token {
   ): Promise<void> {
    
     // Allocate memory for the account
-    const balanceNeeded = await Token.getMinBalanceRentForExemptMint(
+    const balanceNeeded = await nToken.getMinBalanceRentForExemptMint(
       this.connection,
     );
 
 
      const transaction = new Transaction();
-    // transaction.add(
-    //   SystemProgram.createAccount({
-    //     fromPubkey: this.payer.publicKey,
-    //     newAccountPubkey: newAccount.publicKey,
-    //     lamports: balanceNeeded,
-    //     space: AccountLayout.span,
-    //     programId:this.programId,
-    //   }),
-    // );
-
+  
 
     transaction.add(
-      Token.createWithdrawInstruction(
+      nToken.createWithdrawInstruction(
         this.programId,
         account,
         payer,
@@ -604,66 +533,12 @@ export class Token {
       this.connection,
       transaction,
       payer,
-      //account
+  
     );
   }
 
 
 
-
-//// withdraw version becem
-//   /**
-//    * WithDraw tokens
-//    *
-//    * @param account Account to WithDraw tokens from
-//    * @param owner Account owner
-//    * @param multiSigners Signing accounts if `owner` is a multiSig
-//    * @param amount Amount to createWithDraw
-//    */
-
- 
-// async createWithDraw(
-   
-//     amount: number | u64,
-
-//   ): Promise<void> {
-//     const newAccount = new Account();
-//     // Allocate memory for the account
-//     const balanceNeeded = await Token.getMinBalanceRentForExemptMint(
-//       this.connection,
-//     );
-
-
-//      const transaction = new Transaction();
-//     transaction.add(
-//       SystemProgram.createAccount({
-//         fromPubkey: this.payer.publicKey,
-//         newAccountPubkey: newAccount.publicKey,
-//         lamports: balanceNeeded,
-//         space: AccountLayout.span,
-//         programId:this.programId,
-//       }),
-//     );
-
-
-//     transaction.add(
-//       Token.createWithdrawInstruction(
-//         this.programId,
-//         newAccount.publicKey,	
-//         this.payer.publicKey,
-//         amount
-//         ),
-//     );
-
-//     // Send the two instructions
-//     await sendAndConfirmTransaction(
-//       'createAccount and withDraw',
-//       this.connection,
-//       transaction,
-//       this.payer,	
-//       newAccount
-//     );
-//   }
 
 
 
@@ -677,7 +552,7 @@ export class Token {
    */
   async createAccount(owner: PublicKey): Promise<PublicKey> {
     // Allocate memory for the account
-    const balanceNeeded = await Token.getMinBalanceRentForExemptAccount(
+    const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
       this.connection,
     );
 
@@ -695,7 +570,7 @@ export class Token {
 
     const mintPublicKey = this.publicKey;
     transaction.add(
-      Token.createInitAccountInstruction(
+      nToken.createInitAccountInstruction(
         this.programId,
         mintPublicKey,
         newAccount.publicKey,
@@ -724,7 +599,7 @@ export class Token {
    * @return Public key of the new associated account
    */
   async createAssociatedTokenAccount(owner: PublicKey): Promise<PublicKey> {
-    const associatedAddress = await Token.getAssociatedTokenAddress(
+    const associatedAddress = await nToken.getAssociatedTokenAddress(
       this.associatedProgramId,
       this.programId,
       this.publicKey,
@@ -742,7 +617,7 @@ export class Token {
       'CreateAssociatedTokenAccount',
       this.connection,
       new Transaction().add(
-        Token.createAssociatedTokenAccountInstruction(
+        nToken.createAssociatedTokenAccountInstruction(
           this.associatedProgramId,
           this.programId,
           this.publicKey,
@@ -768,7 +643,7 @@ export class Token {
   async getOrCreateAssociatedAccountInfo(
     owner: PublicKey,
   ): Promise<AccountInfo> {
-    const associatedAddress = await Token.getAssociatedTokenAddress(
+    const associatedAddress = await nToken.getAssociatedTokenAddress(
       this.associatedProgramId,
       this.programId,
       this.publicKey,
@@ -833,7 +708,7 @@ export class Token {
     amount: number,
   ): Promise<PublicKey> {
     // Allocate memory for the account
-    const balanceNeeded = await Token.getMinBalanceRentForExemptAccount(
+    const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
       connection,
     );
 
@@ -863,7 +738,7 @@ export class Token {
     // the account will be initialized with a balance equal to the native token balance.
     // (i.e. amount)
     transaction.add(
-      Token.createInitAccountInstruction(
+      nToken.createInitAccountInstruction(
         programId,
         NATIVE_MINT,
         newAccount.publicKey,
@@ -899,7 +774,7 @@ export class Token {
     const multisigAccount = new Account();
 
     // Allocate memory for the account
-    const balanceNeeded = await Token.getMinBalanceRentForExemptMultisig(
+    const balanceNeeded = await nToken.getMinBalanceRentForExemptMultisig(
       this.connection,
     );
     const transaction = new Transaction();
@@ -1112,7 +987,7 @@ export class Token {
       'Transfer',
       this.connection,
       new Transaction().add(
-        Token.createTransferInstruction(
+        nToken.createTransferInstruction(
           this.programId,
           source,
           destination,
@@ -1155,7 +1030,7 @@ export class Token {
       'Approve',
       this.connection,
       new Transaction().add(
-        Token.createApproveInstruction(
+        nToken.createApproveInstruction(
           this.programId,
           account,
           delegate,
@@ -1194,7 +1069,7 @@ export class Token {
       'Revoke',
       this.connection,
       new Transaction().add(
-        Token.createRevokeInstruction(
+        nToken.createRevokeInstruction(
           this.programId,
           account,
           ownerPublicKey,
@@ -1235,7 +1110,7 @@ export class Token {
       'SetAuthority',
       this.connection,
       new Transaction().add(
-        Token.createSetAuthorityInstruction(
+        nToken.createSetAuthorityInstruction(
           this.programId,
           account,
           newAuthority,
@@ -1278,7 +1153,7 @@ export class Token {
       'MintTo',
       this.connection,
       new Transaction().add(
-        Token.createMintToInstruction(
+        nToken.createMintToInstruction(
           this.programId,
           this.publicKey,
           dest,
@@ -1319,7 +1194,7 @@ export class Token {
       'Burn',
       this.connection,
       new Transaction().add(
-        Token.createBurnInstruction(
+        nToken.createBurnInstruction(
           this.programId,
           this.publicKey,
           account,
@@ -1360,7 +1235,7 @@ export class Token {
       'CloseAccount',
       this.connection,
       new Transaction().add(
-        Token.createCloseAccountInstruction(
+        nToken.createCloseAccountInstruction(
           this.programId,
           account,
           dest,
@@ -1398,7 +1273,7 @@ export class Token {
       'FreezeAccount',
       this.connection,
       new Transaction().add(
-        Token.createFreezeAccountInstruction(
+        nToken.createFreezeAccountInstruction(
           this.programId,
           account,
           this.publicKey,
@@ -1436,7 +1311,7 @@ export class Token {
       'ThawAccount',
       this.connection,
       new Transaction().add(
-        Token.createThawAccountInstruction(
+        nToken.createThawAccountInstruction(
           this.programId,
           account,
           this.publicKey,
@@ -1480,7 +1355,7 @@ export class Token {
       'TransferChecked',
       this.connection,
       new Transaction().add(
-        Token.createTransferCheckedInstruction(
+        nToken.createTransferCheckedInstruction(
           this.programId,
           source,
           this.publicKey,
@@ -1528,7 +1403,7 @@ export class Token {
       'ApproveChecked',
       this.connection,
       new Transaction().add(
-        Token.createApproveCheckedInstruction(
+        nToken.createApproveCheckedInstruction(
           this.programId,
           account,
           this.publicKey,
@@ -1573,7 +1448,7 @@ export class Token {
       'MintToChecked',
       this.connection,
       new Transaction().add(
-        Token.createMintToCheckedInstruction(
+        nToken.createMintToCheckedInstruction(
           this.programId,
           this.publicKey,
           dest,
@@ -1617,7 +1492,7 @@ export class Token {
       'BurnChecked',
       this.connection,
       new Transaction().add(
-        Token.createBurnCheckedInstruction(
+        nToken.createBurnCheckedInstruction(
           this.programId,
           this.publicKey,
           account,

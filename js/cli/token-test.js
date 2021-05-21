@@ -10,11 +10,11 @@ import {
 } from '@solana/web3.js';
 
 import {
-  Token,
+  nToken,
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   NATIVE_MINT,
-} from '../client/token';
+} from '../client/nToken';
 import {url} from '../url';
 import {newAccountWithLamports} from '../client/util/new-account-with-lamports';
 import {sleep} from '../client/util/sleep';
@@ -26,7 +26,7 @@ let associatedProgramId: PublicKey;
 
 // Accounts setup in createMint and used by all subsequent tests
 let testMintAuthority: Account;
-let testToken: Token;
+let testToken: nToken;
 let testTokenDecimals: number = 2;
 
 // Accounts setup in createAccount and used by all subsequent tests
@@ -102,7 +102,7 @@ async function GetPrograms(connection: Connection): Promise<void> {
   const store = new Store();
   try {
     const config = await store.load('config.json');
-    console.log('Using pre-loaded Token programs');
+    console.log('Using pre-loaded nToken programs');
     console.log(
       `  Note: To reload program remove ${Store.getFilename('config.json')}`,
     );
@@ -115,13 +115,13 @@ async function GetPrograms(connection: Connection): Promise<void> {
     assert(info != null);
   } catch (err) {
     console.log(
-      'Checking pre-loaded Token programs failed, will load new programs:',
+      'Checking pre-loaded nToken programs failed, will load new programs:',
     );
     console.log({err});
 
     programId = await loadProgram(
       connection,
-      '../../target/bpfel-unknown-unknown/release/spl_token.so',
+      '../program/target/bpfel-unknown-unknown/release/spl_token.so',
     );
     associatedProgramId = programId;
     await store.save('config.json', {
@@ -135,8 +135,8 @@ export async function loadTokenProgram(): Promise<void> {
   const connection = await getConnection();
   await GetPrograms(connection);
 
-  console.log('Token Program ID', programId.toString());
-  console.log('Associated Token Program ID', associatedProgramId.toString());
+  console.log('nToken Program ID', programId.toString());
+  console.log('Associated nToken Program ID', associatedProgramId.toString());
 }
 
 
@@ -146,7 +146,7 @@ export async function createMint(): Promise<void> {
   const connection = await getConnection();
   const payer = await newAccountWithLamports(connection, 1000000000 /* wag */);
   testMintAuthority = new Account();
-  testToken = await Token.createMint(
+  testToken = await nToken.createMint(
     connection,
     payer,
     testMintAuthority.publicKey,
@@ -235,7 +235,7 @@ export async function createAssociatedAccount(): Promise<void> {
   const connection = await getConnection();
 
   const owner = new Account();
-  const associatedAddress = await Token.getAssociatedTokenAddress(
+  const associatedAddress = await nToken.getAssociatedTokenAddress(
     associatedProgramId,
     programId,
     testToken.publicKey,
@@ -704,9 +704,9 @@ export async function nativeToken(): Promise<void> {
   const payer = await newAccountWithLamports(connection, 2000000000 /* wag */);
   const lamportsToWrap = 1000000000;
 
-  const token = new Token(connection, NATIVE_MINT, programId, payer);
+  const token = new nToken(connection, NATIVE_MINT, programId, payer);
   const owner = new Account();
-  const native = await Token.createWrappedNativeAccount(
+  const native = await nToken.createWrappedNativeAccount(
     connection,
     programId,
     owner.publicKey,
