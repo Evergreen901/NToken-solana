@@ -42,9 +42,9 @@ pub enum TokenInstruction {
         /// The freeze authority/multisignature of the mint.
         freeze_authority: COption<Pubkey>,
         /// program id asset .
-        program_id_asset: COption<Pubkey>,
+        mint_id_asset: COption<Pubkey>,
         /// program id swap.
-        program_id_swap: COption<Pubkey>
+        pubkey_swap: COption<Pubkey>
         },
     /// Initializes a new account to hold tokens.  If this account is associated
     /// with the native mint then the token balance of the initialized account
@@ -395,14 +395,14 @@ impl TokenInstruction {
                 let (&decimals, rest) = rest.split_first().ok_or(InvalidInstruction)?;
                 let (mint_authority, rest) = Self::unpack_pubkey(rest)?;
                 let (freeze_authority, _rest) = Self::unpack_pubkey_option(rest)?;
-                let (program_id_asset, _rest2) = Self::unpack_pubkey_option(_rest)?;
-                let (program_id_swap, _rest3) = Self::unpack_pubkey_option(_rest2)?;
+                let (mint_id_asset, _rest2) = Self::unpack_pubkey_option(_rest)?;
+                let (pubkey_swap, _rest3) = Self::unpack_pubkey_option(_rest2)?;
                 Self::InitializeMint {
                     mint_authority,
                     freeze_authority,
                     decimals,
-                    program_id_asset,
-                    program_id_swap
+                    mint_id_asset,
+                    pubkey_swap
                 }
             }
             1 => Self::InitializeAccount,
@@ -517,8 +517,8 @@ impl TokenInstruction {
                 ref mint_authority,
                 ref freeze_authority,
                 decimals,
-                program_id_asset,
-                program_id_swap
+                mint_id_asset,
+                pubkey_swap
             } => {
                 buf.push(0);
                 buf.push(decimals);
@@ -675,18 +675,18 @@ pub fn initialize_mint(
     mint_authority_pubkey: &Pubkey,
     freeze_authority_pubkey: Option<&Pubkey>,
     decimals: u8,
-    cprogram_id_asset: Option<&Pubkey>,
-    cprogram_id_swap: Option<&Pubkey>
+    cmint_id_asset: Option<&Pubkey>,
+    cpubkey_swap: Option<&Pubkey>
 ) -> Result<Instruction, ProgramError> {
     let freeze_authority = freeze_authority_pubkey.cloned().into();
-    let program_id_asset = cprogram_id_asset.cloned().into();
-    let program_id_swap = cprogram_id_swap.cloned().into();
+    let mint_id_asset = cmint_id_asset.cloned().into();
+    let pubkey_swap = cpubkey_swap.cloned().into();
     let data = TokenInstruction::InitializeMint {
         mint_authority: *mint_authority_pubkey,
         freeze_authority,
         decimals,
-        program_id_asset,
-        program_id_swap
+        mint_id_asset,
+        pubkey_swap
     }
     .pack();
 
@@ -1179,8 +1179,8 @@ mod test {
             decimals: 2,
             mint_authority: Pubkey::new(&[1u8; 32]),
             freeze_authority: COption::None,
-            program_id_asset:COption::None,
-            program_id_swap:COption::None
+            mint_id_asset:COption::None,
+            pubkey_swap:COption::None
         };
         let packed = check.pack();
         let mut expect = Vec::from([0u8, 2]);
@@ -1194,8 +1194,8 @@ mod test {
             decimals: 2,
             mint_authority: Pubkey::new(&[2u8; 32]),
             freeze_authority: COption::Some(Pubkey::new(&[3u8; 32])),
-            program_id_asset:Pubkey::new(&[u8;32]),
-            program_id_swap:Pubkey::new(&[u8;32])
+            mint_id_asset:Pubkey::new(&[u8;32]),
+            pubkey_swap:Pubkey::new(&[u8;32])
         };
         let packed = check.pack();
         let mut expect = vec![0u8, 2];

@@ -33,7 +33,7 @@ export const ASSOCIATED_TOKEN_PROGRAM_ID: PublicKey = new PublicKey(
 
 const FAILED_TO_FIND_ACCOUNT = 'Failed to find account';
 const INVALID_ACCOUNT_OWNER = 'Invalid account owner';
-const PROGRAM_ID_SWAP="SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8";
+const pubkey_swap="SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8";
 /**
  * Unfortunately, BufferLayout.encode uses an `instanceof` check for `Buffer`
  * which fails when using `publicKey.toBuffer()` directly because the bundled `Buffer`
@@ -140,10 +140,10 @@ export const MintLayout: typeof BufferLayout.Structure = BufferLayout.struct([
   BufferLayout.u8('isInitialized'),
   BufferLayout.u32('freezeAuthorityOption'),
   Layout.publicKey('freezeAuthority'),
-  BufferLayout.u32('programIdAssetOption'),
-  Layout.publicKey('programIdAsset'),
-  BufferLayout.u32('programIdSwapOption'),
-  Layout.publicKey('programIdSwap'),
+  BufferLayout.u32('mintIdAssetOption'),
+  Layout.publicKey('mintIdAsset'),
+  BufferLayout.u32('pubkeySwapOption'),
+  Layout.publicKey('pubkeySwap'),
 ]);
 
 /**
@@ -395,8 +395,8 @@ export class nToken {
     freezeAuthority: PublicKey | null,
     decimals: number,
     programId: PublicKey,
-    programIdAsset:PublicKey,
-    programIdSwap:PublicKey
+    mintIdAsset:PublicKey,
+    pubkeySwap:PublicKey
   ): Promise<nToken> {
     const mintAccount = new Account();
     const token = new nToken(
@@ -429,8 +429,8 @@ export class nToken {
       decimals,
       mintAuthority,
       freezeAuthority,
-      programIdAsset,
-      programIdSwap,
+      mintIdAsset,
+      pubkeySwap,
     );
     transaction.add(
       instruction
@@ -1522,8 +1522,8 @@ export class nToken {
     decimals: number,
     mintAuthority: PublicKey,
     freezeAuthority: PublicKey | null,
-    programIdAsset:PublicKey | null,
-    programIdSwap:PublicKey | null,
+    mintIdAsset:PublicKey | null,
+    pubkeySwap:PublicKey | null,
    
   ): TransactionInstruction {
     
@@ -1531,7 +1531,7 @@ export class nToken {
     let keys = [
       {pubkey: mint, isSigner: false, isWritable: true},
       {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false},
-      {pubkey: programIdAsset, isSigner: false, isWritable: false},
+      {pubkey: mintIdAsset, isSigner: false, isWritable: false},
   ];
     const commandDataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
@@ -1540,9 +1540,9 @@ export class nToken {
       BufferLayout.u8('option'),
       Layout.publicKey('freezeAuthority'),
       BufferLayout.u8('option1'),
-      Layout.publicKey('programIdAsset'),
+      Layout.publicKey('mintIdAsset'),
       BufferLayout.u8('option2'),
-      Layout.publicKey('programIdSwap'),
+      Layout.publicKey('pubkeySwap'),
     ]);
     let data = Buffer.alloc(2048);
     {
@@ -1553,10 +1553,10 @@ export class nToken {
           mintAuthority: pubkeyToBuffer(mintAuthority),
           option: freezeAuthority === null ? 0 : 1,
           freezeAuthority: pubkeyToBuffer(freezeAuthority || new PublicKey(0)),
-          option1: programIdAsset === null ? 0 : 1,
-          programIdAsset: pubkeyToBuffer(programIdAsset || new PublicKey(0)),
-          option2: programIdSwap === null ? 0 : 1,
-          programIdSwap: pubkeyToBuffer(programIdSwap || new PublicKey(0)),
+          option1: mintIdAsset === null ? 0 : 1,
+          mintIdAsset: pubkeyToBuffer(mintIdAsset || new PublicKey(0)),
+          option2: pubkeySwap === null ? 0 : 1,
+          pubkeySwap: pubkeyToBuffer(pubkeySwap || new PublicKey(0)),
         },
         data,
       );
@@ -1648,7 +1648,7 @@ export class nToken {
       {pubkey: payer.publicKey, isSigner: true, isWritable: false}, //jawaher
      // {pubkey: owner, isSigner: false, isWritable: false},	//becem
      // {pubkey: programAddress ,isSigner: false, isWritable: false},	//becem
-     // {pubkey:  new PublicKey(PROGRAM_ID_SWAP),isSigner: false, isWritable: false} //becem
+     // {pubkey:  new PublicKey(pubkey_swap),isSigner: false, isWritable: false} //becem
     ];
 
     return new TransactionInstruction({

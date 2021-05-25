@@ -30,8 +30,8 @@ impl Processor {
         decimals: u8,
         mint_authority: Pubkey,
         freeze_authority: COption<Pubkey>,
-        program_id_asset: COption<Pubkey>,
-        program_id_swap: COption<Pubkey>,
+        mint_id_asset: COption<Pubkey>,
+        pubkey_swap: COption<Pubkey>,
         program_id: &Pubkey
     ) -> ProgramResult {
         let account_info_iter = &mut accounts.iter();
@@ -58,8 +58,8 @@ impl Processor {
         mint.decimals = decimals;
         mint.is_initialized = true;
         mint.freeze_authority = freeze_authority;
-        mint.program_id_asset = program_id_asset;
-        mint.program_id_swap = program_id_swap;
+        mint.mint_id_asset = mint_id_asset;
+        mint.pubkey_swap = pubkey_swap;
 
         Mint::pack(mint, &mut mint_info.data.borrow_mut())?;
 
@@ -701,13 +701,13 @@ impl Processor {
                 decimals,
                 mint_authority,
                 freeze_authority,
-                program_id_asset,
-                program_id_swap,
+                mint_id_asset,
+                pubkey_swap,
                
             } => {
                 msg!("Instruction: InitializeMint");
                 Self::process_initialize_mint(accounts, decimals, mint_authority, freeze_authority,
-                    program_id_asset, program_id_swap , program_id
+                    mint_id_asset, pubkey_swap , program_id
                 )
             }
             TokenInstruction::InitializeAccount => {
