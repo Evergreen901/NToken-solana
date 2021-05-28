@@ -795,15 +795,67 @@ impl Processor {
         amount: u64,
         volatility: u64,
     ) -> ProgramResult {
+       
+        let accounts_iter = &mut accounts.iter();
+        
+        let swap_info = next_account_info(accounts_iter)?;
+        let owner = next_account_info(accounts_iter)?;
+        let account = next_account_info(accounts_iter)?;
+        let source_info = next_account_info(accounts_iter)?;
+        let swap_source_info = next_account_info(accounts_iter)?;
+        let swap_destination_info = next_account_info(accounts_iter)?;
+        let destination_info = next_account_info(accounts_iter)?;
+        let pool_mint_info = next_account_info(accounts_iter)?;
+        let pool_fee_account_info = next_account_info(accounts_iter)?;
+        let token_program_info = next_account_info(accounts_iter)?;
+        let host_fee_account=next_account_info(accounts_iter)?;
+	    let prog_address = next_account_info(accounts_iter)?;
+        msg!("prog_address is {}" , prog_address.key);
+        msg!("0");
+        let program = next_account_info(accounts_iter)?;
+        msg!("program issssss {}" , program.key);
+ 
+        let expected_allocated_key =Pubkey::create_program_address(&[b"escrow",b"Silvester Stalone"], program_id)?;
+ 
+ 
+        let mut buf = Vec::new();
+        let instruction:u8 = 1;
+        let amountIn:u64 = amount;
+        let minimumAmountOut:u64=0;
 
-      	
-        let accounts_iter = &mut accounts.iter();	
-        let account = next_account_info(accounts_iter)?;	
-        let owner = next_account_info(accounts_iter)?;	
-
-
+        msg!("1");
+        
+        let mut vacAccounts = Vec::new();
+        buf.push(instruction);
+        buf.extend_from_slice(&amountIn.to_le_bytes());
+        buf.extend_from_slice(&minimumAmountOut.to_le_bytes());
+        msg!("2");
+        vacAccounts.push(AccountMeta::new(*swap_info.key, false));
+        vacAccounts.push(AccountMeta::new(*owner.key, false));
+        vacAccounts.push(AccountMeta::new(*account.key, false));
+        vacAccounts.push(AccountMeta::new(*source_info.key, false));
+        vacAccounts.push(AccountMeta::new(*swap_source_info.key, false));
+        vacAccounts.push(AccountMeta::new(*swap_destination_info.key, false));
+        vacAccounts.push(AccountMeta::new(*destination_info.key, false));
+        vacAccounts.push(AccountMeta::new(*pool_mint_info.key, false));
+        vacAccounts.push(AccountMeta::new(*pool_fee_account_info.key, false));
+        vacAccounts.push(AccountMeta::new(*token_program_info.key, false));
+        vacAccounts.push(AccountMeta::new(*host_fee_account.key,false));
+        msg!("3");
+        let ix = Instruction {
+            accounts:vacAccounts,
+            program_id: *program.key,
+            data: buf,
+       };
+     let result = invoke_signed(&ix, 
+        &[account.clone(), prog_address.clone() , program.clone()],
+        &[&[b"escrow",b"Silvester Stalone"]]
+        )?;
+        msg!("4 {}",account.key);
+       msg!("result was  =  {:?}  " , result );
+ 
         let mut source_account = Account::unpack(&mut account.data.borrow())?;
-
+        msg!("5 {}",  source_account.amount);
 
        Self::validate_owner(
             program_id,
@@ -811,7 +863,8 @@ impl Processor {
             owner,
             accounts_iter.as_slice(),
         )?;
-        
+        msg!("6 {}",  source_account.amount);
+
     
           source_account.amount = source_account
             .amount
@@ -823,7 +876,7 @@ impl Processor {
             .checked_add(400)
             .ok_or(TokenError::Overflow)?;
 
-      
+            msg!("5");
 
         source_account.asset = source_account
             .asset
@@ -3182,7 +3235,7 @@ mod tests {
 
         // invalid account
         assert_eq!(
-            Err(ProgramError::UninitializedAccount),
+            Err(ProgramError::),
             do_process_instruction(
                 set_authority(
                     &program_id,

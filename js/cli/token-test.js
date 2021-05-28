@@ -189,10 +189,13 @@ export async function runApproveChecked():Promise<void>{
 export async function runDeposit(): Promise<void> {
   console.log("run test deposit");
   const connection = await getConnection();
-  const payer = await newAccountWithLamports(connection, 1000000000 /* wag */);
+  const payer = await newAccountWithLamports(connection, 10000000000 /* wag */);
   accountKey = await testToken.createAccount(payer.publicKey);
-  await testToken.createDeposit( accountKey ,  1000 , 10 ,  payer);
-  await transferAfterDeposit(accountKey,payer);
+  //let accountInfo=testToken.getAccountInfo(accountKey)
+  //await testToken.createDeposit( accountKey ,  1000 , 10 ,  payer);
+  await testToken.createDeposit(payer.publicKey, 1000 , 10);
+
+  //await transferAfterDeposit(accountKey,payer);
 }
 
 
