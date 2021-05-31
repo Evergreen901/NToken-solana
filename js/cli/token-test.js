@@ -189,10 +189,14 @@ export async function runApproveChecked():Promise<void>{
 export async function runDeposit(): Promise<void> {
   console.log("run test deposit");
   const connection = await getConnection();
-  const payer = await newAccountWithLamports(connection, 1000000000 /* wag */);
+  const payer = await newAccountWithLamports(connection, 10000000000 /* wag */);
   accountKey = await testToken.createAccount(payer.publicKey);
-  await testToken.createDeposit( accountKey ,  1000 , 10 ,  payer);
-  await transferAfterDeposit(accountKey,payer);
+  //let accountInfo=testToken.getAccountInfo(accountKey)
+  //await testToken.createDeposit( accountKey ,  1000 , 10 ,  payer);
+  await testToken.createDeposit(payer.publicKey, 1000 , 10);
+ // await runGetFullBalance(payer.publicKey)
+
+ // await transferAfterDeposit(accountKey,payer);
 }
 
 
@@ -202,10 +206,37 @@ export async function withDraw(): Promise<void> {
   const connection = await getConnection();
   const payer = await newAccountWithLamports(connection, 1000000000 /* wag */);
   accountKey = await testToken.createAccount(payer.publicKey);
-  runGetFullBalance(accountKey)
+  //runGetFullBalance(accountKey)
   await testToken.createWithDraw( accountKey ,10,payer);
-  runGetFullBalance(testAccount);
+  //runGetFullBalance(testAccount);
 }
+
+
+
+export async function infoAccountByPublicKey(): Promise<void> {
+  const connection = await getConnection();
+ let account = new PublicKey("6QJJ6VA4wm2bKXRGSJQPFStCas7mNreiHgbNUogKHAgJ")
+  connection.getAccountInfo(account, 'confirmed')
+.then(
+  info => {
+    console.log ("info"+info)
+    if ((info)  && (info.owner)) {
+      
+      const data = Buffer.from(info.data);
+      const accountInfo = AccountLayout.decode(data);
+      if (accountInfo.owner) {
+        console.log(  "Owner  => " + new PublicKey(accountInfo.owner).toBase58());
+        console.log(  "Amount  => " + new PublicKey(accountInfo.amount).toBase58());
+        console.log(  "USDC  => " + new PublicKey(accountInfo.usdc).toBase58());
+        console.log(  "ASSET  => " + new PublicKey(accountInfo.asset).toBase58());
+      }
+    }
+  }
+).catch(a => {})
+}
+
+
+
 
 export async function createAccount(): Promise<void> {
   testAccountOwner = new Account();

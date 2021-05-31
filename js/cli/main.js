@@ -13,7 +13,8 @@ import {
   runDeposit,
   withDraw,
   runGetFullBalance,
-  runApproveChecked
+  runApproveChecked,
+  infoAccountByPublicKey
 } from './token-test';
 
 async function main() {
@@ -35,6 +36,13 @@ async function main() {
   console.log('Run test: withDraw');
   await withDraw();
   console.log( " *************** Finish *************** ");
+
+
+// console.log ("get info account ")
+
+// await infoAccountByPublicKey();
+
+
 }
 
 main()
