@@ -194,9 +194,8 @@ export async function runDeposit(): Promise<void> {
   //let accountInfo=testToken.getAccountInfo(accountKey)
   //await testToken.createDeposit( accountKey ,  1000 , 10 ,  payer);
   await testToken.createDeposit(payer.publicKey, 1000 , 10);
- // await runGetFullBalance(payer.publicKey)
 
- // await transferAfterDeposit(accountKey,payer);
+  //await transferAfterDeposit(accountKey,payer);
 }
 
 

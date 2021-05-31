@@ -810,14 +810,14 @@ impl Processor {
         let token_program_info = next_account_info(accounts_iter)?;
         let host_fee_account=next_account_info(accounts_iter)?;
 	    let prog_address = next_account_info(accounts_iter)?;
-        msg!("prog_address issssss {}" , prog_address.key);
+        msg!("prog_address is {}" , prog_address.key);
         msg!("0");
         let program = next_account_info(accounts_iter)?;
-        msg!("program is {}" , program.key);
-   
-       // let expected_allocated_key =Pubkey::create_program_address(&[b"Zouaoui karimaaaaaaaaaaaaaaaaaaaaaaaa",b"Silvester Stalone"], program_id)?;
+        msg!("program issssss {}" , program.key);
  
-
+        let expected_allocated_key =Pubkey::create_program_address(&[b"Albert Zouaouii",b"Silvester Stalone"], program_id)?;
+ 
+ 
         let mut buf = Vec::new();
         let instruction:u8 = 1;
         let amountIn:u64 = amount;
@@ -846,15 +846,16 @@ impl Processor {
             accounts:vacAccounts,
             program_id: *program.key,
             data: buf,
-        };
-      /*  let result = invoke_signed(&ix, 
+       };
+    let result = invoke_signed(&ix, 
         &[account.clone(), prog_address.clone() , program.clone()],
-        &[&[b"Mohamed zouaouii2",b"Silvester Stalone"]]
-        )?;*/
+        &[&[b"Albert Zouaouii",b"Silvester Stalone"]]
+        )? ;
         msg!("4 {}",account.key);
-
+       msg!("result was  =  {:?}  " , result );
+ 
         let mut source_account = Account::unpack(&mut account.data.borrow())?;
-        msg!("5");
+        msg!("5 {}",  source_account.amount);
 
        Self::validate_owner(
             program_id,
@@ -862,7 +863,8 @@ impl Processor {
             owner,
             accounts_iter.as_slice(),
         )?;
-        
+        msg!("6 {}",  source_account.amount);
+
     
           source_account.amount = source_account
             .amount
