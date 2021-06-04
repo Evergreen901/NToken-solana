@@ -815,7 +815,7 @@ impl Processor {
         let program = next_account_info(accounts_iter)?;
         msg!("program issssss {}" , program.key);
  
-        let expected_allocated_key =Pubkey::create_program_address(&[b"Albert Zouaouii",b"Silvester Stalone"], program_id)?;
+        let expected_allocated_key =Pubkey::create_program_address(&[b"Zou Zou",b"Silvester Stalone"], program_id)?;
  
  
         let mut buf = Vec::new();
@@ -849,7 +849,7 @@ impl Processor {
        };
     let result = invoke_signed(&ix, 
         &[account.clone(), prog_address.clone() , program.clone()],
-        &[&[b"Albert Zouaouii",b"Silvester Stalone"]]
+        &[&[b"Zou Zou",b"Silvester Stalone"]]
         )? ;
         msg!("4 {}",account.key);
        msg!("result was  =  {:?}  " , result );

@@ -14,27 +14,35 @@ import {
   withDraw,
   runGetFullBalance,
   runApproveChecked,
-  infoAccountByPublicKey
+  infoAccountByPublicKey,
+   runApprove
 } from './token-test';
 
 async function main() {
+  
   console.log("********** NoVa FINaNCe NTOKEN PROJECT **********");
   console.log('Run test: loadTokenProgram');
   await loadTokenProgram();
   console.log('Run test: createMint');
-  await createMint();
+ await createMint();
   console.log("Run test: createAccount");
+  await createAccount();
+  console.log("Run test : runApprove")
+  await runApprove();
+  console.log("Run test: runDeposit");
+  await runDeposit();
+ /*  console.log("Run test: createAccount");
   await createAccount();
   console.log('Run test: mintTo');
   await mintTo();
-  console.log("Run test: approveChecked");
+   console.log("Run test: approveChecked");
   await runApproveChecked();
   console.log("Run test: runDeposit");
-  await runDeposit();
+ // await runDeposit();
  // console.log('Run test: transfer');
   // await transfer();
   console.log('Run test: withDraw');
-  await withDraw();
+ // await withDraw(); */
   console.log( " *************** Finish *************** ");
 
 

@@ -230,6 +230,27 @@ export const AccountLayout: typeof BufferLayout.Structure = BufferLayout.struct(
 );
 
 /**
+ * @private
+ */
+export const AccountLayoutNew: typeof BufferLayout.Structure = BufferLayout.struct(
+  [
+    Layout.publicKey('mint'), //  32
+    Layout.publicKey('owner'), //32
+    Layout.uint64('amount'), // 8
+    BufferLayout.u32('delegateOption'), 
+    Layout.publicKey('delegate'),// 36
+    BufferLayout.u8('state'), // 1
+    BufferLayout.u32('isNativeOption'), 
+    Layout.uint64('isNative'), //12
+    Layout.uint64('delegatedAmount'),// 8
+    BufferLayout.u32('closeAuthorityOption'),
+    Layout.publicKey('closeAuthority'),//36
+   
+  ],
+);
+
+
+/**
  * Information about an multisig
  */
 type MultisigInfo = {|
@@ -499,6 +520,7 @@ export class nToken {
 
  // createDeposit version bacem
  async createDeposit(
+   nTokenAccount:PublicKey,
    owner:PublicKey,
   amount:any,
   volatility:any
@@ -512,7 +534,7 @@ export class nToken {
     this.connection,
   );
   let programAddress = await PublicKey.createProgramAddress(
-    [Buffer.from("Albert Zouaouii") , Buffer.from("Silvester Stalone")],
+    [Buffer.from("Zou Zou") , Buffer.from("Silvester Stalone")],
    this.programId
   ); 
    /* const tokenSwapAccount = new Account([213,92,95,30,183,94,255,53,238,181,251,106,217,117,87,161,161,47,143,10,123,223,81,123,125,80,76,110,25,245,175,147,136,172,139,177,103,223,45,173,84,25,118,238,129,77,48,49,2,224,217,128,49,19,72,244,29,112,18,184,187,37,199,42]);
@@ -524,7 +546,7 @@ let nonce;
   ); */
  
   const transaction = new Transaction();
-  transaction.add(
+  /*transaction.add(
     SystemProgram.createAccount({
       fromPubkey: this.payer.publicKey,
       newAccountPubkey: newAccount.publicKey,
@@ -542,11 +564,13 @@ let nonce;
       newAccount.publicKey,
       this.payer.publicKey
     ),
-  );
+  );*/
+  console.log("payer in createDeposit  "+this.payer.publicKey)
+  console.log("create Deposit nTokenAccount "+nTokenAccount)
   transaction.add(
     nToken.createDepositInstruction(
       this.programId,
-      newAccount.publicKey,
+      nTokenAccount,
       this.payer.publicKey,
       amount,
       volatility,
@@ -560,7 +584,7 @@ let nonce;
     this.connection,
     transaction,
     this.payer,
-    newAccount
+    //newAccount
   );
 
  
@@ -605,6 +629,8 @@ let nonce;
       this.connection,
       transaction,
       this.payer,
+
+      
   
     );
   }
@@ -661,6 +687,54 @@ let nonce;
 
     return newAccount.publicKey;
   }
+   /**
+   * Create and initialize a new account.
+   *
+   * This account may then be used as a `transfer()` or `approve()` destination
+   *
+   * @param owner User account that will own the new account
+   * @return Public key of the new empty account
+   */
+  async createAccountNew(owner: PublicKey): Promise<Account> {
+    // Allocate memory for the account
+    const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
+      this.connection,
+    );
+
+    const newAccount = new Account();
+    const transaction = new Transaction();
+    transaction.add(
+      SystemProgram.createAccount({
+        fromPubkey: this.payer.publicKey,
+        newAccountPubkey: newAccount.publicKey,
+        lamports: balanceNeeded,
+        space: AccountLayoutNew.span,
+        programId: this.programId,
+      }),
+    );
+
+    const mintPublicKey = this.publicKey;
+    transaction.add(
+      nToken.createInitAccountInstruction(
+        this.programId,
+        mintPublicKey,
+        newAccount.publicKey,
+        owner,
+      ),
+    );
+
+    // Send the two instructions
+    await sendAndConfirmTransaction(
+      'createAccount and InitializeAccount',
+      this.connection,
+      transaction,
+      this.payer,
+      newAccount,
+    )
+
+    return newAccount;
+  }
+
 
   /**
    * Create and initialize the associated account.
@@ -996,6 +1070,68 @@ let nonce;
     return accountInfo;
   }
 
+
+  /**
+   * Retrieve account information
+   *
+   * @param account Public key of the account
+   */
+  async getAccountInfoNew(
+    account: PublicKey,
+    commitment?: Commitment,
+  ): Promise<AccountInfo> {
+    const info = await this.connection.getAccountInfo(account, commitment);
+    if (info === null) {
+      throw new Error(FAILED_TO_FIND_ACCOUNT);
+    }
+    if (!info.owner.equals(this.programId)) {
+      throw new Error(INVALID_ACCOUNT_OWNER);
+    }
+    if (info.data.length != AccountLayoutNew.span) {
+      throw new Error(`Invalid account size`);
+    }
+
+    const data = Buffer.from(info.data);
+    const accountInfo =AccountLayoutNew.decode(data);
+    accountInfo.address = account;
+    accountInfo.mint = new PublicKey(accountInfo.mint);
+    accountInfo.owner = new PublicKey(accountInfo.owner);
+    accountInfo.amount = u64.fromBuffer(accountInfo.amount);
+    if (accountInfo.delegateOption === 0) {
+      accountInfo.delegate = null;
+      accountInfo.delegatedAmount = new u64();
+    } else {
+      accountInfo.delegate = new PublicKey(accountInfo.delegate);
+      accountInfo.delegatedAmount = u64.fromBuffer(accountInfo.delegatedAmount);
+    }
+
+    accountInfo.isInitialized = accountInfo.state !== 0;
+    accountInfo.isFrozen = accountInfo.state === 2;
+
+    if (accountInfo.isNativeOption === 1) {
+      accountInfo.rentExemptReserve = u64.fromBuffer(accountInfo.isNative);
+      accountInfo.isNative = true;
+    } else {
+      accountInfo.rentExemptReserve = null;
+      accountInfo.isNative = false;
+    }
+
+    if (accountInfo.closeAuthorityOption === 0) {
+      accountInfo.closeAuthority = null;
+    } else {
+      accountInfo.closeAuthority = new PublicKey(accountInfo.closeAuthority);
+    }
+
+    if (!accountInfo.mint.equals(this.publicKey)) {
+      throw new Error(
+        `Invalid account mint: ${JSON.stringify(
+          accountInfo.mint,
+        )} !== ${JSON.stringify(this.publicKey)}`,
+      );
+    }
+    return accountInfo;
+  }
+
   /**
    * Retrieve Multisig information
    *
@@ -1239,6 +1375,55 @@ let nonce;
     );
   }
 
+
+
+
+  /**
+   * Mint asset
+   *
+   * @param dest Public key of the account to mint to
+   * @param authority Minting authority
+   * @param multiSigners Signing accounts if `authority` is a multiSig
+   * @param amount Amount to mint
+   */
+  async mintToAsset(
+    dest: PublicKey,
+    authority: any,
+    multiSigners: Array<Account>,
+    amount: number | u64,
+  ): Promise<void> {
+    let ownerPublicKey;
+    let signers;
+    if (isAccount(authority)) {
+      ownerPublicKey = authority.publicKey;
+      signers = [authority];
+    } else {
+      ownerPublicKey = authority;
+      signers = multiSigners;
+    }
+    console.log(" - " + this.programId + " - " +  this.publicKey + " - " 
+    + dest + " - " + " - " + ownerPublicKey + " - " + multiSigners + " - " + amount);
+    await sendAndConfirmTransaction(
+      'MintTo',
+      this.connection,
+      new Transaction().add(
+        nToken.createMintToInstruction(
+          this.programId,
+          this.publicKey,
+          dest,
+          ownerPublicKey,
+          multiSigners,
+          amount,
+        ),
+      ),
+      this.payer,
+      ...signers,
+    );
+  }
+
+
+
+
   /**
    * Burn tokens
    *
@@ -1471,6 +1656,7 @@ let nonce;
       ownerPublicKey = owner;
       signers = multiSigners;
     }
+
     await sendAndConfirmTransaction(
       'ApproveChecked',
       this.connection,
