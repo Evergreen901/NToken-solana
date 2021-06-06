@@ -21,8 +21,12 @@ JavaScript binding are available in the `./js` directory.
 <img src="https://github.com/NovaFi/nasset-solana-new/raw/main/nova-solanba.png" style="text-align: center;">
 
 
+Here a demo from Nova Front end : 
 
-https://user-images.githubusercontent.com/934740/120931068-e7955280-c6e7-11eb-94e4-be5a9bba026d.mp4
+
+https://user-images.githubusercontent.com/934740/120934721-6b0a7000-c6f7-11eb-987e-2d0dbc734827.mp4
+
+
 
 
 
