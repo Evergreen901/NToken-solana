@@ -21,6 +21,11 @@ JavaScript binding are available in the `./js` directory.
 <img src="https://github.com/NovaFi/nasset-solana-new/raw/main/nova-solanba.png" style="text-align: center;">
 
 
+<video width="640" height="480" controls>
+  <source src="https://github.com/NovaFi/NToken-solana/raw/main/demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 Test our project , follow the next steps
 
 ## Setup Guide 
