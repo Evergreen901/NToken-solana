@@ -22,6 +22,7 @@ import type {
 
 import * as Layout from './layout';
 import {sendAndConfirmTransaction} from './util/send-and-confirm-transaction';
+import { userInfo } from 'os';
 
 export const TOKEN_PROGRAM_ID: PublicKey = new PublicKey(
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
@@ -520,8 +521,9 @@ export class nToken {
 
  // createDeposit version bacem
  async createDeposit(
-   nTokenAccount:PublicKey,
-   owner:PublicKey,
+   userSource:Account,
+   userDestination:Account,
+   owner:Account,
   amount:any,
   volatility:any
 ): Promise<nToken> {
@@ -533,17 +535,17 @@ export class nToken {
   const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
     this.connection,
   );
-  let programAddress = await PublicKey.createProgramAddress(
-    [Buffer.from("Zou Zou") , Buffer.from("Silvester Stalone")],
+  /*let programAddress = await PublicKey.createProgramAddress(
+    [Buffer.from("First addresses") , Buffer.from("Silvester Stalone")],
    this.programId
-  ); 
-   /* const tokenSwapAccount = new Account([213,92,95,30,183,94,255,53,238,181,251,106,217,117,87,161,161,47,143,10,123,223,81,123,125,80,76,110,25,245,175,147,136,172,139,177,103,223,45,173,84,25,118,238,129,77,48,49,2,224,217,128,49,19,72,244,29,112,18,184,187,37,199,42]);
+  ); */
+    const tokenSwapAccount = new Account([213,92,95,30,183,94,255,53,238,181,251,106,217,117,87,161,161,47,143,10,123,223,81,123,125,80,76,110,25,245,175,147,136,172,139,177,103,223,45,173,84,25,118,238,129,77,48,49,2,224,217,128,49,19,72,244,29,112,18,184,187,37,199,42]);
 let programAddress;
 let nonce;
   [programAddress, nonce] = await PublicKey.findProgramAddress(
     [tokenSwapAccount.publicKey.toBuffer()],
     this.programId,
-  ); */
+  ); 
  
   const transaction = new Transaction();
   /*transaction.add(
@@ -566,15 +568,18 @@ let nonce;
     ),
   );*/
   console.log("payer in createDeposit  "+this.payer.publicKey)
-  console.log("create Deposit nTokenAccount "+nTokenAccount)
+
   transaction.add(
     nToken.createDepositInstruction(
       this.programId,
-      nTokenAccount,
+      owner.publicKey,
       this.payer.publicKey,
       amount,
       volatility,
-      programAddress
+      programAddress,
+      nonce,
+      userSource.publicKey,
+      userDestination.publicKey
       ),
   );
 
@@ -583,7 +588,7 @@ let nonce;
     'createAccount and InitializeMint',
     this.connection,
     transaction,
-    this.payer,
+    this.payer
     //newAccount
   );
 
@@ -1926,21 +1931,25 @@ let nonce;
    * @param owner Owner of the source account //becem
    * @param amount Number of tokens to transfer
    * @param volatility 90/10 or 50/50 underlying asset percentage / usdc. Please refer to github.com/NovaFi for more details 
+   * @param nonce once used to create valid program address 
    */
 
   static createDepositInstruction(
     programId,
     account,
-    //payer , //jawaher
-    owner,//becem
+    owner,
     amount,
     volatility,
-   programAddress //becem
+   programAddress,
+   nonce,
+   userSource,
+   userDestination
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       Layout.uint64('amount'),
       Layout.uint64('volatility'),
+      BufferLayout.u8('nonce'),
     ]);
 
     const data = Buffer.alloc(dataLayout.span);
@@ -1949,21 +1958,22 @@ let nonce;
         instruction: 17, // deposit instruction
         amount: new u64(amount).toBuffer(),
         volatility: new u64(volatility).toBuffer(),
+        nonce
       },
       data,
     );
-    let userSource =new PublicKey("8Kk4Uo8YakEv7JuLkSjDwWD2x3EPzQD3B9zEf6xybvJn")
-    let tokenSwap =new PublicKey("ACX3jfdGN598DPRHQfcpC57ECAf22uhmAh3uCRaLWciV");
-    let poolSource=new PublicKey("BAB4HMcAJbyeprad49XpjmWt4xZCCgPD9DDsw7xnMdwp");
-    let poolDestination=new PublicKey("FyQRsSS6S3nEECp5QkN1SAiXeufwudG377agWwpUEB1F");
-    let userDestination=new PublicKey("ET8PsnVaSe6ysC77ebzG6Rmu77JDvmMZ9ChBX832fm2W");
-    let poolMint=new PublicKey("FdhdPJrHH18QK3mG7UVtZkXq25S4LeKXLoQybMJ5HYEk");
-    let feeAccount=new PublicKey("9CwSqPJtvyoUBH3vx2eNSQezdySCEYsvvrzbwQyD1s7D");
-    let hostFeeAccount=new PublicKey("HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN");
+  
+    let tokenSwap =new PublicKey("8vT1aMoP3Xdq6JyFfZXUhbjuVgoyR5fG68HGPibDridU");
+    let poolSource=new PublicKey("4KD9CWqPDKpJ1LLYFeshVSDpjWkNs6TRSyL9VF2GG15h");
+    let poolDestination=new PublicKey("ADdhWPE5ejxH3MkvD8ntLcTPHHxEVAGPhNbkAAdvpz1V");
+    let poolMint=  new PublicKey("A2gtqSo5Ky8YYT8kjaQixhAa5ExTnFbpynw16TqpZcVD");
+    let feeAccount=new PublicKey("2TvgBAyknzy3rAKWZNsqELefKM8jrmWFggvpeNbN413B");
+    let hostFeeAccount=new PublicKey("4TJsnqELjQ1WnJtR7F7qb2C8VZ4Zw3sSHMD6vwVAXBN5");
+    
     const keys = [
       {pubkey: tokenSwap, isSigner: false, isWritable: false},
-      {pubkey: owner, isSigner: false, isWritable: false},	//becem authority 
-      {pubkey: account, isSigner: true, isWritable: true},//userSource
+      {pubkey: owner, isSigner: true, isWritable: false},	//becem authority 
+      {pubkey: account, isSigner: false, isWritable: true},//userSource
       {pubkey: userSource, isSigner: false, isWritable: true},
       {pubkey: poolSource, isSigner: false, isWritable: true},
       {pubkey: poolDestination, isSigner: false, isWritable: true},
@@ -1971,7 +1981,7 @@ let nonce;
       {pubkey: poolMint, isSigner: false, isWritable: true},
       {pubkey: feeAccount, isSigner: false, isWritable: true},
       {pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false},
-     {pubkey: hostFeeAccount, isSigner: false, isWritable: true},
+      {pubkey: hostFeeAccount, isSigner: false, isWritable: true},
 
       // {pubkey: payer.publicKey, isSigner: true, isWritable: false}, //jawaher
       {pubkey: programAddress ,isSigner: false, isWritable: false},	//becem
