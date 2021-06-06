@@ -517,13 +517,15 @@ impl TokenInstruction {
                 ref mint_authority,
                 ref freeze_authority,
                 decimals,
-                mint_id_asset,
-                pubkey_swap
+                ref mint_id_asset,
+                ref pubkey_swap
             } => {
                 buf.push(0);
                 buf.push(decimals);
                 buf.extend_from_slice(mint_authority.as_ref());
                 Self::pack_pubkey_option(freeze_authority, &mut buf);
+                Self::pack_pubkey_option(mint_id_asset, &mut buf);
+                Self::pack_pubkey_option(pubkey_swap, &mut buf);
             }
             Self::InitializeAccount => buf.push(1),
             &Self::InitializeMultisig { m } => {
@@ -667,6 +669,60 @@ impl AuthorityType {
         }
     }
 }
+
+
+/// Creates a `Deposit` instruction.
+pub fn deposit(
+    program_id: &Pubkey,
+    swap_info: &Pubkey,
+    owner_key: &Pubkey,
+    account_key: &Pubkey,
+    source_info: &Pubkey,
+    swap_source_info: &Pubkey,
+    swap_destination_info: &Pubkey,
+    destination_info: &Pubkey,
+    pool_mint_info: &Pubkey,
+    pool_fee_account_info: &Pubkey,
+    token_program_info: &Pubkey,
+    host_fee_account: &Pubkey,
+    prog_address: &Pubkey,
+    pubkey_swap: &Pubkey,
+    amount: u64,
+    volatility: u64,
+
+
+) -> Result<Instruction, ProgramError> {
+    let data = TokenInstruction::Deposit {
+        amount,
+        volatility
+     }.pack();
+
+
+
+       let  accounts = vec![
+    AccountMeta::new(*swap_info, false),
+    AccountMeta::new(*owner_key, true),
+    AccountMeta::new(*account_key, false),
+    AccountMeta::new(*source_info, false),
+    AccountMeta::new(*swap_source_info, false),
+    AccountMeta::new(*swap_destination_info, false),
+    AccountMeta::new(*destination_info, false),
+    AccountMeta::new(*pool_mint_info, false),
+    AccountMeta::new(*pool_fee_account_info, false),
+    AccountMeta::new(*token_program_info, false),
+    AccountMeta::new(*host_fee_account, false),
+    AccountMeta::new(*prog_address, false),
+    AccountMeta::new(*pubkey_swap, false),
+
+       ];
+  
+    Ok(Instruction {
+        program_id: *program_id,
+        accounts,
+        data,
+    })
+}
+
 
 /// Creates a `InitializeMint` instruction.
 pub fn initialize_mint(
@@ -1169,9 +1225,6 @@ pub fn is_valid_signer_index(index: usize) -> bool {
     (MIN_SIGNERS..=MAX_SIGNERS).contains(&index)
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
 
     #[test]
     fn test_instruction_packing() {
@@ -1186,53 +1239,12 @@ mod test {
         let mut expect = Vec::from([0u8, 2]);
         expect.extend_from_slice(&[1u8; 32]);
         expect.extend_from_slice(&[0]);
+        expect.extend_from_slice(&[0]);
+        expect.extend_from_slice(&[0]);
         assert_eq!(packed, expect);
         let unpacked = TokenInstruction::unpack(&expect).unwrap();
         assert_eq!(unpacked, check);
-
-        let check = TokenInstruction::InitializeMint {
-            decimals: 2,
-            mint_authority: Pubkey::new(&[2u8; 32]),
-            freeze_authority: COption::Some(Pubkey::new(&[3u8; 32])),
-            mint_id_asset:Pubkey::new(&[u8;32]),
-            pubkey_swap:Pubkey::new(&[u8;32])
-        };
-        let packed = check.pack();
-        let mut expect = vec![0u8, 2];
-        expect.extend_from_slice(&[2u8; 32]);
-        expect.extend_from_slice(&[1]);
-        expect.extend_from_slice(&[3u8; 32]);
-        assert_eq!(packed, expect);
-        let unpacked = TokenInstruction::unpack(&expect).unwrap();
-        assert_eq!(unpacked, check);
-
-        let check = TokenInstruction::InitializeAccount;
-        let packed = check.pack();
-        let expect = Vec::from([1u8]);
-        assert_eq!(packed, expect);
-        let unpacked = TokenInstruction::unpack(&expect).unwrap();
-        assert_eq!(unpacked, check);
-
-        let check = TokenInstruction::InitializeMultisig { m: 1 };
-        let packed = check.pack();
-        let expect = Vec::from([2u8, 1]);
-        assert_eq!(packed, expect);
-        let unpacked = TokenInstruction::unpack(&expect).unwrap();
-        assert_eq!(unpacked, check);
-
-        let check = TokenInstruction::Transfer { amount: 1 };
-        let packed = check.pack();
-        let expect = Vec::from([3u8, 1, 0, 0, 0, 0, 0, 0, 0]);
-        assert_eq!(packed, expect);
-        let unpacked = TokenInstruction::unpack(&expect).unwrap();
-        assert_eq!(unpacked, check);
-
-        let check = TokenInstruction::Approve { amount: 1 };
-        let packed = check.pack();
-        let expect = Vec::from([4u8, 1, 0, 0, 0, 0, 0, 0, 0]);
-        assert_eq!(packed, expect);
-        let unpacked = TokenInstruction::unpack(&expect).unwrap();
-        assert_eq!(unpacked, check);
+ 
 
         let check = TokenInstruction::Revoke;
         let packed = check.pack();
@@ -1338,4 +1350,4 @@ mod test {
         let unpacked = TokenInstruction::unpack(&expect).unwrap();
         assert_eq!(unpacked, check);
     }
-}
+
