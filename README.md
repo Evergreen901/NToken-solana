@@ -1,10 +1,6 @@
 # Nova finance nToken program
 
 
-
-<img src="https://novafinance.app/nova.png" style="text-align: center;">
-
-
 Nova finance is building a range of assets, tools and strategies which allow people to manage and adjust their risk exposure to cryptocurrency.
 
 Nova achieves this by providing hedging techniques and packaging them into tokens called nAssets. “Hedging” is a common technique used by experienced investors to reduce volatility and protect the value of their portfolio.
