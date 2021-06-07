@@ -820,8 +820,7 @@ impl Processor {
         let swap_bytes = swap_info.key.to_bytes();
         let authority_signature_seeds = [&swap_bytes[..32], &[nonce]];
         let signers = &[&authority_signature_seeds[..]];
- 
- 
+        msg!("swap info is {}",swap_info.key);
         let mut buf = Vec::new();
         let instruction:u8 = 1;
         let amount_in:u64 = amount;
@@ -832,7 +831,7 @@ impl Processor {
         buf.push(instruction);
         buf.extend_from_slice(&amount_in.to_le_bytes());
         buf.extend_from_slice(&minimum_amount_out.to_le_bytes());
-        vac_accounts.push(AccountMeta::new(*swap_info.key, false));
+        vac_accounts.push(AccountMeta::new(*swap_info.key, true));
         vac_accounts.push(AccountMeta::new(*owner.key, false));
         vac_accounts.push(AccountMeta::new(*account.key, true));
         vac_accounts.push(AccountMeta::new(*source_info.key, false));
