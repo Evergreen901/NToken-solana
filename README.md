@@ -1,21 +1,15 @@
 # Nova finance nToken program
 
 
-Nova finance is building a range of assets, tools and strategies which allow people to manage and adjust their risk exposure to cryptocurrency.
-
-Nova achieves this by providing hedging techniques and packaging them into tokens called nAssets. “Hedging” is a common technique used by experienced investors to reduce volatility and protect the value of their portfolio.
-
-Through nAssets, people can easily adopt these hedging techniques and protect themselves from volatility while still getting exposure to cryptocurrency. The mainstream market finds it hard to adopt cryptocurrency because the high volatility can often result in a loss of investment. By providing greater control over volatility, it ensures:
-
-
-This program provides an interface and implementation that third parties can
-utilize to create and use our nToken.
-
-Visit our site "https://novafinance.app/#/"
+nAssets are Nova Finance’s framework for building programmable assets. nAssets can be used to tokenize and store collective forms of value while also instructing assets to yield, exchange or rebalance. 
 
 
 
-JavaScript binding are available in the `./js` directory.
+Within our Solana MVP, our first nAsset token type allows users to execute a simple hedge where they reduce their exposure to volatility of a cryptocurrency asset by converting and maintaining a % of the nAsset in stablecoin. This nAsset can protect users from downside risk and is a more efficient form of collateral as liquidation is much harder to achieve.
+
+
+
+Going forward, we will be releasing portfolios and more complex programmable assets that take profit and redistribute when certain conditions are met. Follow our repository to stay updated!
 
 
 <img src="https://github.com/NovaFi/nasset-solana-new/raw/main/nova-solanba.png" style="text-align: center;">
