@@ -78,5 +78,12 @@ $ npm install
 $ npm run start
 ```
 
+ ## Test the program 
+
+```bash
+$ cd program
+$ cargo test
+```
+
 
 
