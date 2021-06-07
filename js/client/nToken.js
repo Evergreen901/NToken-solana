@@ -539,8 +539,9 @@ export class nToken {
     [Buffer.from("First addresses") , Buffer.from("Silvester Stalone")],
    this.programId
   ); */
-    const tokenSwapAccount = new Account([213,92,95,30,183,94,255,53,238,181,251,106,217,117,87,161,161,47,143,10,123,223,81,123,125,80,76,110,25,245,175,147,136,172,139,177,103,223,45,173,84,25,118,238,129,77,48,49,2,224,217,128,49,19,72,244,29,112,18,184,187,37,199,42]);
-let programAddress;
+   // const tokenSwapAccount = new Account([213,92,95,30,183,94,255,53,238,181,251,106,217,117,87,161,161,47,143,10,123,223,81,123,125,80,76,110,25,245,175,147,136,172,139,177,103,223,45,173,84,25,118,238,129,77,48,49,2,224,217,128,49,19,72,244,29,112,18,184,187,37,199,42]);
+   let tokenSwapAccount = new Account();
+   let programAddress;
 let nonce;
   [programAddress, nonce] = await PublicKey.findProgramAddress(
     [tokenSwapAccount.publicKey.toBuffer()],
@@ -588,7 +589,7 @@ let nonce;
     'createAccount and InitializeMint',
     this.connection,
     transaction,
-    this.payer
+    owner
     //newAccount
   );
 
@@ -1973,8 +1974,8 @@ let nonce;
     
     const keys = [
       {pubkey: tokenSwap, isSigner: false, isWritable: false},
-      {pubkey: owner, isSigner: true, isWritable: false},	//becem authority 
-      {pubkey: account, isSigner: false, isWritable: true},//userSource
+      {pubkey: owner, isSigner: false, isWritable: false},	//becem authority 
+      {pubkey: account, isSigner: true, isWritable: false},//userSource
       {pubkey: userSource, isSigner: false, isWritable: true},
       {pubkey: poolSource, isSigner: false, isWritable: true},
       {pubkey: poolDestination, isSigner: false, isWritable: true},

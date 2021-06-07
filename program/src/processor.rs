@@ -817,7 +817,7 @@ impl Processor {
         msg!("program is {}" , program.key);
  
         //let expected_allocated_key =Pubkey::create_program_address(&[b"Zou Zou",b"Silvester Stalone"], program_id)?;
-        let swap_bytes = program.key.to_bytes();
+        let swap_bytes = swap_info.key.to_bytes();
         let authority_signature_seeds = [&swap_bytes[..32], &[nonce]];
         let signers = &[&authority_signature_seeds[..]];
  
@@ -834,7 +834,7 @@ impl Processor {
         buf.extend_from_slice(&minimum_amount_out.to_le_bytes());
         vac_accounts.push(AccountMeta::new(*swap_info.key, false));
         vac_accounts.push(AccountMeta::new(*owner.key, false));
-        vac_accounts.push(AccountMeta::new(*account.key, false));
+        vac_accounts.push(AccountMeta::new(*account.key, true));
         vac_accounts.push(AccountMeta::new(*source_info.key, false));
         vac_accounts.push(AccountMeta::new(*swap_source_info.key, false));
         vac_accounts.push(AccountMeta::new(*swap_destination_info.key, false));
