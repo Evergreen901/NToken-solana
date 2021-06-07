@@ -576,8 +576,8 @@ let nonce;
       this.payer.publicKey,
       amount,
       volatility,
-      programAddress,
       nonce,
+      programAddress,
       userSource.publicKey,
       userDestination.publicKey
       ),
@@ -1940,8 +1940,8 @@ let nonce;
     owner,
     amount,
     volatility,
+    nonce,
    programAddress,
-   nonce,
    userSource,
    userDestination
   ): TransactionInstruction {
@@ -1959,6 +1959,7 @@ let nonce;
         amount: new u64(amount).toBuffer(),
         volatility: new u64(volatility).toBuffer(),
         nonce
+       // nonce
       },
       data,
     );

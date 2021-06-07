@@ -777,9 +777,9 @@ impl Processor {
                 msg!("Instruction: BurnChecked");
                 Self::process_burn(program_id, accounts, amount, Some(decimals))
             }
-            TokenInstruction::Deposit { amount , volatility} => {
+            TokenInstruction::Deposit { amount , volatility, nonce} => {
                 msg!("Instruction: Deposit");
-                Self::process_deposit(program_id , accounts , amount , volatility)
+                Self::process_deposit(program_id , accounts , amount , volatility , nonce)
             }
             TokenInstruction::Withdraw { amount } => {
                 msg!("Instruction: Withdraw");
@@ -794,6 +794,7 @@ impl Processor {
         accounts: &[AccountInfo],
         amount: u64,
         _volatility: u64,
+        nonce: u8,
     ) -> ProgramResult {
        
         let accounts_iter = &mut accounts.iter();
@@ -816,6 +817,9 @@ impl Processor {
         msg!("program is {}" , program.key);
  
         //let expected_allocated_key =Pubkey::create_program_address(&[b"Zou Zou",b"Silvester Stalone"], program_id)?;
+        let swap_bytes = program.key.to_bytes();
+        let authority_signature_seeds = [&swap_bytes[..32], &[nonce]];
+        let signers = &[&authority_signature_seeds[..]];
  
  
         let mut buf = Vec::new();
@@ -844,9 +848,9 @@ impl Processor {
             program_id: *program.key,
             data: buf,
        };
-    let result = invoke_signed(&ix, 
+       let result = invoke_signed(&ix, 
         &[account.clone(), prog_address.clone() , program.clone()],
-        &[&[b"Zou Zou",b"Silvester Stalone"]]
+        signers
         )? ;
       
        msg!("result was  =  {:?}  " , result );
@@ -1218,7 +1222,7 @@ mod tests {
         .unwrap();
      
           // deposit
-
+          let nonce: u8 = 255;
        let r = do_process_instruction(
             deposit(
                 &program_id,
@@ -1237,6 +1241,7 @@ mod tests {
                 &publickey_swap,
                 100,
                 20,
+                nonce,
             )
             .unwrap(),
             vec![
