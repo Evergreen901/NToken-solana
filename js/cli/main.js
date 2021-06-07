@@ -27,10 +27,10 @@ async function main() {
  await createMint();
   console.log("Run test: createAccount");
   await createAccount();
-  console.log("Run test : runApprove")
+    console.log("Run test : runApprove")
   await runApprove();
   console.log("Run test: runDeposit");
-  await runDeposit();
+  await runDeposit();  
  /*  console.log("Run test: createAccount");
   await createAccount();
   console.log('Run test: mintTo');

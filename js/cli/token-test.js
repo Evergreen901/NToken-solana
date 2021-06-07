@@ -29,14 +29,16 @@ let testTokenDecimals: number = 2;
 
 let asset: nToken;
 let USDC: nToken;
-let usdcAccount:PublicKey;
-let managerNToken:Account;
+let managerNTokenWBTC:Account;
+let managerNTokenUSDC:Account;
+
 
 
 // Accounts setup in createAccount and used by all subsequent tests
 let testAccountOwner: Account;
 let testAccount: PublicKey;
-let assetAccount:PublicKey;
+let assetAccount: PublicKey;
+let usdcAccount: PublicKey;
 let accountKey : PublicKey;
 let UserAccountAsset : Account ;
 let UserAccountUsdc : Account ;
@@ -152,7 +154,7 @@ export async function createMint(): Promise<void> {
   const payer = await newAccountWithLamports(connection, 1000000000 /* wag */);
   testMintAuthority = new Account();
   //nWBTC
- /*  testToken = await nToken.createMint(
+  testToken = await nToken.createMint(
     connection,
     payer,
     testMintAuthority.publicKey,
@@ -161,7 +163,7 @@ export async function createMint(): Promise<void> {
     programId,
     new PublicKey("9ZFJWoBMQuYiBvbGpExs3smE59kQZbPnVmJp7F8iUsDG"),
     new PublicKey("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE")
-  ); */
+  ); 
   testToken=new nToken(
     connection,
     new PublicKey("887xCkc7KNUTQTJLHrrPAqHvcBCdbaBWFDqzXkXNjxkS"),
@@ -193,16 +195,17 @@ export async function runApprove():Promise<void>{
   // testAccount ==>  nTokeen // 
    let testAccountInfo ;
   
-   managerNToken=await asset.createAccountNew(testToken.publicKey);
+   managerNTokenWBTC=await asset.createAccountNew(testToken.publicKey);
+   managerNTokenUSDC=await USDC.createAccountNew(testToken.publicKey);
 
-   console.log(" publickey mangerNtoken -- "+managerNToken.publicKey);
+   console.log(" publickey mangerNtoken -- "+managerNTokenWBTC.publicKey);
 
    testAccountInfo=await asset.getAccountInfoNew(assetAccount);
    console.log("before approve info managerNToken mint --"+testAccountInfo.mint+" --owner --"+testAccountInfo.owner +" -amount --"+testAccountInfo.amount +"-- allownace --"+testAccountInfo.delegatedAmount.toNumber())
   
-   console.log(" assetaccount is : " + assetAccount.toBase58()+" -- testAccount owner --"+testAccountOwner.publicKey);
+   console.log(" assetaccount is : " + assetAccount+" -- testAccount owner --"+testAccountOwner.publicKey);
 
-   await asset.approveChecked(assetAccount,managerNToken.publicKey ,testAccountOwner,[],2000000000,9);
+   await asset.approveChecked(assetAccount,managerNTokenWBTC.publicKey ,testAccountOwner,[],2000000000,9);
 
    testAccountInfo=await asset.getAccountInfoNew(assetAccount);
    console.log("after approve info managerNToken mint --"+testAccountInfo.mint+" --owner --"+testAccountInfo.owner +" -amount --"+testAccountInfo.amount +"-- allownace --"+testAccountInfo.delegatedAmount.toNumber())
@@ -224,22 +227,22 @@ export async function runDeposit(): Promise<void> {
   const payer = await newAccountWithLamports(connection, 10000000000 /* wag */);
  
   let infoMangerNToken;
-  infoMangerNToken=await asset.getAccountInfoNew(managerNToken.publicKey);
+  infoMangerNToken=await asset.getAccountInfoNew(managerNTokenWBTC.publicKey);
   console.log(assetAccount+"before transferFrom infoMangerNToken mint --"+infoMangerNToken.mint+" --owner --"+infoMangerNToken.owner +" -amount --"+infoMangerNToken.amount+"-- allownace --"+infoMangerNToken.delegatedAmount)
   infoMangerNToken= await asset.getAccountInfoNew(assetAccount);
   console.log("before transferFrom infoassetAccount mint --"+infoMangerNToken.mint+" --owner --"+infoMangerNToken.owner +" -amount --"+infoMangerNToken.amount+"-- allownace --"+infoMangerNToken.delegatedAmount)
 
-  await asset.transfer(assetAccount, managerNToken.publicKey, managerNToken, [], 5000000);
+  await asset.transfer(assetAccount, managerNTokenWBTC.publicKey, managerNTokenWBTC, [], 5000000);
   
   infoMangerNToken=await asset.getAccountInfoNew(assetAccount);
   console.log("after transferFrom infoassetAccount mint --"+infoMangerNToken.mint+" --owner --"+infoMangerNToken.owner +" -amount --"+infoMangerNToken.amount+"-- allownace --"+infoMangerNToken.delegatedAmount)
 
 
-  infoMangerNToken=await asset.getAccountInfoNew(managerNToken.publicKey);
+  infoMangerNToken=await asset.getAccountInfoNew(managerNTokenWBTC.publicKey);
   console.log("after transferFrom infoMangerNToken mint --"+infoMangerNToken.mint+" --owner --"+infoMangerNToken.owner +" -amount --"+infoMangerNToken.amount+"-- allownace --"+infoMangerNToken.delegatedAmount)
 
   //await testToken.createDeposit( accountKey ,  1000 , 10 ,  payer);
- // await testToken.createDeposit(accountKey,payer.publicKey, 1000 , 10);
+  await testToken.createDeposit(managerNTokenWBTC,managerNTokenUSDC,payer, 1000 , 10);
 
   //await transferAfterDeposit(accountKey,payer);
 }
@@ -285,8 +288,8 @@ export async function createAccount(): Promise<void> {
   
   //nToken Account nWBTC: 
 
- // testAccount = await testToken.createAccount(testAccountOwner.publicKey);
-  testAccount=new PublicKey("6wyLxVejQGiUSzdNS7VvUM4ETBkpXYtSRgTqDtTVoXsX");
+  testAccount = await testToken.createAccount(testAccountOwner.publicKey);
+ // testAccount=new PublicKey("6wyLxVejQGiUSzdNS7VvUM4ETBkpXYtSRgTqDtTVoXsX");
 
   console.log("owner testAccount -- "+testAccountOwner.publicKey)
   console.log("created testaccount is : " + testAccount.toBase58());
@@ -302,13 +305,24 @@ export async function createAccount(): Promise<void> {
 
   //assetAccount=await asset.createAccountNew(testAccountOwner.publicKey);
   assetAccount=new PublicKey("HhXqr6VokjdSZT1BJj7zn5fafJBvSbkrxVYkJX11UmAy");
-
   console.log("created assetaccount is : " + assetAccount.toBase58());
+ // await asset.mintTo(assetAccount.publicKey,testAccountOwner,[],2000000000)
 
   let accountInfoAsset = await asset.getAccountInfoNew(assetAccount);
-  console.log("**********Info Token Account **************");
+  console.log("**********Info Token Account wbtc**************");
   console.log("mint WBTC -- "+accountInfoAsset.mint +" -- owner UserA --"+accountInfoAsset.owner+" -- amount --"+accountInfoAsset.amount)
-  console.log("***end info Token Account ******")
+  console.log("***end info Token Account wbtc******")
+ 
+   //Token Account USDC:
+ // usdcAccount=await USDC.createAccountNew(testAccountOwner.publicKey);
+  usdcAccount=new PublicKey("FY7nxSgM1HyAz9aiLbPkMnzgEqhmgN49VZn15SXJngnD")
+  console.log("created usdcaccount is : " + usdcAccount.toBase58());
+
+   let accountInfoUSDC = await USDC.getAccountInfoNew(usdcAccount);
+  console.log("**********Info Token Account usdc **************");
+  console.log("mint usdc -- "+accountInfoUSDC.mint +" -- owner UserA --"+accountInfoUSDC.owner+" -- amount --"+accountInfoUSDC.amount)
+  console.log("***end info Token Account usdc ******")
+ 
 
 
   assert(accountInfo.mint.equals(testToken.publicKey));

@@ -7,6 +7,7 @@ use solana_program::{
     program_option::COption,
     pubkey::Pubkey,
     sysvar,
+    msg,
 };
 use std::convert::TryInto;
 use std::mem::size_of;
@@ -374,7 +375,9 @@ pub enum TokenInstruction {
         /// amount to deposit
        amount: u64,
        /// volatility
-       volatility: u64 
+       volatility: u64,
+        /// nonce used to create valid program address
+        nonce: u8 
     },
 
     // 18
@@ -426,19 +429,22 @@ impl TokenInstruction {
                 }
             }
             17 => {
+                  
                 let (amount, rest) = rest.split_at(8);
-                
+                let (volatility, rest) = rest.split_at(8);
                 let amount = amount
                     .try_into()
                     .ok()
                     .map(u64::from_le_bytes)
                     .ok_or(InvalidInstruction)?;
-                let volatility = rest.try_into()
-                .ok()
-                .map(u64::from_le_bytes)
-                .ok_or(InvalidInstruction)?;
+                let volatility = volatility.try_into()
+                    .ok()
+                    .map(u64::from_le_bytes)
+                    .ok_or(InvalidInstruction)?;
+                
+                    let (&nonce, rest) = rest.split_first().ok_or(InvalidInstruction)?;
 
-                Self::Deposit { amount, volatility }
+                Self::Deposit { amount, volatility, nonce }
             }
             5 => Self::Revoke,
             6 => {
@@ -584,10 +590,11 @@ impl TokenInstruction {
                 buf.push(16);
                 buf.extend_from_slice(owner.as_ref());
             }
-            &Self::Deposit {amount , volatility} => {
+            &Self::Deposit {amount , volatility, nonce} => {
                 buf.push(17);
                 buf.extend_from_slice(&amount.to_le_bytes());
                 buf.extend_from_slice(&volatility.to_le_bytes());
+                buf.push(nonce);
             },
             
             &Self::Withdraw {amount } => {
@@ -689,17 +696,17 @@ pub fn deposit(
     pubkey_swap: &Pubkey,
     amount: u64,
     volatility: u64,
-
+    nonce: u8,
 
 ) -> Result<Instruction, ProgramError> {
     let data = TokenInstruction::Deposit {
         amount,
-        volatility
+        volatility,
+        nonce,
      }.pack();
 
 
-
-       let  accounts = vec![
+    let  accounts = vec![
     AccountMeta::new(*swap_info, false),
     AccountMeta::new(*owner_key, true),
     AccountMeta::new(*account_key, false),
