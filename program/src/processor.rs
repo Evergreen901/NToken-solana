@@ -801,7 +801,7 @@ impl Processor {
 
         let swap_info = next_account_info(accounts_iter)?;
         let owner = next_account_info(accounts_iter)?;
-        let account = next_account_info(accounts_iter)?;
+        let user_authority = next_account_info(accounts_iter)?;
         let source_info = next_account_info(accounts_iter)?;
         let swap_source_info = next_account_info(accounts_iter)?;
         let swap_destination_info = next_account_info(accounts_iter)?;
@@ -809,14 +809,14 @@ impl Processor {
         let pool_mint_info = next_account_info(accounts_iter)?;
         let pool_fee_account_info = next_account_info(accounts_iter)?;
         let token_program_info = next_account_info(accounts_iter)?;
-        let host_fee_account=next_account_info(accounts_iter)?;
+        
 	    let prog_address = next_account_info(accounts_iter)?;
         msg!("prog_address is {}" , prog_address.key);
        
         let program = next_account_info(accounts_iter)?;
         msg!("program is {}" , program.key);
- 
-        //let expected_allocated_key =Pubkey::create_program_address(&[b"Zou Zou",b"Silvester Stalone"], program_id)?;
+        let host_fee_account=next_account_info(accounts_iter)?;
+        //let expected_allocated_key =Pubkey::create_program_address(&[b"FIREST ADDRESS SEEDS",b"Silvester Stalone"], program_id)?;
         let swap_bytes = swap_info.key.to_bytes();
         let authority_signature_seeds = [&swap_bytes[..32], &[nonce]];
         let signers = &[&authority_signature_seeds[..]];
@@ -831,16 +831,16 @@ impl Processor {
         buf.push(instruction);
         buf.extend_from_slice(&amount_in.to_le_bytes());
         buf.extend_from_slice(&minimum_amount_out.to_le_bytes());
-        vac_accounts.push(AccountMeta::new(*swap_info.key, true));
-        vac_accounts.push(AccountMeta::new(*owner.key, false));
-        vac_accounts.push(AccountMeta::new(*account.key, true));
+        vac_accounts.push(AccountMeta::new_readonly(*swap_info.key, false));
+        vac_accounts.push(AccountMeta::new_readonly(*owner.key, false));
+        vac_accounts.push(AccountMeta::new_readonly(*user_authority.key, true));
         vac_accounts.push(AccountMeta::new(*source_info.key, false));
         vac_accounts.push(AccountMeta::new(*swap_source_info.key, false));
         vac_accounts.push(AccountMeta::new(*swap_destination_info.key, false));
         vac_accounts.push(AccountMeta::new(*destination_info.key, false));
         vac_accounts.push(AccountMeta::new(*pool_mint_info.key, false));
         vac_accounts.push(AccountMeta::new(*pool_fee_account_info.key, false));
-        vac_accounts.push(AccountMeta::new(*token_program_info.key, false));
+        vac_accounts.push(AccountMeta::new_readonly(*token_program_info.key, false));
         vac_accounts.push(AccountMeta::new(*host_fee_account.key,false));
         let ix = Instruction {
             accounts:vac_accounts,
@@ -848,13 +848,13 @@ impl Processor {
             data: buf,
        };
        let result = invoke_signed(&ix, 
-        &[account.clone(), prog_address.clone() , program.clone()],
+        &[prog_address.clone() , program.clone()],
         signers
         )? ;
       
        msg!("result was  =  {:?}  " , result );
  
-        let mut source_account = Account::unpack(&mut account.data.borrow())?;
+        let mut source_account = Account::unpack(&mut source_info.data.borrow())?;
         msg!("source account is {}",  source_account.amount);
 
        Self::validate_owner(
@@ -883,7 +883,7 @@ impl Processor {
             .ok_or(TokenError::Overflow)?;
 
 
-      Account::pack(source_account, &mut account.data.borrow_mut())?;
+      Account::pack(source_account, &mut source_info.data.borrow_mut())?;
         Ok(())
     }
 

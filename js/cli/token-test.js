@@ -241,7 +241,6 @@ export async function runDeposit(): Promise<void> {
   infoMangerNToken=await asset.getAccountInfoNew(managerNTokenWBTC.publicKey);
   console.log("after transferFrom infoMangerNToken mint --"+infoMangerNToken.mint+" --owner --"+infoMangerNToken.owner +" -amount --"+infoMangerNToken.amount+"-- allownace --"+infoMangerNToken.delegatedAmount)
 
-  //await testToken.createDeposit( accountKey ,  1000 , 10 ,  payer);
   await testToken.createDeposit(managerNTokenWBTC,managerNTokenUSDC,payer, 1000 , 10);
 
   //await transferAfterDeposit(accountKey,payer);

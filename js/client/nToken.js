@@ -2,7 +2,7 @@
  * @flow
  */
 
-import {Buffer} from 'buffer';
+import { Buffer } from 'buffer';
 import assert from 'assert';
 import BN from 'bn.js';
 import * as BufferLayout from 'buffer-layout';
@@ -21,7 +21,7 @@ import type {
 } from '@solana/web3.js';
 
 import * as Layout from './layout';
-import {sendAndConfirmTransaction} from './util/send-and-confirm-transaction';
+import { sendAndConfirmTransaction } from './util/send-and-confirm-transaction';
 import { userInfo } from 'os';
 
 export const TOKEN_PROGRAM_ID: PublicKey = new PublicKey(
@@ -34,7 +34,7 @@ export const ASSOCIATED_TOKEN_PROGRAM_ID: PublicKey = new PublicKey(
 
 const FAILED_TO_FIND_ACCOUNT = 'Failed to find account';
 const INVALID_ACCOUNT_OWNER = 'Invalid account owner';
-const pubkey_swap="SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8";
+const pubkey_swap = "SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8";
 /**
  * Unfortunately, BufferLayout.encode uses an `instanceof` check for `Buffer`
  * which fails when using `publicKey.toBuffer()` directly because the bundled `Buffer`
@@ -112,25 +112,25 @@ type MintInfo = {|
    */
   mintAuthority: null | PublicKey,
 
-  /**
-   * Total supply of tokens
-   */
-  supply: u64,
+    /**
+     * Total supply of tokens
+     */
+    supply: u64,
 
-  /**
-   * Number of base 10 digits to the right of the decimal place
-   */
-  decimals: number,
+      /**
+       * Number of base 10 digits to the right of the decimal place
+       */
+      decimals: number,
 
-  /**
-   * Is this mint initialized
-   */
-  isInitialized: boolean,
+        /**
+         * Is this mint initialized
+         */
+        isInitialized: boolean,
 
-  /**
-   * Optional authority to freeze token accounts
-   */
-  freezeAuthority: null | PublicKey,
+          /**
+           * Optional authority to freeze token accounts
+           */
+          freezeAuthority: null | PublicKey,
 |};
 
 export const MintLayout: typeof BufferLayout.Structure = BufferLayout.struct([
@@ -156,57 +156,57 @@ type AccountInfo = {|
    */
   address: PublicKey,
 
-  /**
-   * The mint associated with this account
-   */
-  mint: PublicKey,
+    /**
+     * The mint associated with this account
+     */
+    mint: PublicKey,
 
-  /**
-   * Owner of this account
-   */
-  owner: PublicKey,
+      /**
+       * Owner of this account
+       */
+      owner: PublicKey,
 
-  /**
-   * Amount of tokens this account holds
-   */
-  amount: u64,
+        /**
+         * Amount of tokens this account holds
+         */
+        amount: u64,
 
-  /**
-   * The delegate for this account
-   */
-  delegate: null | PublicKey,
+          /**
+           * The delegate for this account
+           */
+          delegate: null | PublicKey,
 
-  /**
-   * The amount of tokens the delegate authorized to the delegate
-   */
-  delegatedAmount: u64,
+            /**
+             * The amount of tokens the delegate authorized to the delegate
+             */
+            delegatedAmount: u64,
 
-  /**
-   * Is this account initialized
-   */
-  isInitialized: boolean,
+              /**
+               * Is this account initialized
+               */
+              isInitialized: boolean,
 
-  /**
-   * Is this account frozen
-   */
-  isFrozen: boolean,
+                /**
+                 * Is this account frozen
+                 */
+                isFrozen: boolean,
 
-  /**
-   * Is this a native token account
-   */
-  isNative: boolean,
+                  /**
+                   * Is this a native token account
+                   */
+                  isNative: boolean,
 
-  /**
-   * If this account is a native token, it must be rent-exempt. This
-   * value logs the rent-exempt reserve which must remain in the balance
-   * until the account is closed.
-   */
-  rentExemptReserve: null | u64,
+                    /**
+                     * If this account is a native token, it must be rent-exempt. This
+                     * value logs the rent-exempt reserve which must remain in the balance
+                     * until the account is closed.
+                     */
+                    rentExemptReserve: null | u64,
 
-  /**
-   * Optional authority to close the account
-   */
-  closeAuthority: null | PublicKey,
+                      /**
+                       * Optional authority to close the account
+                       */
+                      closeAuthority: null | PublicKey,
 |};
 
 /**
@@ -217,10 +217,10 @@ export const AccountLayout: typeof BufferLayout.Structure = BufferLayout.struct(
     Layout.publicKey('mint'), //  32
     Layout.publicKey('owner'), //32
     Layout.uint64('amount'), // 8
-    BufferLayout.u32('delegateOption'), 
+    BufferLayout.u32('delegateOption'),
     Layout.publicKey('delegate'),// 36
     BufferLayout.u8('state'), // 1
-    BufferLayout.u32('isNativeOption'), 
+    BufferLayout.u32('isNativeOption'),
     Layout.uint64('isNative'), //12
     Layout.uint64('delegatedAmount'),// 8
     BufferLayout.u32('closeAuthorityOption'),
@@ -238,15 +238,15 @@ export const AccountLayoutNew: typeof BufferLayout.Structure = BufferLayout.stru
     Layout.publicKey('mint'), //  32
     Layout.publicKey('owner'), //32
     Layout.uint64('amount'), // 8
-    BufferLayout.u32('delegateOption'), 
+    BufferLayout.u32('delegateOption'),
     Layout.publicKey('delegate'),// 36
     BufferLayout.u8('state'), // 1
-    BufferLayout.u32('isNativeOption'), 
+    BufferLayout.u32('isNativeOption'),
     Layout.uint64('isNative'), //12
     Layout.uint64('delegatedAmount'),// 8
     BufferLayout.u32('closeAuthorityOption'),
     Layout.publicKey('closeAuthority'),//36
-   
+
   ],
 );
 
@@ -260,31 +260,31 @@ type MultisigInfo = {|
    */
   m: number,
 
-  /**
-   * Number of possible signers, corresponds to the
-   * number of `signers` that are valid.
-   */
-  n: number,
+    /**
+     * Number of possible signers, corresponds to the
+     * number of `signers` that are valid.
+     */
+    n: number,
 
-  /**
-   * Is this mint initialized
-   */
-  initialized: boolean,
+      /**
+       * Is this mint initialized
+       */
+      initialized: boolean,
 
-  /**
-   * The signers
-   */
-  signer1: PublicKey,
-  signer2: PublicKey,
-  signer3: PublicKey,
-  signer4: PublicKey,
-  signer5: PublicKey,
-  signer6: PublicKey,
-  signer7: PublicKey,
-  signer8: PublicKey,
-  signer9: PublicKey,
-  signer10: PublicKey,
-  signer11: PublicKey,
+        /**
+         * The signers
+         */
+        signer1: PublicKey,
+          signer2: PublicKey,
+            signer3: PublicKey,
+              signer4: PublicKey,
+                signer5: PublicKey,
+                  signer6: PublicKey,
+                    signer7: PublicKey,
+                      signer8: PublicKey,
+                        signer9: PublicKey,
+                          signer10: PublicKey,
+                            signer11: PublicKey,
 |};
 
 /**
@@ -400,7 +400,7 @@ export class nToken {
   }
 
 
-  
+
   /**
    * Create and initialize a token.
    *
@@ -419,8 +419,8 @@ export class nToken {
     freezeAuthority: PublicKey | null,
     decimals: number,
     programId: PublicKey,
-    mintIdAsset:PublicKey,
-    pubkeySwap:PublicKey
+    mintIdAsset: PublicKey,
+    pubkeySwap: PublicKey
   ): Promise<nToken> {
     const mintAccount = new Account();
     const token = new nToken(
@@ -446,8 +446,8 @@ export class nToken {
         programId,
       }),
     );
-  
-    let instruction =  nToken.createInitMintInstruction(
+
+    let instruction = nToken.createInitMintInstruction(
       programId,
       mintAccount.publicKey,
       decimals,
@@ -471,36 +471,59 @@ export class nToken {
 
     return token;
   }
-
-/// createDeposit version jawaher
- /*  async createDeposit(
-     account:PublicKey,
-    amount:any,
-    volatility:any,
-    payer: Account
+  
+  /**
+   * Create Deposit.
+   *
+   * @param userSource Source account
+   * @param userDestination Destination account
+   * @param userAuthority Owner of the source account
+   * @param amount   Number of tokens to deposit
+   * @param volatility volatility of tokens to deposit
+   * @return nToken object for the newly minted token
+   */
+  async createDeposit(
+    userSource: Account,
+    userDestination: Account,
+    userAuthority: Account,
+    amount: any,
+    volatility: any
   ): Promise<nToken> {
 
- 
+    const newAccount = new Account();
 
-    
+
     // Allocate memory for the account
-    const balanceNeeded = await nToken.getMinBalanceRentForExemptMint(
+    const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
       this.connection,
+    );
+    let tokenSwap = new PublicKey("8vT1aMoP3Xdq6JyFfZXUhbjuVgoyR5fG68HGPibDridU");
+
+    let tokenSwapAccount = new Account();
+    let programAddress;
+    let nonce;
+    [programAddress, nonce] = await PublicKey.findProgramAddress(
+      [tokenSwap.toBuffer()],
+      this.programId,
     );
 
 
     const transaction = new Transaction();
-   
 
+    console.log("payer in createDeposit  " + this.payer.publicKey)
 
     transaction.add(
       nToken.createDepositInstruction(
         this.programId,
-        account,
-        payer,
+        this.payer.publicKey,
+        userAuthority.publicKey,
         amount,
-        volatility
-        ),
+        volatility,
+        nonce,
+        programAddress,
+        userSource.publicKey,
+        userDestination.publicKey
+      ),
     );
 
     // Send the two instructions
@@ -508,96 +531,13 @@ export class nToken {
       'createAccount and InitializeMint',
       this.connection,
       transaction,
-      payer,
-
+      this.payer,
+      userAuthority
+      //newAccount
     );
 
-   
+
   }
-
-
- */
-
-
- // createDeposit version bacem
- async createDeposit(
-   userSource:Account,
-   userDestination:Account,
-   owner:Account,
-  amount:any,
-  volatility:any
-): Promise<nToken> {
-
-  const newAccount = new Account();
-
-  
-  // Allocate memory for the account
-  const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
-    this.connection,
-  );
-  /*let programAddress = await PublicKey.createProgramAddress(
-    [Buffer.from("First addresses") , Buffer.from("Silvester Stalone")],
-   this.programId
-  ); */
-   // const tokenSwapAccount = new Account([213,92,95,30,183,94,255,53,238,181,251,106,217,117,87,161,161,47,143,10,123,223,81,123,125,80,76,110,25,245,175,147,136,172,139,177,103,223,45,173,84,25,118,238,129,77,48,49,2,224,217,128,49,19,72,244,29,112,18,184,187,37,199,42]);
-   let tokenSwap =new PublicKey("8vT1aMoP3Xdq6JyFfZXUhbjuVgoyR5fG68HGPibDridU");
-   
-   let tokenSwapAccount = new Account();
-   let programAddress;
-let nonce;
-  [programAddress, nonce] = await PublicKey.findProgramAddress(
-    [tokenSwap.toBuffer()],
-    this.programId,
-  ); 
-  
- 
-  const transaction = new Transaction();
-  /*transaction.add(
-    SystemProgram.createAccount({
-      fromPubkey: this.payer.publicKey,
-      newAccountPubkey: newAccount.publicKey,
-      lamports: balanceNeeded,
-      space: AccountLayout.span,
-      programId:this.programId,
-    }),
-  );
-
-  const mintPublicKey = this.publicKey;
-  transaction.add(
-    nToken.createInitAccountInstruction(
-      this.programId,
-      mintPublicKey,
-      newAccount.publicKey,
-      this.payer.publicKey
-    ),
-  );*/
-  console.log("payer in createDeposit  "+this.payer.publicKey)
-
-  transaction.add(
-    nToken.createDepositInstruction(
-      this.programId,
-      owner.publicKey,
-      this.payer.publicKey,
-      amount,
-      volatility,
-      nonce,
-      programAddress,
-      userSource.publicKey,
-      userDestination.publicKey
-      ),
-  );
-
-  // Send the two instructions
-  await sendAndConfirmTransaction(
-    'createAccount and InitializeMint',
-    this.connection,
-    transaction,
-    owner
-    //newAccount
-  );
-
- 
-}
   /**
    * WithDraw tokens
    *
@@ -607,21 +547,21 @@ let nonce;
    * @param amount Amount to createWithDraw
    */
 
- 
+
   async createWithDraw(
-    account:PublicKey,
+    account: PublicKey,
     amount: number | u64,
     payer: Account,
   ): Promise<void> {
-   
+
     // Allocate memory for the account
     const balanceNeeded = await nToken.getMinBalanceRentForExemptMint(
       this.connection,
     );
 
 
-     const transaction = new Transaction();
-  
+    const transaction = new Transaction();
+
 
     transaction.add(
       nToken.createWithdrawInstruction(
@@ -629,7 +569,7 @@ let nonce;
         this.accountTest.publicKey,
         this.payer,
         amount
-        ),
+      ),
     );
 
     // Send the two instructions
@@ -639,13 +579,10 @@ let nonce;
       transaction,
       this.payer,
 
-      
-  
+
+
     );
   }
-
-
-
 
 
 
@@ -696,14 +633,14 @@ let nonce;
 
     return newAccount.publicKey;
   }
-   /**
-   * Create and initialize a new account.
-   *
-   * This account may then be used as a `transfer()` or `approve()` destination
-   *
-   * @param owner User account that will own the new account
-   * @return Public key of the new empty account
-   */
+  /**
+  * Create and initialize a new account.
+  *
+  * This account may then be used as a `transfer()` or `approve()` destination
+  *
+  * @param owner User account that will own the new account
+  * @return Public key of the new empty account
+  */
   async createAccountNew(owner: PublicKey): Promise<Account> {
     // Allocate memory for the account
     const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
@@ -945,11 +882,11 @@ let nonce;
 
     // create the new account
     let keys = [
-      {pubkey: multisigAccount.publicKey, isSigner: false, isWritable: true},
-      {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false},
+      { pubkey: multisigAccount.publicKey, isSigner: false, isWritable: true },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
     ];
     signers.forEach(signer =>
-      keys.push({pubkey: signer, isSigner: false, isWritable: false}),
+      keys.push({ pubkey: signer, isSigner: false, isWritable: false }),
     );
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
@@ -1101,7 +1038,7 @@ let nonce;
     }
 
     const data = Buffer.from(info.data);
-    const accountInfo =AccountLayoutNew.decode(data);
+    const accountInfo = AccountLayoutNew.decode(data);
     accountInfo.address = account;
     accountInfo.mint = new PublicKey(accountInfo.mint);
     accountInfo.owner = new PublicKey(accountInfo.owner);
@@ -1364,8 +1301,8 @@ let nonce;
       ownerPublicKey = authority;
       signers = multiSigners;
     }
-    console.log(" - " + this.programId + " - " +  this.publicKey + " - " 
-    + dest + " - " + " - " + ownerPublicKey + " - " + multiSigners + " - " + amount);
+    console.log(" - " + this.programId + " - " + this.publicKey + " - "
+      + dest + " - " + " - " + ownerPublicKey + " - " + multiSigners + " - " + amount);
     await sendAndConfirmTransaction(
       'MintTo',
       this.connection,
@@ -1410,8 +1347,8 @@ let nonce;
       ownerPublicKey = authority;
       signers = multiSigners;
     }
-    console.log(" - " + this.programId + " - " +  this.publicKey + " - " 
-    + dest + " - " + " - " + ownerPublicKey + " - " + multiSigners + " - " + amount);
+    console.log(" - " + this.programId + " - " + this.publicKey + " - "
+      + dest + " - " + " - " + ownerPublicKey + " - " + multiSigners + " - " + amount);
     await sendAndConfirmTransaction(
       'MintTo',
       this.connection,
@@ -1783,23 +1720,23 @@ let nonce;
    * @param mintAuthority Minting authority
    * @param freezeAuthority Optional authority that can freeze token accounts
    */
-   static  createInitMintInstruction(
+  static createInitMintInstruction(
     programId: PublicKey,
     mint: PublicKey,
     decimals: number,
     mintAuthority: PublicKey,
     freezeAuthority: PublicKey | null,
-    mintIdAsset:PublicKey | null,
-    pubkeySwap:PublicKey | null,
-   
+    mintIdAsset: PublicKey | null,
+    pubkeySwap: PublicKey | null,
+
   ): TransactionInstruction {
-    
-    
+
+
     let keys = [
-      {pubkey: mint, isSigner: false, isWritable: true},
-      {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false},
-      {pubkey: mintIdAsset, isSigner: false, isWritable: false},
-  ];
+      { pubkey: mint, isSigner: false, isWritable: true },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+      { pubkey: mintIdAsset, isSigner: false, isWritable: false },
+    ];
     const commandDataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       BufferLayout.u8('decimals'),
@@ -1853,10 +1790,10 @@ let nonce;
     owner: PublicKey,
   ): TransactionInstruction {
     const keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: false},
-      {pubkey: owner, isSigner: false, isWritable: false},
-      {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false},
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: owner, isSigner: false, isWritable: false },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
     ];
     const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')]);
     const data = Buffer.alloc(dataLayout.span);
@@ -1874,16 +1811,16 @@ let nonce;
     });
   }
 
-   /**
-   * Construct a Deposit instruction version jawaher
-   *
-   * @param programId SPL Token program account
-   * @param account Account 
-   * @param payer Owner of the source account //jawaher
-   // @ param owner Owner of the source account //becem
-   * @param amount Number of tokens to transfer
-   * @param volatility 90/10 or 50/50 underlying asset percentage / usdc. Please refer to github.com/NovaFi for more details 
-   */
+  /**
+  * Construct a Deposit instruction version jawaher
+  *
+  * @param programId SPL Token program account
+  * @param account Account 
+  * @param payer Owner of the source account //jawaher
+  // @ param owner Owner of the source account //becem
+  * @param amount Number of tokens to transfer
+  * @param volatility 90/10 or 50/50 underlying asset percentage / usdc. Please refer to github.com/NovaFi for more details 
+  */
 
   /*static createDepositInstruction(
     programId,
@@ -1926,28 +1863,28 @@ let nonce;
   }
  */
 
- /**
-   * Construct a Deposit instruction version bacem
-   *
-   * @param programId SPL Token program account
-   * @param account Account 
-   //* @ param payer Owner of the source account //jawaher
-   * @param owner Owner of the source account //becem
-   * @param amount Number of tokens to transfer
-   * @param volatility 90/10 or 50/50 underlying asset percentage / usdc. Please refer to github.com/NovaFi for more details 
-   * @param nonce once used to create valid program address 
-   */
+  /**
+    * Construct a Deposit instruction version bacem
+    *
+    * @param programId SPL Token program account
+    * @param account Account 
+    //* @ param payer Owner of the source account //jawaher
+    * @param owner Owner of the source account //becem
+    * @param amount Number of tokens to transfer
+    * @param volatility 90/10 or 50/50 underlying asset percentage / usdc. Please refer to github.com/NovaFi for more details 
+    * @param nonce once used to create valid program address 
+    */
 
   static createDepositInstruction(
     programId,
-    account,
     owner,
+    userAuthority,
     amount,
     volatility,
     nonce,
-   programAddress,
-   userSource,
-   userDestination
+    programAddress,
+    userSource,
+    userDestination
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
@@ -1963,36 +1900,35 @@ let nonce;
         amount: new u64(amount).toBuffer(),
         volatility: new u64(volatility).toBuffer(),
         nonce
-       // nonce
+        // nonce
       },
       data,
     );
-  
-    let tokenSwap =new PublicKey("8vT1aMoP3Xdq6JyFfZXUhbjuVgoyR5fG68HGPibDridU");
-    let poolSource=new PublicKey("4KD9CWqPDKpJ1LLYFeshVSDpjWkNs6TRSyL9VF2GG15h");
-    let poolDestination=new PublicKey("ADdhWPE5ejxH3MkvD8ntLcTPHHxEVAGPhNbkAAdvpz1V");
-    let poolMint=  new PublicKey("A2gtqSo5Ky8YYT8kjaQixhAa5ExTnFbpynw16TqpZcVD");
-    let feeAccount=new PublicKey("2TvgBAyknzy3rAKWZNsqELefKM8jrmWFggvpeNbN413B");
-    let hostFeeAccount=new PublicKey("4TJsnqELjQ1WnJtR7F7qb2C8VZ4Zw3sSHMD6vwVAXBN5");
-    
-    const keys = [
-      {pubkey: tokenSwap, isSigner: false, isWritable: false},
-      {pubkey: owner, isSigner: false, isWritable: false},	//becem authority 
-      {pubkey: account, isSigner: true, isWritable: false},//userSource
-      {pubkey: userSource, isSigner: false, isWritable: true},
-      {pubkey: poolSource, isSigner: false, isWritable: true},
-      {pubkey: poolDestination, isSigner: false, isWritable: true},
-      {pubkey: userDestination, isSigner: false, isWritable: true},
-      {pubkey: poolMint, isSigner: false, isWritable: true},
-      {pubkey: feeAccount, isSigner: false, isWritable: true},
-      {pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: true},
-      {pubkey: hostFeeAccount, isSigner: false, isWritable: true},
 
-      // {pubkey: payer.publicKey, isSigner: true, isWritable: false}, //jawaher
-      {pubkey: programAddress ,isSigner: false, isWritable: false},	//becem
-      {pubkey:  new PublicKey(pubkey_swap),isSigner: false, isWritable: false}, //becem,
-       
-        ];
+    let tokenSwap = new PublicKey("8vT1aMoP3Xdq6JyFfZXUhbjuVgoyR5fG68HGPibDridU");
+    let poolSource = new PublicKey("4KD9CWqPDKpJ1LLYFeshVSDpjWkNs6TRSyL9VF2GG15h");
+    let poolDestination = new PublicKey("ADdhWPE5ejxH3MkvD8ntLcTPHHxEVAGPhNbkAAdvpz1V");
+    let poolMint = new PublicKey("A2gtqSo5Ky8YYT8kjaQixhAa5ExTnFbpynw16TqpZcVD");
+    let feeAccount = new PublicKey("2TvgBAyknzy3rAKWZNsqELefKM8jrmWFggvpeNbN413B");
+    let hostFeeAccount = new PublicKey("4TJsnqELjQ1WnJtR7F7qb2C8VZ4Zw3sSHMD6vwVAXBN5");
+
+    const keys = [
+      { pubkey: tokenSwap, isSigner: false, isWritable: false },
+      { pubkey: owner, isSigner: false, isWritable: false },
+      { pubkey: userAuthority, isSigner: true, isWritable: false },
+      { pubkey: userSource, isSigner: false, isWritable: true },
+      { pubkey: poolSource, isSigner: false, isWritable: true },
+      { pubkey: poolDestination, isSigner: false, isWritable: true },
+      { pubkey: userDestination, isSigner: false, isWritable: true },
+      { pubkey: poolMint, isSigner: false, isWritable: true },
+      { pubkey: feeAccount, isSigner: false, isWritable: true },
+      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+      { pubkey: programAddress, isSigner: false, isWritable: false },
+      { pubkey: new PublicKey(pubkey_swap), isSigner: false, isWritable: false },
+    ];
+    if (hostFeeAccount != null) {
+      keys.push({ pubkey: hostFeeAccount, isSigner: false, isWritable: true });
+    }
 
     return new TransactionInstruction({
       keys,
@@ -2002,21 +1938,20 @@ let nonce;
   }
 
 
-    /**
-   * Construct a  Withdraw instruction
-   *
-   * @param programId SPL Token program account
-   * @param account Account
-   * @param payer Owner of the source account //jawaher
-  // * @ param owner Owner of the source account // becem
-   * @param amount Number of tokens to transfer
-   */
+  /**
+ * Construct a  Withdraw instruction
+ *
+ * @param programId SPL Token program account
+ * @param account Account
+ * @param payer Owner of the source account //jawaher
+// * @ param owner Owner of the source account // becem
+ * @param amount Number of tokens to transfer
+ */
 
   static createWithdrawInstruction(
     programId,
     account,
-    payer, //jawaher
-   // owner, //becem
+    payer,
     amount,
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
@@ -2034,9 +1969,8 @@ let nonce;
     );
 
     const keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: payer.publicKey, isSigner: true, isWritable: false},//jawaher
-     // {pubkey: owner, isSigner: false, isWritable: false}, //becem
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: payer.publicKey, isSigner: true, isWritable: false },
     ];
 
     return new TransactionInstruction({
@@ -2047,7 +1981,7 @@ let nonce;
   }
 
 
-  
+
 
   /**
    * Construct a Transfer instruction
@@ -2083,8 +2017,8 @@ let nonce;
     );
 
     let keys = [
-      {pubkey: source, isSigner: false, isWritable: true},
-      {pubkey: destination, isSigner: false, isWritable: true},
+      { pubkey: source, isSigner: false, isWritable: true },
+      { pubkey: destination, isSigner: false, isWritable: true },
     ];
     if (multiSigners.length === 0) {
       keys.push({
@@ -2093,7 +2027,7 @@ let nonce;
         isWritable: false,
       });
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2142,13 +2076,13 @@ let nonce;
     );
 
     let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: delegate, isSigner: false, isWritable: false},
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: delegate, isSigner: false, isWritable: false },
     ];
     if (multiSigners.length === 0) {
-      keys.push({pubkey: owner, isSigner: true, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: true, isWritable: false });
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2189,11 +2123,11 @@ let nonce;
       data,
     );
 
-    let keys = [{pubkey: account, isSigner: false, isWritable: true}];
+    let keys = [{ pubkey: account, isSigner: false, isWritable: true }];
     if (multiSigners.length === 0) {
-      keys.push({pubkey: owner, isSigner: true, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: true, isWritable: false });
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2249,11 +2183,11 @@ let nonce;
       data = data.slice(0, encodeLength);
     }
 
-    let keys = [{pubkey: account, isSigner: false, isWritable: true}];
+    let keys = [{ pubkey: account, isSigner: false, isWritable: true }];
     if (multiSigners.length === 0) {
-      keys.push({pubkey: currentAuthority, isSigner: true, isWritable: false});
+      keys.push({ pubkey: currentAuthority, isSigner: true, isWritable: false });
     } else {
-      keys.push({pubkey: currentAuthority, isSigner: false, isWritable: false});
+      keys.push({ pubkey: currentAuthority, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2303,8 +2237,8 @@ let nonce;
     );
 
     let keys = [
-      {pubkey: mint, isSigner: false, isWritable: true},
-      {pubkey: dest, isSigner: false, isWritable: true},
+      { pubkey: mint, isSigner: false, isWritable: true },
+      { pubkey: dest, isSigner: false, isWritable: true },
     ];
     if (multiSigners.length === 0) {
       keys.push({
@@ -2313,7 +2247,7 @@ let nonce;
         isWritable: false,
       });
     } else {
-      keys.push({pubkey: authority, isSigner: false, isWritable: false});
+      keys.push({ pubkey: authority, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2363,8 +2297,8 @@ let nonce;
     );
 
     let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: true},
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: true },
     ];
     if (multiSigners.length === 0) {
       keys.push({
@@ -2373,7 +2307,7 @@ let nonce;
         isWritable: false,
       });
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2416,13 +2350,13 @@ let nonce;
     );
 
     let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: dest, isSigner: false, isWritable: true},
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: dest, isSigner: false, isWritable: true },
     ];
     if (multiSigners.length === 0) {
-      keys.push({pubkey: owner, isSigner: true, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: true, isWritable: false });
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2465,13 +2399,13 @@ let nonce;
     );
 
     let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: false},
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: false },
     ];
     if (multiSigners.length === 0) {
-      keys.push({pubkey: authority, isSigner: true, isWritable: false});
+      keys.push({ pubkey: authority, isSigner: true, isWritable: false });
     } else {
-      keys.push({pubkey: authority, isSigner: false, isWritable: false});
+      keys.push({ pubkey: authority, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2514,13 +2448,13 @@ let nonce;
     );
 
     let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: false},
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: false },
     ];
     if (multiSigners.length === 0) {
-      keys.push({pubkey: authority, isSigner: true, isWritable: false});
+      keys.push({ pubkey: authority, isSigner: true, isWritable: false });
     } else {
-      keys.push({pubkey: authority, isSigner: false, isWritable: false});
+      keys.push({ pubkey: authority, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2576,9 +2510,9 @@ let nonce;
     );
 
     let keys = [
-      {pubkey: source, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: false},
-      {pubkey: destination, isSigner: false, isWritable: true},
+      { pubkey: source, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: destination, isSigner: false, isWritable: true },
     ];
     if (multiSigners.length === 0) {
       keys.push({
@@ -2587,7 +2521,7 @@ let nonce;
         isWritable: false,
       });
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2642,14 +2576,14 @@ let nonce;
     );
 
     let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: false},
-      {pubkey: delegate, isSigner: false, isWritable: false},
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: delegate, isSigner: false, isWritable: false },
     ];
     if (multiSigners.length === 0) {
-      keys.push({pubkey: owner, isSigner: true, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: true, isWritable: false });
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2703,8 +2637,8 @@ let nonce;
     );
 
     let keys = [
-      {pubkey: mint, isSigner: false, isWritable: true},
-      {pubkey: dest, isSigner: false, isWritable: true},
+      { pubkey: mint, isSigner: false, isWritable: true },
+      { pubkey: dest, isSigner: false, isWritable: true },
     ];
     if (multiSigners.length === 0) {
       keys.push({
@@ -2713,7 +2647,7 @@ let nonce;
         isWritable: false,
       });
     } else {
-      keys.push({pubkey: authority, isSigner: false, isWritable: false});
+      keys.push({ pubkey: authority, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2766,8 +2700,8 @@ let nonce;
     );
 
     let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: true},
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: true },
     ];
     if (multiSigners.length === 0) {
       keys.push({
@@ -2776,7 +2710,7 @@ let nonce;
         isWritable: false,
       });
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false });
       multiSigners.forEach(signer =>
         keys.push({
           pubkey: signer.publicKey,
@@ -2838,13 +2772,13 @@ let nonce;
     const data = Buffer.alloc(0);
 
     let keys = [
-      {pubkey: payer, isSigner: true, isWritable: true},
-      {pubkey: associatedAccount, isSigner: false, isWritable: true},
-      {pubkey: owner, isSigner: false, isWritable: false},
-      {pubkey: mint, isSigner: false, isWritable: false},
-      {pubkey: SystemProgram.programId, isSigner: false, isWritable: false},
-      {pubkey: programId, isSigner: false, isWritable: false},
-      {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false},
+      { pubkey: payer, isSigner: true, isWritable: true },
+      { pubkey: associatedAccount, isSigner: false, isWritable: true },
+      { pubkey: owner, isSigner: false, isWritable: false },
+      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      { pubkey: programId, isSigner: false, isWritable: false },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
     ];
 
     return new TransactionInstruction({
