@@ -10,7 +10,7 @@ use solana_program::{
 };
 use std::convert::TryInto;
 use std::mem::size_of;
-
+ 
 /// Minimum number of multisignature signers (min N)
 pub const MIN_SIGNERS: usize = 1;
 /// Maximum number of multisignature signers (max N)
@@ -34,7 +34,7 @@ pub enum TokenInstruction {
     ///   0. `[writable]` The mint to initialize.
     ///   1. `[]` Rent sysvar
     ///
-    InitializeMint {
+    InitializeMint { 
         /// Number of base 10 digits to the right of the decimal place.
         decimals: u8,
         /// The authority/multisignature to mint tokens.
@@ -45,6 +45,7 @@ pub enum TokenInstruction {
         program_id_asset: COption<Pubkey>,
         /// program id swap.
         program_id_swap: COption<Pubkey>
+
         },
     /// Initializes a new account to hold tokens.  If this account is associated
     /// with the native mint then the token balance of the initialized account
@@ -87,7 +88,7 @@ pub enum TokenInstruction {
     InitializeMultisig {
         /// The number of signers (M) required to validate this multisignature
         /// account.
-        m: u8,
+        m: u8 ,
     },
     /// Transfers tokens from one account to another either directly or via a
     /// delegate.  If this account is associated with the native mint then equal

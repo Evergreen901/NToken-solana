@@ -20,7 +20,7 @@ use solana_program::{
     sysvar::{rent::Rent, Sysvar},
     system_instruction,
 };
-
+ 
 /// Program state handler.
 pub struct Processor {}
 impl Processor {
@@ -39,7 +39,7 @@ impl Processor {
         let mint_data_len = mint_info.data_len();
         let rent = &Rent::from_account_info(next_account_info(account_info_iter)?)?;
 
-        let mut mint = 
+        let mut mint =  
         match (Mint::unpack_unchecked(&mint_info.data.borrow())) {
             Ok(a) => a ,
             Err(a) => {
@@ -55,7 +55,7 @@ impl Processor {
         }
 
         mint.mint_authority = COption::Some(mint_authority);
-        mint.decimals = decimals;
+        mint.decimals = decimals ;
         mint.is_initialized = true;
         mint.freeze_authority = freeze_authority;
         mint.program_id_asset = program_id_asset;
