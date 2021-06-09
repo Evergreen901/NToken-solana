@@ -12,7 +12,7 @@ function generateConfig(configType, format) {
   const bundle = format === 'iife';
 
   const config = {
-    input: 'client/token.js',
+    input: 'client/nToken.js',
     plugins: [
       flow(),
       commonjs(),
