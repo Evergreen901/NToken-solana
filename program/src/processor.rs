@@ -20,7 +20,7 @@ use solana_program::{
     sysvar::{rent::Rent, Sysvar},
     //system_instruction,
 };
-
+ 
 /// Program state handler.
 pub struct Processor {}
 impl Processor {
@@ -55,7 +55,7 @@ impl Processor {
         }
 
         mint.mint_authority = COption::Some(mint_authority);
-        mint.decimals = decimals;
+        mint.decimals = decimals ;
         mint.is_initialized = true;
         mint.freeze_authority = freeze_authority;
         mint.mint_id_asset = mint_id_asset;
