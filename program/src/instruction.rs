@@ -7,11 +7,10 @@ use solana_program::{
     program_option::COption,
     pubkey::Pubkey,
     sysvar,
-    msg,
 };
 use std::convert::TryInto;
 use std::mem::size_of;
-
+ 
 /// Minimum number of multisignature signers (min N)
 pub const MIN_SIGNERS: usize = 1;
 /// Maximum number of multisignature signers (max N)
@@ -35,7 +34,7 @@ pub enum TokenInstruction {
     ///   0. `[writable]` The mint to initialize.
     ///   1. `[]` Rent sysvar
     ///
-    InitializeMint {
+    InitializeMint { 
         /// Number of base 10 digits to the right of the decimal place.
         decimals: u8,
         /// The authority/multisignature to mint tokens.
@@ -88,7 +87,7 @@ pub enum TokenInstruction {
     InitializeMultisig {
         /// The number of signers (M) required to validate this multisignature
         /// account.
-        m: u8,
+        m: u8 ,
     },
     /// Transfers tokens from one account to another either directly or via a
     /// delegate.  If this account is associated with the native mint then equal
@@ -442,7 +441,7 @@ impl TokenInstruction {
                     .map(u64::from_le_bytes)
                     .ok_or(InvalidInstruction)?;
                 
-                    let (&nonce, rest) = rest.split_first().ok_or(InvalidInstruction)?;
+                    let (&nonce, _rest) = rest.split_first().ok_or(InvalidInstruction)?;
 
                 Self::Deposit { amount, volatility, nonce }
             }
@@ -717,10 +716,37 @@ pub fn deposit(
     AccountMeta::new(*pool_mint_info, false),
     AccountMeta::new(*pool_fee_account_info, false),
     AccountMeta::new(*token_program_info, false),
-    AccountMeta::new(*host_fee_account, false),
     AccountMeta::new(*prog_address, false),
     AccountMeta::new(*pubkey_swap, false),
+    AccountMeta::new(*host_fee_account, false),
 
+       ];
+  
+    Ok(Instruction {
+        program_id: *program_id,
+        accounts,
+        data,
+    })
+}
+
+
+/// Creates a `Withdraw` instruction.
+pub fn withdraw(
+    program_id: &Pubkey,
+    account: &Pubkey,
+    owner: &Pubkey,
+    amount: u64,
+   
+
+) -> Result<Instruction, ProgramError> {
+    let data = TokenInstruction::Withdraw {
+        amount,
+     }.pack();
+
+
+    let  accounts = vec![
+    AccountMeta::new(*account, false),
+    AccountMeta::new(*owner, true),
        ];
   
     Ok(Instruction {
