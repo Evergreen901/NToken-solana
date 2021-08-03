@@ -42,7 +42,7 @@ $ sh -c "$(curl -sSfL https://release.solana.com/v1.6.6/install)"
 ## Download the project 
 
 ```bash
-$ git clone https://github.com/zdbrig/nToken-solana
+$ git clone https://github.com/NovaFi/nToken-solana
 ```
 
 
