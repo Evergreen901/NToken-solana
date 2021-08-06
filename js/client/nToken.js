@@ -207,6 +207,17 @@ type AccountInfo = {|
                        * Optional authority to close the account
                        */
                       closeAuthority: null | PublicKey,
+
+                       /**
+                       * Amount usdc of tokens this account holds
+                       */
+                        usdc: u64,
+
+                         /**
+                       * Amount asset of tokens this account holds
+                       */
+                          asset: u64,
+
 |};
 
 /**
@@ -250,6 +261,136 @@ export const AccountLayoutNew: typeof BufferLayout.Structure = BufferLayout.stru
   ],
 );
 
+/**
+ * Information about an account
+ */
+ type PortfolioInfo = {|
+  /**
+   * The address of this account
+   */
+  address: PublicKey,
+
+    /**
+     * The mint associated with this account
+     */
+    mint: PublicKey,
+
+      /**
+       * Owner of this account
+       */
+      owner: PublicKey,
+
+        /**
+         * name of the ceartor of this portfolio
+         */
+         creatorName: u32,
+
+          /**
+           * The delegate for this account
+           */
+           expectedSuccessPerdiod: null | u32,
+
+            /**
+             * The amount of tokens the delegate authorized to the delegate
+             */
+             portfolioCondition: u32,
+
+              /**
+               * Is this account initialized
+               */
+               portfolioObjective: u32,
+
+                /**
+                 * Is this account frozen
+                 */
+                 portfolioRisk: u32,
+
+                  /**
+                   * Is this a native token account
+                   */
+                   redditLink: u32,
+
+                    /**
+                     * If this account is a native token, it must be rent-exempt. This
+                     * value logs the rent-exempt reserve which must remain in the balance
+                     * until the account is closed.
+                     */
+                     tradingViewLink: null | u32,
+
+                      /**
+                       * Optional authority to close the account
+                       */
+                       twitterLink: null | u32,
+
+                       /**
+                       * Amount usdc of tokens this account holds
+                       */
+                        creatorPublicAddress: u32,
+
+                         /**
+                       * Amount asset of tokens this account holds
+                       */
+                          asset: u64,
+
+|};
+
+
+/**
+ * @private
+ */
+ export const ProgramAssetLayout: typeof BufferLayout.Structure = BufferLayout.struct(
+  
+   [
+  
+    BufferLayout.u32('assetToSoldInto'),  
+    BufferLayout.u32('period'), 
+    BufferLayout.u32('strategy'),        
+    
+
+  ],
+);
+
+/**
+ * @private
+ */
+ export const AssetLayout: typeof BufferLayout.Structure = BufferLayout.struct(
+  
+   [
+  
+    BufferLayout.u32('name'),  
+    BufferLayout.u32('logo'), 
+    BufferLayout.u32('tag'),   
+    BufferLayout.u32('color'),  
+    
+    //BufferLayout.struct (new Array<Layout.ProgramAssetLayout>("program")),
+   
+  ],
+);
+
+/**
+ * @private
+ */
+ export const PortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struct(
+  [
+    Layout.publicKey('mint'), 
+    Layout.publicKey('owner'), 
+    BufferLayout.u32('creatorName'),
+    BufferLayout.u32('expectedSuccessPerdiod'),
+    Layout.publicKey('portfolioCondition'),
+    BufferLayout.u32('portfolioObjective'), 
+    BufferLayout.u32('portfolioRisk'),
+    Layout.uint64('redditLink'), 
+    Layout.uint64('tradingViewLink'),
+    BufferLayout.u32('twitterLink'),
+    BufferLayout.u32('symbol'),
+    BufferLayout.u32('name'),
+    Layout.publicKey('creatorPublicAddress'),
+
+   // BufferLayout.struct(AssetLayout , "asset"),
+
+
+  ],
+);
 
 /**
  * Information about an multisig
@@ -525,7 +666,8 @@ export class nToken {
         userDestination.publicKey
       ),
     );
-
+console.log ("payer : ", this.payer.publicKey);
+console.log ("user Authority : ",userAuthority.publicKey);
     // Send the two instructions
     await sendAndConfirmTransaction(
       'createAccount and InitializeMint',
@@ -585,6 +727,53 @@ export class nToken {
   }
 
 
+ /**
+  * Create and initialize a new portfolio.
+  *
+  * This portfolio may then be used as a `transfer()` or `approve()` destination
+  *
+  * @param owner User account that will own the new portfolio
+  * @return Public key of the new empty portfolio
+  */
+  async createPortfolio(owner: PublicKey): Promise<Account> {
+    // Allocate memory for the account
+    const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
+      this.connection,
+    );
+
+    const newPortfolio = new Account();
+    const transaction = new Transaction();
+    transaction.add(
+      SystemProgram.createPortfolio({
+        fromPubkey: this.payer.publicKey,
+        newPortfolioPubkey: newPortfolio.publicKey,
+        lamports: balanceNeeded,
+        space: PortfolioLayout.span,
+        programId: this.programId,
+      }),
+    );
+
+    const mintPublicKey = this.publicKey;
+    transaction.add(
+      nToken.createInitPortfolioInstruction(
+        this.programId,
+        mintPublicKey,
+        newPortfolio.publicKey,
+        owner,
+      ),
+    );
+
+    // Send the two instructions
+    await sendAndConfirmTransaction(
+      'createAccount and InitializePortfolio',
+      this.connection,
+      transaction,
+      this.payer,
+      newPortfolio,
+    )
+
+    return newPortfolio;
+  }
 
   /**
    * Create and initialize a new account.
@@ -633,6 +822,8 @@ export class nToken {
 
     return newAccount.publicKey;
   }
+
+
   /**
   * Create and initialize a new account.
   *
@@ -680,6 +871,7 @@ export class nToken {
 
     return newAccount;
   }
+
 
 
   /**
@@ -1810,6 +2002,44 @@ export class nToken {
       data,
     });
   }
+
+
+  /**
+   * Construct an InitializePortfolio instruction
+   *
+   * @param programId SPL Token program account
+   * @param mint Token mint account
+   * @param portfolio New account
+   * @param owner Owner of the new account
+   */
+   static createInitPortfolioInstruction(
+    programId: PublicKey,
+    mint: PublicKey,
+    portfolio: PublicKey,
+    owner: PublicKey,
+  ): TransactionInstruction {
+    const keys = [
+      { pubkey: portfolio, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: owner, isSigner: false, isWritable: false },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+    ];
+    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')]);
+    const data = Buffer.alloc(dataLayout.span);
+    dataLayout.encode(
+      {
+        instruction: 19, // InitializeAccount portfolio
+      },
+      data,
+    );
+
+    return new TransactionInstruction({
+      keys,
+      programId,
+      data,
+    });
+  }
+
 
   /**
   * Construct a Deposit instruction version jawaher

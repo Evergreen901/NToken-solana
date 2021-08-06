@@ -15,7 +15,8 @@ import {
   runGetFullBalance,
   runApproveChecked,
   infoAccountByPublicKey,
-   runApprove
+   runApprove,
+   createPortfolio
 } from './token-test';
 
 async function main() {
@@ -31,6 +32,9 @@ async function main() {
   await runApprove();
   console.log("Run test: runDeposit");
   await runDeposit();  
+  console.log("Run test: createPortfolio");
+  await createPortfolio();  
+
  /*  console.log("Run test: createAccount");
   await createAccount();
   console.log('Run test: mintTo');
@@ -40,15 +44,15 @@ async function main() {
   console.log("Run test: runDeposit");
  // await runDeposit();
  // console.log('Run test: transfer');
-  // await transfer();
-  console.log('Run test: withDraw');
- // await withDraw(); */
+  // await transfer();*/
+  //console.log('Run test: withDraw');
+  //await withDraw(); 
   console.log( " *************** Finish *************** ");
 
 
-// console.log ("get info account ")
+ console.log ("get info account ")
 
-// await infoAccountByPublicKey();
+ await infoAccountByPublicKey();
 
 
 }

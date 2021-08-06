@@ -400,9 +400,9 @@ impl TokenInstruction {
                 let (mint_id_asset, _rest2) = Self::unpack_pubkey_option(_rest)?;
                 let (pubkey_swap, _rest3) = Self::unpack_pubkey_option(_rest2)?;
                 Self::InitializeMint {
+                    decimals,
                     mint_authority,
                     freeze_authority,
-                    decimals,
                     mint_id_asset,
                     pubkey_swap
                 }
@@ -430,12 +430,13 @@ impl TokenInstruction {
             17 => {
                   
                 let (amount, rest) = rest.split_at(8);
-                let (volatility, rest) = rest.split_at(8);
+               
                 let amount = amount
                     .try_into()
                     .ok()
                     .map(u64::from_le_bytes)
                     .ok_or(InvalidInstruction)?;
+                let (volatility, rest) = rest.split_at(8);
                 let volatility = volatility.try_into()
                     .ok()
                     .map(u64::from_le_bytes)
@@ -716,9 +717,10 @@ pub fn deposit(
     AccountMeta::new(*pool_mint_info, false),
     AccountMeta::new(*pool_fee_account_info, false),
     AccountMeta::new(*token_program_info, false),
+    AccountMeta::new(*host_fee_account, false),
     AccountMeta::new(*prog_address, false),
     AccountMeta::new(*pubkey_swap, false),
-    AccountMeta::new(*host_fee_account, false),
+    
 
        ];
   
@@ -761,9 +763,9 @@ pub fn withdraw(
 pub fn initialize_mint(
     token_program_id: &Pubkey,
     mint_pubkey: &Pubkey,
+    decimals: u8,
     mint_authority_pubkey: &Pubkey,
     freeze_authority_pubkey: Option<&Pubkey>,
-    decimals: u8,
     cmint_id_asset: Option<&Pubkey>,
     cpubkey_swap: Option<&Pubkey>
 ) -> Result<Instruction, ProgramError> {

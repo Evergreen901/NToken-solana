@@ -20,7 +20,7 @@ use solana_program::{
     sysvar::{rent::Rent, Sysvar},
     //system_instruction,
 };
- 
+
 /// Program state handler.
 pub struct Processor {}
 impl Processor {
@@ -55,7 +55,7 @@ impl Processor {
         }
 
         mint.mint_authority = COption::Some(mint_authority);
-        mint.decimals = decimals ;
+        mint.decimals = decimals;
         mint.is_initialized = true;
         mint.freeze_authority = freeze_authority;
         mint.mint_id_asset = mint_id_asset;
@@ -793,7 +793,7 @@ impl Processor {
         program_id: &Pubkey,
         accounts: &[AccountInfo],
         amount: u64,
-        _volatility: u64,
+        volatility: u64,
         nonce: u8,
     ) -> ProgramResult {
        
@@ -801,7 +801,7 @@ impl Processor {
 
         let swap_info = next_account_info(accounts_iter)?;
         let owner = next_account_info(accounts_iter)?;
-        let user_authority = next_account_info(accounts_iter)?;
+        let account = next_account_info(accounts_iter)?;
         let source_info = next_account_info(accounts_iter)?;
         let swap_source_info = next_account_info(accounts_iter)?;
         let swap_destination_info = next_account_info(accounts_iter)?;
@@ -809,14 +809,14 @@ impl Processor {
         let pool_mint_info = next_account_info(accounts_iter)?;
         let pool_fee_account_info = next_account_info(accounts_iter)?;
         let token_program_info = next_account_info(accounts_iter)?;
-        
+        let host_fee_account=next_account_info(accounts_iter)?;
 	    let prog_address = next_account_info(accounts_iter)?;
         msg!("prog_address is {}" , prog_address.key);
        
         let program = next_account_info(accounts_iter)?;
         msg!("program is {}" , program.key);
-        let host_fee_account=next_account_info(accounts_iter)?;
-        //let expected_allocated_key =Pubkey::create_program_address(&[b"FIREST ADDRESS SEEDS",b"Silvester Stalone"], program_id)?;
+ 
+        //let expected_allocated_key =Pubkey::create_program_address(&[b"Zou Zou",b"Silvester Stalone"], program_id)?;
         let swap_bytes = swap_info.key.to_bytes();
         let authority_signature_seeds = [&swap_bytes[..32], &[nonce]];
         let signers = &[&authority_signature_seeds[..]];
@@ -831,32 +831,37 @@ impl Processor {
         buf.push(instruction);
         buf.extend_from_slice(&amount_in.to_le_bytes());
         buf.extend_from_slice(&minimum_amount_out.to_le_bytes());
-        vac_accounts.push(AccountMeta::new_readonly(*swap_info.key, false));
-        vac_accounts.push(AccountMeta::new_readonly(*owner.key, false));
-        vac_accounts.push(AccountMeta::new_readonly(*user_authority.key, true));
+        vac_accounts.push(AccountMeta::new(*swap_info.key, true));
+        vac_accounts.push(AccountMeta::new(*owner.key, false));
+        vac_accounts.push(AccountMeta::new(*account.key, true));
         vac_accounts.push(AccountMeta::new(*source_info.key, false));
         vac_accounts.push(AccountMeta::new(*swap_source_info.key, false));
         vac_accounts.push(AccountMeta::new(*swap_destination_info.key, false));
         vac_accounts.push(AccountMeta::new(*destination_info.key, false));
         vac_accounts.push(AccountMeta::new(*pool_mint_info.key, false));
         vac_accounts.push(AccountMeta::new(*pool_fee_account_info.key, false));
-        vac_accounts.push(AccountMeta::new_readonly(*token_program_info.key, false));
+        vac_accounts.push(AccountMeta::new(*token_program_info.key, false));
         vac_accounts.push(AccountMeta::new(*host_fee_account.key,false));
-        let ix = Instruction {
+        /*let ix = Instruction {
             accounts:vac_accounts,
             program_id: *program.key,
             data: buf,
        };
        let result = invoke_signed(&ix, 
-        &[source_info.clone() , destination_info.clone()],
+        &[account.clone(), prog_address.clone() , program.clone()],
         signers
         )? ;
       
-       msg!("result was  =  {:?}  " , result ); 
- 
-        let mut source_account = Account::unpack(&mut source_info.data.borrow())?;
-        msg!("source account is {}",  source_account.amount);
-
+       msg!("result was  =  {:?}  " , result );
+       */
+       msg!("here before ");
+     /* let mut source_account = Account::unpack_unchecked(&mut source_info.data.borrow())?;
+        if source_account.is_frozen() {
+            return Err(TokenError::AccountFrozen.into());
+        }
+       msg!("here after ");
+       msg!("source account is {}",  source_account.amount);*/
+/*
        Self::validate_owner(
             program_id,
             &source_account.owner,
@@ -881,64 +886,165 @@ impl Processor {
             .asset
             .checked_add(5000)
             .ok_or(TokenError::Overflow)?;
+*/
 
-
-      Account::pack(source_account, &mut source_info.data.borrow_mut())?;
+     // Account::pack(source_account, &mut account.data.borrow_mut())?;
         Ok(())
     }
 
-    /// withdraw nAsset
-    pub fn process_withdraw(
+
+/*
+    pub fn process_deposit(
         program_id: &Pubkey,
         accounts: &[AccountInfo],
         amount: u64,
+        volatility: u64,
+        nonce: u8,
+
+
+
     ) -> ProgramResult {
-      let account_info_iter = &mut accounts.iter();
 
-        let account= next_account_info(account_info_iter)?;
+        let accounts_iter = &mut accounts.iter();
 
-        let owner = next_account_info(account_info_iter)?;
+        let swap_info = next_account_info(accounts_iter)?;
+        let owner = next_account_info(accounts_iter)?;
+        let account = next_account_info(accounts_iter)?;
+        let source_info = next_account_info(accounts_iter)?;
+        let swap_source_info = next_account_info(accounts_iter)?;
+        let swap_destination_info = next_account_info(accounts_iter)?;
+        let destination_info = next_account_info(accounts_iter)?;
+        let pool_mint_info = next_account_info(accounts_iter)?;
+        let pool_fee_account_info = next_account_info(accounts_iter)?;
+        let token_program_info = next_account_info(accounts_iter)?;
+        let host_fee_account=next_account_info(accounts_iter)?;
+	    let prog_address = next_account_info(accounts_iter)?;
+        msg!("prog_address issssss {}" , prog_address.key);
+        msg!("0");
+        let program = next_account_info(accounts_iter)?;
+        msg!("program is {}" , program.key);
 
-        let mut source_account = Account::unpack(&account.data.borrow())?;
-    
- 
-       Self::validate_owner(
-            program_id,
-            &source_account.owner,
-            owner,
-            account_info_iter.as_slice(),
-        )?;
+       // let expected_allocated_key =Pubkey::create_program_address(&[b"Zouaoui karimaaaaaaaaaaaaaaaaaaaaaaaa",b"Silvester Stalone"], program_id)?;
 
-        msg!("{}", amount);
-        msg!("{}" ,source_account.amount);
-         let  value :u64  =  (amount.checked_mul(100)).unwrap().checked_div(source_account.amount.into()).unwrap() ;
-        let  amount_usdc_burned  = source_account.usdc.checked_mul(value).unwrap().checked_div(100).unwrap();
-        let  amount_asset_burned = source_account.asset.checked_mul(value).unwrap().checked_div(100).unwrap();
+       let mut buf = Vec::new();
+       let instruction:u8 = 1;
+       let amountIn:u64 = amount;
+       let minimumAmountOut:u64=0;
 
+       msg!("1");
 
-        
-        source_account.amount = source_account
-            .amount
-            .checked_sub(amount)
-            .ok_or(TokenError::Overflow)?;
+       let mut vacAccounts = Vec::new();
+       buf.push(instruction);
+       buf.extend_from_slice(&amountIn.to_le_bytes());
+       buf.extend_from_slice(&minimumAmountOut.to_le_bytes());
+       msg!("2");
+       vacAccounts.push(AccountMeta::new(*swap_info.key, false));
+       vacAccounts.push(AccountMeta::new(*owner.key, false));
+       vacAccounts.push(AccountMeta::new(*account.key, false));
+       vacAccounts.push(AccountMeta::new(*source_info.key, false));
+       vacAccounts.push(AccountMeta::new(*swap_source_info.key, false));
+       vacAccounts.push(AccountMeta::new(*swap_destination_info.key, false));
+       vacAccounts.push(AccountMeta::new(*destination_info.key, false));
+       vacAccounts.push(AccountMeta::new(*pool_mint_info.key, false));
+       vacAccounts.push(AccountMeta::new(*pool_fee_account_info.key, false));
+       vacAccounts.push(AccountMeta::new(*token_program_info.key, false));
+       vacAccounts.push(AccountMeta::new(*host_fee_account.key,false));
+       msg!("3");
+       let ix = Instruction {
+           accounts:vacAccounts,
+           program_id: *program.key,
+           data: buf,
+       };
+     /*  let result = invoke_signed(&ix, 
+       &[account.clone(), prog_address.clone() , program.clone()],
+       &[&[b"Mohamed zouaouii2",b"Silvester Stalone"]]
+       )?;*/
+       msg!("4 {}",account.key);
 
-        source_account.usdc = source_account
-            .usdc
-            .checked_sub(amount_usdc_burned)
-            .ok_or(TokenError::Overflow)?;
+       let mut source_account = Account::unpack(&mut account.data.borrow())?;
 
+       msg!("5");
+
+      Self::validate_owner(
+           program_id,
+           &source_account.owner,
+           owner,
+           accounts_iter.as_slice(),
+       )?;
        
-        source_account.asset = source_account
-            .asset
-            .checked_sub(amount_asset_burned)
-            .ok_or(TokenError::Overflow)?;
+   
+         source_account.amount = source_account
+           .amount
+           .checked_add(amount)
+           .ok_or(TokenError::Overflow)?;
+       source_account.usdc = source_account
+           .usdc
+           .checked_add(400)
+           .ok_or(TokenError::Overflow)?;
 
 
-      Account::pack(source_account, &mut account.data.borrow_mut())?;
-        
-        Ok(())
-    }
+           msg!("5");
 
+       source_account.asset = source_account
+           .asset
+           .checked_add(5000)
+           .ok_or(TokenError::Overflow)?;
+     Account::pack(source_account, &mut account.data.borrow_mut())?;
+       Ok(())
+   }
+*/
+
+   /// withdraw nAsset
+   pub fn process_withdraw(
+    program_id: &Pubkey,
+    accounts: &[AccountInfo],
+    amount: u64,
+) -> ProgramResult {
+  let account_info_iter = &mut accounts.iter();
+
+    let account= next_account_info(account_info_iter)?;
+
+    let owner = next_account_info(account_info_iter)?;
+
+    let mut source_account = Account::unpack(&account.data.borrow())?;
+
+
+   Self::validate_owner(
+        program_id,
+        &source_account.owner,
+        owner,
+        account_info_iter.as_slice(),
+    )?;
+
+    msg!("{}", amount);
+    msg!("{}" ,source_account.amount);
+     let  value :u64  =  (amount.checked_mul(100)).unwrap().checked_div(source_account.amount.into()).unwrap() ;
+    let  amount_usdc_burned  = source_account.usdc.checked_mul(value).unwrap().checked_div(100).unwrap();
+    let  amount_asset_burned = source_account.asset.checked_mul(value).unwrap().checked_div(100).unwrap();
+
+
+    
+    source_account.amount = source_account
+        .amount
+        .checked_sub(amount)
+        .ok_or(TokenError::Overflow)?;
+
+    source_account.usdc = source_account
+        .usdc
+        .checked_sub(amount_usdc_burned)
+        .ok_or(TokenError::Overflow)?;
+
+   
+    source_account.asset = source_account
+        .asset
+        .checked_sub(amount_asset_burned)
+        .ok_or(TokenError::Overflow)?;
+
+
+  Account::pack(source_account, &mut account.data.borrow_mut())?;
+    
+    Ok(())
+}
     /// Validates owner(s) are present
     pub fn validate_owner(
         program_id: &Pubkey,
@@ -1245,8 +1351,8 @@ mod tests {
             .unwrap(),
             vec![
                 &mut account_swap_info,
-                 &mut owner_account,
-                 &mut account_account,
+                &mut owner_account,
+                &mut account_account,
                 &mut account_source_info,
                 &mut account_swap_source_info,
                 &mut account_swap_destination_info,
@@ -1270,99 +1376,209 @@ mod tests {
         }
 
     }
-    
+
 
     #[test]
-    fn test_withdrow() {
+    fn test_withdraw() {
 
 
-           let program_id = Pubkey::new_unique();
-        let account_key = Pubkey::new_unique();
-        let mut account_account = SolanaAccount::new(
-            account_minimum_balance(),
-            Account::get_packed_len(),
-            &program_id,
-        );
-        let key_owner= Pubkey::new_unique();
-        let mut account_owner = SolanaAccount::new(
-            account_minimum_balance(),
-            Account::get_packed_len(),
-            &program_id,
-        );
-        let owner_key = Pubkey::new_unique();
-        let mut owner_account = SolanaAccount::default();
-        let mint_key = Pubkey::new_unique();
-        let mut mint_account =
-            SolanaAccount::new(mint_minimum_balance(), Mint::get_packed_len(), &program_id);
-        let mut rent_sysvar = rent_sysvar();
-        let mint_id_asset_key = Pubkey::new_unique();
-        let pubkey_swap_key = Pubkey::new_unique();
-        let mint_id_asset = Option::Some(&mint_id_asset_key);
-        let pubkey_swap =  Option::Some(&pubkey_swap_key);
+        let program_id = Pubkey::new_unique();
+     let account_key = Pubkey::new_unique();
+     let mut account_account = SolanaAccount::new(
+         account_minimum_balance(),
+         Account::get_packed_len(),
+         &program_id,
+     );
+     let key_owner= Pubkey::new_unique();
+     let mut account_owner = SolanaAccount::new(
+         account_minimum_balance(),
+         Account::get_packed_len(),
+         &program_id,
+     );
+     let owner_key = Pubkey::new_unique();
+     let mut owner_account = SolanaAccount::default();
+     let mint_key = Pubkey::new_unique();
+     let mut mint_account =
+         SolanaAccount::new(mint_minimum_balance(), Mint::get_packed_len(), &program_id);
+     let mut rent_sysvar = rent_sysvar();
+     let mint_id_asset_key = Pubkey::new_unique();
+     let pubkey_swap_key = Pubkey::new_unique();
+     let mint_id_asset = Option::Some(&mint_id_asset_key);
+     let pubkey_swap =  Option::Some(&pubkey_swap_key);
 
 
-         do_process_instruction(
-            initialize_mint(&program_id, &mint_key, &owner_key, None, 2,mint_id_asset,pubkey_swap).unwrap(),
-            vec![&mut mint_account, &mut rent_sysvar],
-        )
-         .unwrap();
+      do_process_instruction(
+         initialize_mint(&program_id, &mint_key, &owner_key, None, 2,mint_id_asset,pubkey_swap).unwrap(),
+         vec![&mut mint_account, &mut rent_sysvar],
+     )
+      .unwrap();
 
 
-        // create account
-        do_process_instruction(
-            initialize_account(&program_id, &account_key, &mint_key, &owner_key).unwrap(),
-            vec![
-                &mut account_account,
-                &mut mint_account,
-                &mut owner_account,
-                &mut rent_sysvar
-            ],
+     // create account
+     do_process_instruction(
+         initialize_account(&program_id, &account_key, &mint_key, &owner_key).unwrap(),
+         vec![
+             &mut account_account,
+             &mut mint_account,
+             &mut owner_account,
+             &mut rent_sysvar
+         ],
 
 
-        )
-        .unwrap();
+     )
+     .unwrap();
 
-      
-      
-       
-        // mint to account
-        do_process_instruction(
-            mint_to(&program_id, &mint_key, &account_key, &owner_key, &[], 1000).unwrap(),
-            vec![&mut mint_account, &mut account_account, &mut owner_account],
-        )
-        .unwrap();
-     
-          // deposit
-       let r = do_process_instruction(
-            withdraw(
-                &program_id,
-                &key_owner,
-                &account_key,
-                100,
-            )
-            .unwrap(),
-            vec![
-                 &mut account_owner,
-                 &mut account_account,
-                
-               
-            ],
-
+   
+   
+    
+     // mint to account
+     do_process_instruction(
+         mint_to(&program_id, &mint_key, &account_key, &owner_key, &[], 1000).unwrap(),
+         vec![&mut mint_account, &mut account_account, &mut owner_account],
+     )
+     .unwrap();
+  
+       // deposit
+    let r = do_process_instruction(
+         withdraw(
+             &program_id,
+             &key_owner,
+             &account_key,
+             100,
+         )
+         .unwrap(),
+         vec![
+              &mut account_owner,
+              &mut account_account,
+             
             
-       
+         ],
+
+         
+    
+     );
+
+     match r {
+         Ok(_) => {msg!("ok")} ,
+         Err(e) => {panic!("error after withdraw {}" , e)}
+     }
+
+ }
+ 
+
+
+
+    
+/*
+     #[test]
+    fn test_pack_unpack() {
+        // Mint
+        let check = Mint {
+            mint_authority: COption::Some(Pubkey::new(&[1; 32])),
+            supply: 42,
+            decimals: 7,
+            is_initialized: true,
+            freeze_authority: COption::Some(Pubkey::new(&[2; 32])),
+            mint_id_asset:  COption::Some(Pubkey::new(&[17; 32])),
+            pubkey_swap: COption::Some(Pubkey::new(&[18; 32]))
+        };
+        let mut packed = vec![0; Mint::get_packed_len() + 1];
+        assert_eq!(
+            Err(ProgramError::InvalidAccountData),
+            Mint::pack(check, &mut packed)
         );
+        let mut packed = vec![0; Mint::get_packed_len() - 1];
+        assert_eq!(
+            Err(ProgramError::InvalidAccountData),
+            Mint::pack(check, &mut packed)
+        );
+        let mut packed = vec![0; Mint::get_packed_len()];
+        Mint::pack(check, &mut packed).unwrap();
+        let expect = vec![
+            1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 42, 0, 0, 0, 0, 0, 0, 0, 7, 1, 1, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        ];
+        assert_eq!(packed, expect);
+        let unpacked = Mint::unpack(&packed).unwrap();
+        assert_eq!(unpacked, check);
 
-        match r {
-            Ok(_) => {msg!("ok")} ,
-            Err(e) => {panic!("error after withdraw {}" , e)}
-        }
+        // Account
+        let check = Account {
+            mint: Pubkey::new(&[1; 32]),
+            owner: Pubkey::new(&[2; 32]),
+            amount: 3,
+            asset:8,
+            usdc:8,
+            delegate: COption::Some(Pubkey::new(&[4; 32])),
+            state: AccountState::Frozen,
+            is_native: COption::Some(5),
+            delegated_amount: 6,
+            close_authority: COption::Some(Pubkey::new(&[7; 32])),
+        };
+        let mut packed = vec![0; Account::get_packed_len() + 1];
+        assert_eq!(
+            Err(ProgramError::InvalidAccountData),
+            Account::pack(check, &mut packed)
+        );
+        let mut packed = vec![0; Account::get_packed_len() - 1];
+        assert_eq!(
+            Err(ProgramError::InvalidAccountData),
+            Account::pack(check, &mut packed)
+        );
+        let mut packed = vec![0; Account::get_packed_len()];
+        Account::pack(check, &mut packed).unwrap();
+        let expect = vec![
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 1, 0, 0, 0, 5, 0, 0,
+            0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+            7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+        ];
+        assert_eq!(packed, expect);
+        let unpacked = Account::unpack(&packed).unwrap();
+        assert_eq!(unpacked, check);
 
-    }
-    
+        // Multisig
+        let check = Multisig {
+            m: 1,
+            n: 2,
+            is_initialized: true,
+            signers: [Pubkey::new(&[3; 32]); MAX_SIGNERS],
+        };
+        let mut packed = vec![0; Multisig::get_packed_len() + 1];
+        assert_eq!(
+            Err(ProgramError::InvalidAccountData),
+            Multisig::pack(check, &mut packed)
+        );
+        let mut packed = vec![0; Multisig::get_packed_len() - 1];
+        assert_eq!(
+            Err(ProgramError::InvalidAccountData),
+            Multisig::pack(check, &mut packed)
+        );
+        let mut packed = vec![0; Multisig::get_packed_len()];
+        Multisig::pack(check, &mut packed).unwrap();
+        let expect = vec![
+            1, 2, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3,
+        ];
+        assert_eq!(packed, expect);
+        let unpacked = Multisig::unpack(&packed).unwrap();
+        assert_eq!(unpacked, check);
+    }*/
 
-
-
-    
     #[test]
     fn test_initialize_mint() {
         let program_id = Pubkey::new_unique();

@@ -106,10 +106,6 @@ pub struct Account {
     pub owner: Pubkey,
     /// The amount of tokens this account holds.
     pub amount: u64,
-    /// the amount of token asset 
-    pub asset: u64,
-    /// the amount of token usdc
-    pub usdc: u64,
     /// If `delegate` is `Some` then `delegated_amount` represents
     /// the amount authorized by the delegate
     pub delegate: COption<Pubkey>,
@@ -123,6 +119,10 @@ pub struct Account {
     pub delegated_amount: u64,
     /// Optional authority to close the account.
     pub close_authority: COption<Pubkey>,
+     /// the amount of token asset 
+    pub asset: u64,
+    /// the amount of token usdc
+    pub usdc: u64,
 }
 impl Account {
     /// Checks if account is frozen

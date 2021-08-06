@@ -166,7 +166,8 @@ export async function createMint(): Promise<void> {
   ); 
   testToken=new nToken(
     connection,
-    new PublicKey("887xCkc7KNUTQTJLHrrPAqHvcBCdbaBWFDqzXkXNjxkS"),
+    //new PublicKey("887xCkc7KNUTQTJLHrrPAqHvcBCdbaBWFDqzXkXNjxkS"),
+    new PublicKey("6ykyxd7bZFnvEHq61vnd69BkU3gabiDmKGEQb4sGiPQG"),
     programId,
     payer
   );
@@ -239,9 +240,28 @@ export async function runDeposit(): Promise<void> {
 
 
   infoMangerNToken=await asset.getAccountInfoNew(managerNTokenWBTC.publicKey);
+ 
   console.log("after transferFrom infoMangerNToken mint --"+infoMangerNToken.mint+" --owner --"+infoMangerNToken.owner +" -amount --"+infoMangerNToken.amount+"-- allownace --"+infoMangerNToken.delegatedAmount)
 
+  let accountManagerNTokenWBTC = await asset.createAccountNew(managerNTokenWBTC.publicKey);
+
+  const source  = await newAccountWithLamports(connection, 10000000000 /* wag */);
+
+  let testAccount2 = await testToken.createAccount(source.publicKey);
+  console.log("owner testAccount -- "+source.publicKey)
+  console.log("created testaccount is : " + testAccount.toBase58());
+
+  let accountInfo;
+  accountInfo = await testToken.getAccountInfo(testAccount);
+
+  console.log("**********Info nToken Account **************");
+  console.log("mint nWBTC -- "+accountInfo.mint +" -- owner UserA --"+accountInfo.owner+" -- amount --"+accountInfo.amount+" -- amount wbtc --"+accountInfo.asset+" amount usdc --"+accountInfo.usdc)
+  console.log("***end info nToken Account ******")
+
+
+
   await testToken.createDeposit(managerNTokenWBTC,managerNTokenUSDC,payer, 1000 , 10);
+  //await testToken.createDeposit(accountManagerNTokenWBTC,managerNTokenUSDC,payer, 1000 , 10);
 
   //await transferAfterDeposit(accountKey,payer);
 }
@@ -253,21 +273,31 @@ export async function withDraw(): Promise<void> {
   accountKey = await testToken.createAccount(payer.publicKey);
   //runGetFullBalance(accountKey)
   await testToken.createWithDraw( accountKey ,10,payer);
-  //runGetFullBalance(testAccount);
+  //
+  runGetFullBalance(testAccount);
 }
 
+
+export async function createPortfolio() : Promise<void> {
+  console.log ("start");
+  testAccount = await testToken.createAccount(testAccountOwner.publicKey);
+
+
+
+
+}
 
 
 export async function infoAccountByPublicKey(): Promise<void> {
   const connection = await getConnection();
- let account = new PublicKey("6QJJ6VA4wm2bKXRGSJQPFStCas7mNreiHgbNUogKHAgJ")
+ let account = new PublicKey("6QJJ6VA4wm2bKXRGSJQPFStCas7mNreiHgbNUogKHAgJ");
   connection.getAccountInfo(account, 'confirmed')
 .then(
-  info => {
-    console.log ("info"+info)
-    if ((info)  && (info.owner)) {
+  account => {
+    console.log ("info"+account)
+    if ((account)  && (account.owner)) {
       
-      const data = Buffer.from(info.data);
+      const data = Buffer.from(account.data);
       const accountInfo = AccountLayout.decode(data);
       if (accountInfo.owner) {
         console.log(  "Owner  => " + new PublicKey(accountInfo.owner).toBase58());
@@ -277,7 +307,7 @@ export async function infoAccountByPublicKey(): Promise<void> {
       }
     }
   }
-).catch(a => {})
+).catch(a => {console.log("error info account")})
 }
 
 
