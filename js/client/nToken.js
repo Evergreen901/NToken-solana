@@ -265,6 +265,7 @@ export const AccountLayoutNew: typeof BufferLayout.Structure = BufferLayout.stru
  * Information about an account
  */
  type PortfolioInfo = {|
+
   /**
    * The address of this account
    */
@@ -293,22 +294,22 @@ export const AccountLayoutNew: typeof BufferLayout.Structure = BufferLayout.stru
             /**
              * The amount of tokens the delegate authorized to the delegate
              */
-             portfolioCondition: u32,
+             portfolioCondition: null | u32,
 
               /**
                * Is this account initialized
                */
-               portfolioObjective: u32,
+               portfolioObjective: null | u32,
 
                 /**
                  * Is this account frozen
                  */
-                 portfolioRisk: u32,
+                 portfolioRisk: null | u32,
 
                   /**
                    * Is this a native token account
                    */
-                   redditLink: u32,
+                   redditLink: null | u32,
 
                     /**
                      * If this account is a native token, it must be rent-exempt. This
@@ -325,70 +326,151 @@ export const AccountLayoutNew: typeof BufferLayout.Structure = BufferLayout.stru
                        /**
                        * Amount usdc of tokens this account holds
                        */
-                        creatorPublicAddress: u32,
+                        creatorPublicAddress: publicKey,
+                        
+  /**
+   * The name of first address
+   */
+   nameAsset1: null | u32,
+  
+   /**
+    * The amount of first asset
+    */
+    amountAsset1: null | u64,
+   /**
+    * The address of first asset
+    */
+    addressAsset1: null | PublicKey,
+   /**
+    * The logo of first asset
+    */
+    logoAsset1: null | u32,
+   /**
+    * The tag of first asset
+    */
+    tagAsset1: null | u32,
+   /**
+    * The color of first asset
+    */
+    colorAsset1: null | u32,
+   /**
+    * The strategy of first asset
+    */
+    strategyAsset1: null | u32,
+   /**
+    * The period of first asset
+    */
+   periodAsset1:null | u64,
+   /**
+    * The asset solde of first asset
+    */
+    assetToSoldIntoAsset1: null | u64,
+   /**
+    * The first yield of first asset
+    */
+    FirstYieldAsset1: null | u32,
+   /**
+    * The second yield of first asset
+    */
+    SecondYieldAsset1: null | PublicKey,
 
-                         /**
-                       * Amount asset of tokens this account holds
-                       */
-                          asset: u64,
+
+
+  /**
+   * The name of second address
+   */
+   nameAsset2: null | u32,
+  
+   /**
+    * The amount of second asset
+    */
+    amountAsset2: null | u64,
+   /**
+    * The address of second asset
+    */
+    addressAsset2: null | PublicKey,
+   /**
+    * The logo of second asset
+    */
+    logoAsset2: null | u32,
+   /**
+    * The tag of second asset
+    */
+    tagAsset2: null | u32,
+   /**
+    * The color of second asset
+    */
+    colorAsset2: null | u32,
+   /**
+    * The strategy of second asset
+    */
+    strategyAsset2: null | u32,
+   /**
+    * The period of second asset
+    */
+   periodAsset2: null | u64,
+   /**
+    * The asset solde of second asset
+    */
+    assetToSoldIntoAsset2: null | u64,
+   /**
+    * The first yield of second asset
+    */
+    FirstYieldAsset2: null | u32,
+   /**
+    * The second yield of second asset
+    */
+    SecondYieldAsset2: null | PublicKey,
+
+                  
 
 |};
 
 
-/**
- * @private
- */
- export const ProgramAssetLayout: typeof BufferLayout.Structure = BufferLayout.struct(
-  
-   [
-  
-    BufferLayout.u32('assetToSoldInto'),  
-    BufferLayout.u32('period'), 
-    BufferLayout.u32('strategy'),        
-    
 
-  ],
-);
-
-/**
- * @private
- */
- export const AssetLayout: typeof BufferLayout.Structure = BufferLayout.struct(
-  
-   [
-  
-    BufferLayout.u32('name'),  
-    BufferLayout.u32('logo'), 
-    BufferLayout.u32('tag'),   
-    BufferLayout.u32('color'),  
-    
-    //BufferLayout.struct (new Array<Layout.ProgramAssetLayout>("program")),
-   
-  ],
-);
 
 /**
  * @private
  */
  export const PortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struct(
-  [
+  [ 
     Layout.publicKey('mint'), 
     Layout.publicKey('owner'), 
     BufferLayout.u32('creatorName'),
     BufferLayout.u32('expectedSuccessPerdiod'),
-    Layout.publicKey('portfolioCondition'),
+    BufferLayout.u32('portfolioCondition'),
     BufferLayout.u32('portfolioObjective'), 
     BufferLayout.u32('portfolioRisk'),
-    Layout.uint64('redditLink'), 
-    Layout.uint64('tradingViewLink'),
+    BufferLayout.u32('redditLink'), 
+    BufferLayout.u32('tradingViewLink'),
     BufferLayout.u32('twitterLink'),
     BufferLayout.u32('symbol'),
     BufferLayout.u32('name'),
     Layout.publicKey('creatorPublicAddress'),
 
-   // BufferLayout.struct(AssetLayout , "asset"),
-
-
+    BufferLayout.u32('nameAsset1'),
+    Layout.uint64('amountAsset1'),
+    Layout.publicKey('addressAsset1'),
+    BufferLayout.u32('logoAsset1'),
+    BufferLayout.u32('tagAsset1'),
+    BufferLayout.u32('colorAsset1'),
+    BufferLayout.u32('strategyAsset1'),
+    Layout.uint64('periodAsset1'),
+    Layout.uint64('assetToSoldIntoAsset1'),
+    BufferLayout.u32('FirstYieldAsset1'),
+    BufferLayout.u32('SecondYieldAsset1'),
+    
+    BufferLayout.u32('nameAsset2'),
+    Layout.uint64('amountAsset2'),
+    Layout.publicKey('addressAsset2'),
+    BufferLayout.u32('logoAsset2'),
+    BufferLayout.u32('tagAsset2'),
+    BufferLayout.u32('colorAsset2'),
+    BufferLayout.u32('strategyAsset2'),
+    Layout.uint64('periodAsset2'),
+    Layout.uint64('assetToSoldIntoAsset2'),
+    BufferLayout.u32('FirstYieldAsset2'),
+    BufferLayout.u32('SecondYieldAsset2'),
   ],
 );
 
@@ -744,7 +826,7 @@ console.log ("user Authority : ",userAuthority.publicKey);
     const newPortfolio = new Account();
     const transaction = new Transaction();
     transaction.add(
-      SystemProgram.createPortfolio({
+      SystemProgram.createAccount({
         fromPubkey: this.payer.publicKey,
         newPortfolioPubkey: newPortfolio.publicKey,
         lamports: balanceNeeded,
