@@ -765,7 +765,7 @@ console.log ("user Authority : ",userAuthority.publicKey);
 
     // Send the two instructions
     await sendAndConfirmTransaction(
-      'createAccount and InitializePortfolio',
+      'createPortfolio and InitializePortfolio',
       this.connection,
       transaction,
       this.payer,

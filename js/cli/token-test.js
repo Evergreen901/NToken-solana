@@ -280,7 +280,7 @@ export async function withDraw(): Promise<void> {
 
 export async function createPortfolio() : Promise<void> {
   console.log ("start");
-  testAccount = await testToken.createAccount(testAccountOwner.publicKey);
+  testAccount = await testToken.createPortfolio(testAccountOwner.publicKey);
 
 
 
