@@ -1013,7 +1013,7 @@ export class nToken {
      */
      async createPortfolio(
       owner: PublicKey,
-      metaDataUrl : blob,
+      metaDataUrl : any,
       metaDataHash : u32 ,
       creatorPublicAddress : pubkey,
       amountAsset1 : number ,
