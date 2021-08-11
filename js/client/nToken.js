@@ -20,7 +20,7 @@ import type {
     TransactionSignature,
 } from '@solana/web3.js';
 
-import * as Layout from './layout';
+import * as Layout from './layzout';
 import { sendAndConfirmTransaction } from './util/send-and-confirm-transaction';
 import AssetsInfo from './util/assets';
 import { userInfo } from 'os';
@@ -286,14 +286,174 @@ type PortfolioInfo = { |
     /**
      * metadata url
      */
-    metadataURL: BufferLayout.blob,
+    metadataUrl: BufferLayout.blob,
     /**
      * Amount usdc of tokens this account holds
      */
     creatorPublicAddress: publicKey,
-    assets: Array < AssetsInf > ,
+    /**
+     * The amount of first asset
+     */
+    amountAsset1: null | u64,
+    /**
+     * The address of first asset
+     */
+    addressAsset1: null | PublicKey,
+    /**
+     * The period of first asset
+     */
+    periodAsset1: null | u64,
+    /**
+     * The asset solde of first asset
+     */
+    assetToSoldIntoAsset1: null | PublicKey,
+    /**
+     * The amount of asset
+     */
+    amountAsset2: null | u64,
+    /**
+     * The address of  asset
+     */
+    addressAsset2: null | PublicKey,
+    /**
+     * The period of  asset
+     */
+    periodAsset2: null | u64,
+    /**
+     * The asset solde of asset
+     */
+    assetToSoldIntoAsset2: null | PublicKey,
 
-    |
+    /**
+     * The amount of asset
+     */
+    amountAsset3: null | u64,
+    /**
+     * The address of  asset
+     */
+    addressAsset3: null | PublicKey,
+    /**
+     * The period of  asset
+     */
+    periodAsset3: null | u64,
+    /**
+     * The asset solde of asset
+     */
+    assetToSoldIntoAsset3: null | PublicKey,
+    /**
+     * The amount of asset
+     */
+    amountAsset4: null | u64,
+    /**
+     * The address of  asset
+     */
+    addressAsset4: null | PublicKey,
+    /**
+     * The period of  asset
+     */
+    periodAsset4: null | u64,
+    /**
+     * The asset solde of asset
+     */
+    assetToSoldIntoAsset4: null | PublicKey,
+    /**
+     * The amount of asset
+     */
+    amountAsset5: null | u64,
+    /**
+     * The address of  asset
+     */
+    addressAsset5: null | PublicKey,
+    /**
+     * The period of  asset
+     */
+    periodAsset5: null | u64,
+    /**
+     * The asset solde of asset
+     */
+    assetToSoldIntoAsset5: null | PublicKey,
+
+    /**
+     * The amount of first asset
+     */
+    amountAsset6: null | u64,
+    /**
+     * The address of first asset
+     */
+    addressAsset6: null | PublicKey,
+    /**
+     * The period of first asset
+     */
+    periodAsset6: null | u64,
+    /**
+     * The asset solde of first asset
+     */
+    assetToSoldIntoAsset6: null | PublicKey,
+    /**
+     * The amount of asset
+     */
+    amountAsset7: null | u64,
+    /**
+     * The address of  asset
+     */
+    addressAsset7: null | PublicKey,
+    /**
+     * The period of  asset
+     */
+    periodAsset7: null | u64,
+    /**
+     * The asset solde of asset
+     */
+    assetToSoldIntoAsset7: null | PublicKey,
+
+    /**
+     * The amount of asset
+     */
+    amountAsset8: null | u64,
+    /**
+     * The address of  asset
+     */
+    addressAsset8: null | PublicKey,
+    /**
+     * The period of  asset
+     */
+    periodAsset8: null | u64,
+    /**
+     * The asset solde of asset
+     */
+    assetToSoldIntoAsset8: null | PublicKey,
+    /**
+     * The amount of asset
+     */
+    amountAsset9: null | u64,
+    /**
+     * The address of  asset
+     */
+    addressAsset9: null | PublicKey,
+    /**
+     * The period of  asset
+     */
+    periodAsset9: null | u64,
+    /**
+     * The asset solde of asset
+     */
+    assetToSoldIntoAsset9: null | PublicKey,
+    /**
+     * The amount of asset
+     */
+    amountAsset10: null | u64,
+    /**
+     * The address of  asset
+     */
+    addressAsset10: null | PublicKey,
+    /**
+     * The period of  asset
+     */
+    periodAsset10: null | u64,
+    /**
+     * The asset solde of asset
+     */
+    assetToSoldIntoAsset10: null | PublicKey |
 };
 
 /**
@@ -305,16 +465,209 @@ export const PortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struc
         BufferLayout.blob(128, 'metadataUrl'), //128
         BufferLayout.u32('metadataHash'), //16
         Layout.publicKey('creatorPublicAddress'), //32
+
+        Layout.uint64('amountAsset1'), //8
+        Layout.publicKey('addressAsset1'), //32
+        Layout.uint64('periodAsset1'), //2
+        Layout.publicKey('assetToSoldIntoAsset1'), //32
+
+
+        Layout.uint64('amountAsset2'), //8
+        Layout.publicKey('addressAsset2'), //32
+        Layout.uint64('periodAsset2'), //2
+        Layout.publicKey('assetToSoldIntoAsset2'), //32
+
+
+        Layout.uint64('amountAsset3'), //8
+        Layout.publicKey('addressAsset3'), //32
+        Layout.uint64('periodAsset3'), //2
+        Layout.publicKey('assetToSoldIntoAsset3'), //32
+
+
+        Layout.uint64('amountAsset4'), //8
+        Layout.publicKey('addressAsset4'), //32
+        Layout.uint64('periodAsset4'), //2
+        Layout.publicKey('assetToSoldIntoAsset4'), //32
+
+
+        Layout.uint64('amountAsset5'), //8
+        Layout.publicKey('addressAsset5'), //32
+        Layout.uint64('periodAsset5'), //2
+        Layout.publicKey('assetToSoldIntoAsset5'), //32
+
+
+        Layout.uint64('amountAsset6'), //8
+        Layout.publicKey('addressAsset6'), //32
+        Layout.uint64('periodAsset6'), //2
+        Layout.publicKey('assetToSoldIntoAsset6'), //32
+
+
+        Layout.uint64('amountAsset7'), //8
+        Layout.publicKey('addressAsset7'), //32
+        Layout.uint64('periodAsset7'), //2
+        Layout.publicKey('assetToSoldIntoAsset7'), //32
+
+
+        Layout.uint64('amountAsset8'), //8
+        Layout.publicKey('addressAsset8'), //32
+        Layout.uint64('periodAsset8'), //2
+        Layout.publicKey('assetToSoldIntoAsset8'), //32
+
+
+        Layout.uint64('amountAsset9'), //8
+        Layout.publicKey('addressAsset9'), //32
+        Layout.uint64('periodAsset9'), //2
+        Layout.publicKey('assetToSoldIntoAsset9'), //32
+
+
+        Layout.uint64('amountAsset10'), //8
+        Layout.publicKey('addressAsset10'), //32
+        Layout.uint64('periodAsset10'), //2
+        Layout.publicKey('assetToSoldIntoAsset10'), //32
     ],
 );
-for (let i = 0; i < MAX_ASSET_PER_PORTFOLIO; i++) {
-    PortfolioLayout.push([
-        Layout.uint64('amountAsset' + i), //8
-        Layout.publicKey('addressAsset' + i), //32
-        Layout.uint64('periodAsset' + i), //2
-        Layout.publicKey('assetToSoldIntoAsset' + i), //32
-    ])
-}
+
+/**
+ * Information about an user portfolio
+ */
+type UserPortfolioInfo = { |
+        /**
+         * The address of this account
+         */
+        address: PublicKey,
+        /**
+         * Owner of this account
+         */
+        owner: PublicKey,
+
+        /**
+         * Owner of this account
+         */
+        portfolioAddress: PublicKey,
+        /**
+         * Value of this assets
+         */
+        valueAsset1: null | uint64,
+        /**
+         * publickey of this assets
+         */
+        addressAsset1: null | PublicKey,
+        /**
+         * Value of this assets
+         */
+        valueAsset2: null | uint64,
+        /**
+         * publickey of this assets
+         */
+        addressAsset2: null | PublicKey,
+        /**
+         * Value of this assets
+         */
+        valueAsset3: null | uint64,
+        /**
+         * publickey of this assets
+         */
+        addressAsset3: null | PublicKey,
+        /**
+         * Value of this assets
+         */
+        valueAsset4: null | uint64,
+        /**
+         * publickey of this assets
+         */
+        addressAsset4: null | PublicKey,
+        /**
+         * Value of this assets
+         */
+        valueAsset5: null | uint64,
+        /**
+         * publickey of this assets
+         */
+        addressAsset5: null | PublicKey,
+        /**
+         * Value of this assets
+         */
+        valueAsset6: null | uint64,
+        /**
+         * publickey of this assets
+         */
+        addressAsset6: null | PublicKey,
+        /**
+         * Value of this assets
+         */
+        valueAsset7: null | uint64,
+        /**
+         * publickey of this assets
+         */
+        addressAsset7: null | PublicKey,
+        /**
+         * Value of this assets
+         */
+        valueAsset8: null | uint64,
+        /**
+         * publickey of this assets
+         */
+        addressAsset8: null | PublicKey,
+        /**
+         * Value of this assets
+         */
+        valueAsset9: null | uint64,
+        /**
+         * publickey of this assets
+         */
+        addressAsset9: null | PublicKey,
+        /**
+         * Value of this assets
+         */
+        valueAsset10: null | uint64,
+        /**
+         * publickey of this assets
+         */
+        addressAsset10: null | PublicKey,
+
+        |
+    }
+    /**
+     * @private
+     */
+export const UserPortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struct(
+    [
+        Layout.publicKey('owner'), //32
+        Layout.publicKey('portfolioAddress'), //32
+
+        Layout.uint64('valueAsset1'), //5
+        Layout.publicKey('addressAsset1'), //32
+
+        Layout.uint64('valueAsset2'), //5
+        Layout.publicKey('addressAsset2'), //32
+
+        Layout.uint64('valueAsset3'), //5
+        Layout.publicKey('addressAsset3'), //32
+
+        Layout.uint64('valueAsset4'), //5
+        Layout.publicKey('addressAsset4'), //32
+
+        Layout.uint64('valueAsset5'), //5
+        Layout.publicKey('addressAsset5'), //32
+
+        Layout.uint64('valueAsset6'), //5
+        Layout.publicKey('addressAsset6'), //32
+
+        Layout.uint64('valueAsset7'), //5
+        Layout.publicKey('addressAsset7'), //32
+
+        Layout.uint64('valueAsset8'), //5
+        Layout.publicKey('addressAsset8'), //32
+
+        Layout.uint64('valueAsset9'), //5
+        Layout.publicKey('addressAsset9'), //32
+
+        Layout.uint64('valueAsset10'), //5
+        Layout.publicKey('addressAsset10'), //32
+
+
+    ],
+);
 
 /**
  * Information about an multisig
