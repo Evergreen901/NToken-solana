@@ -280,7 +280,20 @@ export async function withDraw(): Promise<void> {
 
 export async function createPortfolio() : Promise<void> {
   console.log ("start");
-  testAccount = await testToken.createPortfolio(testAccountOwner.publicKey);
+
+  const ownerSource  = await newAccountWithLamports(connection, 10000000000 /* wag */);
+  const creatorSource  = await newAccountWithLamports(connection, 10000000000 /* wag */);
+  let owner = await testToken.createAccount(ownerSource.publicKey);
+  let metaDataUrl = "aabbcc";
+  let metaDataHash = "abc";
+  let creatorPublicAddress = await testToken.createAccount(creatorSource.publicKey);
+  let amountAsset1 = 2;
+  let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+
+  let periodAsset1 = 10;
+  let assetToSoldIntoAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+  testAccount = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash , creatorPublicAddress , amountAsset1 ,
+    addressAsset1 ,periodAsset1 , assetToSoldIntoAsset1 );
 
 
 

@@ -817,7 +817,16 @@ console.log ("user Authority : ",userAuthority.publicKey);
   * @param owner User account that will own the new portfolio
   * @return Public key of the new empty portfolio
   */
-  async createPortfolio(owner: PublicKey): Promise<Account> {
+  async createPortfolio(
+    owner: PublicKey,
+    metaDataUrl : any,
+    metaDataHash : any ,
+    creatorPublicAddress : pubkey,
+    amountAsset1 : number ,
+    addressAsset1 : pubkey ,
+    periodAsset1 : number ,
+    assetToSoldIntoAsset1 : pubkey
+    ): Promise<Account> {
     // Allocate memory for the account
     const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
       this.connection,
@@ -835,13 +844,19 @@ console.log ("user Authority : ",userAuthority.publicKey);
       }),
     );
 
-    const mintPublicKey = this.publicKey;
+    //const mintPublicKey = this.publicKey;
     transaction.add(
       nToken.createInitPortfolioInstruction(
         this.programId,
-        mintPublicKey,
-        newPortfolio.publicKey,
-        owner,
+       // mintPublicKey,
+        metaDataUrl,
+        metaDataHash,
+        creatorPublicAddress,
+        amountAsset1,
+        addressAsset1,
+        periodAsset1,
+        assetToSoldIntoAsset1,
+        owner
       ),
     );
 
@@ -2096,24 +2111,45 @@ console.log ("user Authority : ",userAuthority.publicKey);
    */
    static createInitPortfolioInstruction(
     programId: PublicKey,
-    mint: PublicKey,
-    portfolio: PublicKey,
-    owner: PublicKey,
+    //mint: PublicKey,
+    metaDataUrl: any,
+    metaDataHash: number,
+    creatorPublicAddress : PublicKey , 
+    amountAsset1 : number,
+    addressAsset1 : PublicKey,
+    periodAsset1 : number ,
+    assetToSoldIntoAsset1 : PublicKey,
+    owner : PublicKey
   ): TransactionInstruction {
     const keys = [
-      { pubkey: portfolio, isSigner: false, isWritable: true },
-      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: creatorPublicAddress , isSigner: false, isWritable: true },
+      { pubkey: addressAsset1, isSigner: false, isWritable: false },
+      { pubkey: assetToSoldIntoAsset1, isSigner: false, isWritable: false },
       { pubkey: owner, isSigner: false, isWritable: false },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
     ];
-    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')]);
+
+
+    const dataLayout = BufferLayout.struct([
+      BufferLayout.u8('instruction'),
+      Layout.blob('metaDataUrl'),
+      Layout.u32('metaDataHash'),
+      BufferLayout.uint64('amountAsset1'),
+      BufferLayout.uint64('periodAsset1'),
+    ]);
+
     const data = Buffer.alloc(dataLayout.span);
     dataLayout.encode(
       {
         instruction: 19, // InitializeAccount portfolio
+        metaDataUrl: new blob(metaDataUrl).toBuffer(),
+        metaDataHash: new u32(metaDataHash).toBuffer(),
+        amountAsset1: new uint64(amountAsset1).toBuffer(),
+        periodAsset1: new uint64(periodAsset1).toBuffer(),
       },
       data,
     );
+ 
 
     return new TransactionInstruction({
       keys,
