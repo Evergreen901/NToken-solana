@@ -32,8 +32,8 @@ async function main() {
   await runApprove();
   console.log("Run test: runDeposit");
   await runDeposit();  
- // console.log("Run test: createPortfolio");
-  //await createPortfolio();  
+  console.log("Run test: createPortfolio");
+  await createPortfolio();  
 
  /*  console.log("Run test: createAccount");
   await createAccount();

@@ -513,55 +513,12 @@ export const PortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struc
         Layout.uint64('periodAsset8'), //2
         Layout.publicKey('assetToSoldIntoAsset8'), //32
 
-<<<<<<< HEAD
- /**
-  * Create and initialize a new portfolio.
-  *
-  * This portfolio may then be used as a `transfer()` or `approve()` destination
-  *
-  * @param owner User account that will own the new portfolio
-  * @return Public key of the new empty portfolio
-  */
-  async createPortfolio(
-    owner: PublicKey,
-    metaDataUrl : any,
-    metaDataHash : any ,
-    creatorPublicAddress : pubkey,
-    amountAsset1 : number ,
-    addressAsset1 : pubkey ,
-    periodAsset1 : number ,
-    assetToSoldIntoAsset1 : pubkey
-    ): Promise<Account> {
-    // Allocate memory for the account
-    const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
-      this.connection,
-    );
-=======
->>>>>>> dd1e5ec9c5125b3
 
         Layout.uint64('amountAsset9'), //8
         Layout.publicKey('addressAsset9'), //32
         Layout.uint64('periodAsset9'), //2
         Layout.publicKey('assetToSoldIntoAsset9'), //32
 
-<<<<<<< HEAD
-    //const mintPublicKey = this.publicKey;
-    transaction.add(
-      nToken.createInitPortfolioInstruction(
-        this.programId,
-       // mintPublicKey,
-        metaDataUrl,
-        metaDataHash,
-        creatorPublicAddress,
-        amountAsset1,
-        addressAsset1,
-        periodAsset1,
-        assetToSoldIntoAsset1,
-        owner
-      ),
-    );
-=======
->>>>>>> dd1e5ec9c5125b3
 
         Layout.uint64('amountAsset10'), //8
         Layout.publicKey('addressAsset10'), //32
@@ -1056,33 +1013,126 @@ export class nToken {
      * @param owner User account that will own the new portfolio
      * @return Public key of the new empty portfolio
      */
-    async createPortfolio(owner: PublicKey): Promise < Account > {
-        // Allocate memory for the account
-        const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
-            this.connection,
+     async createPortfolio(
+      owner: PublicKey,
+      metaDataUrl : any,
+      metaDataHash : any ,
+      creatorPublicAddress : pubkey,
+      amountAsset1 : number ,
+      addressAsset1 : pubkey ,
+      periodAsset1 : number ,
+      assetToSoldIntoAsset1 : pubkey
+      amountAsset2 : number ,
+      addressAsset2 : pubkey ,
+      periodAsset2 : number ,
+      assetToSoldIntoAsset2 : pubkey
+      amountAsset3 : number ,
+      addressAsset3 : pubkey ,
+      periodAsset3 : number ,
+      assetToSoldIntoAsset3 : pubkey
+      amountAsset4 : number ,
+      addressAsset4 : pubkey ,
+      periodAsset4 : number ,
+      assetToSoldIntoAsset4 : pubkey
+      amountAsset5 : number ,
+      addressAsset5 : pubkey ,
+      periodAsset5 : number ,
+      assetToSoldIntoAsset5 : pubkey
+      amountAsset6 : number ,
+      addressAsset6 : pubkey ,
+      periodAsset6 : number ,
+      assetToSoldIntoAsset6 : pubkey
+      amountAsset7 : number ,
+      addressAsset7 : pubkey ,
+      periodAsset7 : number ,
+      assetToSoldIntoAsset7 : pubkey
+      amountAsset8 : number ,
+      addressAsset8 : pubkey ,
+      periodAsset8 : number ,
+      assetToSoldIntoAsset8 : pubkey
+      amountAsset9 : number ,
+      addressAsset9 : pubkey ,
+      periodAsset9 : number ,
+      assetToSoldIntoAsset9 : pubkey
+      amountAsset10 : number ,
+      addressAsset10 : pubkey ,
+      periodAsset10 : number ,
+      assetToSoldIntoAsset10 : pubkey
+      ): Promise<Account> {
+      // Allocate memory for the account
+      const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
+        this.connection,
+      );
+
+
+
+      const newAccountPortfolio = new Account();
+      const transaction = new Transaction();
+      transaction.add(
+          SystemProgram.createAccount({
+              fromPubkey: this.payer.publicKey,
+              newAccountPubkey: newAccountPortfolio.publicKey,
+              lamports: balanceNeeded,
+              space: PortfolioLayout.span,
+              programId: this.programId,
+          }),
+      );
+
+
+ 
+     //const mintPublicKey = this.publicKey;
+        transaction.add(
+          nToken.createInitPortfolioInstruction(
+            this.programId,
+          // mintPublicKey,
+            metaDataUrl,
+            metaDataHash,
+            creatorPublicAddress,
+            amountAsset1,
+            addressAsset1,
+            periodAsset1,
+            assetToSoldIntoAsset1,
+            amountAsset2,
+            addressAsset2,
+            periodAsset2,
+            assetToSoldIntoAsset2,
+            amountAsset3,
+            addressAsset3,
+            periodAsset3,
+            assetToSoldIntoAsset3,
+            amountAsset4,
+            addressAsset4,
+            periodAsset4,
+            assetToSoldIntoAsset4,
+            amountAsset5,
+            addressAsset5,
+            periodAsset5,
+            assetToSoldIntoAsset5,
+            amountAsset6,
+            addressAsset6,
+            periodAsset6,
+            assetToSoldIntoAsset6,
+            amountAsset7,
+            addressAsset7,
+            periodAsset7,
+            assetToSoldIntoAsset7,
+            amountAsset8,
+            addressAsset8,
+            periodAsset8,
+            assetToSoldIntoAsset8,
+            amountAsset9,
+            addressAsset9,
+            periodAsset9,
+            assetToSoldIntoAsset9,
+            amountAsset10,
+            addressAsset10,
+            periodAsset10,
+            assetToSoldIntoAsset10,
+            owner
+          ),
         );
 
-        const newPortfolio = new Account();
-        const transaction = new Transaction();
-        transaction.add(
-            SystemProgram.createAccount({
-                fromPubkey: this.payer.publicKey,
-                newPortfolioPubkey: newPortfolio.publicKey,
-                lamports: balanceNeeded,
-                space: PortfolioLayout.span,
-                programId: this.programId,
-            }),
-        );
-
-        const mintPublicKey = this.publicKey;
-        transaction.add(
-            nToken.createInitPortfolioInstruction(
-                this.programId,
-                mintPublicKey,
-                newPortfolio.publicKey,
-                owner,
-            ),
-        );
+   
 
         // Send the two instructions
         await sendAndConfirmTransaction(
@@ -1090,10 +1140,10 @@ export class nToken {
             this.connection,
             transaction,
             this.payer,
-            newPortfolio,
+            newAccountPortfolio,
         )
 
-        return newPortfolio;
+        return newAccountPortfolio;
     }
 
     /**
@@ -1836,104 +1886,7 @@ export class nToken {
 
 
 
-<<<<<<< HEAD
-  /**
-   * Construct an InitializePortfolio instruction
-   *
-   * @param programId SPL Token program account
-   * @param mint Token mint account
-   * @param portfolio New account
-   * @param owner Owner of the new account
-   */
-   static createInitPortfolioInstruction(
-    programId: PublicKey,
-    //mint: PublicKey,
-    metaDataUrl: any,
-    metaDataHash: number,
-    creatorPublicAddress : PublicKey , 
-    amountAsset1 : number,
-    addressAsset1 : PublicKey,
-    periodAsset1 : number ,
-    assetToSoldIntoAsset1 : PublicKey,
-    owner : PublicKey
-  ): TransactionInstruction {
-    const keys = [
-      { pubkey: creatorPublicAddress , isSigner: false, isWritable: true },
-      { pubkey: addressAsset1, isSigner: false, isWritable: false },
-      { pubkey: assetToSoldIntoAsset1, isSigner: false, isWritable: false },
-      { pubkey: owner, isSigner: false, isWritable: false },
-      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-    ];
-
-
-    const dataLayout = BufferLayout.struct([
-      BufferLayout.u8('instruction'),
-      Layout.blob('metaDataUrl'),
-      Layout.u32('metaDataHash'),
-      BufferLayout.uint64('amountAsset1'),
-      BufferLayout.uint64('periodAsset1'),
-    ]);
-
-    const data = Buffer.alloc(dataLayout.span);
-    dataLayout.encode(
-      {
-        instruction: 19, // InitializeAccount portfolio
-        metaDataUrl: new blob(metaDataUrl).toBuffer(),
-        metaDataHash: new u32(metaDataHash).toBuffer(),
-        amountAsset1: new uint64(amountAsset1).toBuffer(),
-        periodAsset1: new uint64(periodAsset1).toBuffer(),
-      },
-      data,
-    );
  
-=======
-    /**
-     * Mint asset
-     *
-     * @param dest Public key of the account to mint to
-     * @param authority Minting authority
-     * @param multiSigners Signing accounts if `authority` is a multiSig
-     * @param amount Amount to mint
-     */
-    async mintToAsset(
-        dest: PublicKey,
-        authority: any,
-        multiSigners: Array < Account > ,
-        amount: number | u64,
-    ): Promise < void > {
-        let ownerPublicKey;
-        let signers;
-        if (isAccount(authority)) {
-            ownerPublicKey = authority.publicKey;
-            signers = [authority];
-        } else {
-            ownerPublicKey = authority;
-            signers = multiSigners;
-        }
-        console.log(" - " + this.programId + " - " + this.publicKey + " - " +
-            dest + " - " + " - " + ownerPublicKey + " - " + multiSigners + " - " + amount);
-        await sendAndConfirmTransaction(
-            'MintTo',
-            this.connection,
-            new Transaction().add(
-                nToken.createMintToInstruction(
-                    this.programId,
-                    this.publicKey,
-                    dest,
-                    ownerPublicKey,
-                    multiSigners,
-                    amount,
-                ),
-            ),
-            this.payer,
-            ...signers,
-        );
-    }
->>>>>>> dd1e5ec9c5125b3
-
-
-
-
     /**
      * Burn tokens
      *
@@ -2373,40 +2326,155 @@ export class nToken {
     }
 
 
-    /**
-     * Construct an InitializePortfolio instruction
-     *
-     * @param programId SPL Token program account
-     * @param mint Token mint account
-     * @param portfolio New account
-     * @param owner Owner of the new account
-     */
-    static createInitPortfolioInstruction(
-        programId: PublicKey,
-        mint: PublicKey,
-        portfolio: PublicKey,
-        owner: PublicKey,
-    ): TransactionInstruction {
-        const keys = [
-            { pubkey: portfolio, isSigner: false, isWritable: true },
-            { pubkey: mint, isSigner: false, isWritable: false },
-            { pubkey: owner, isSigner: false, isWritable: false },
-            { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-        ];
-        const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')]);
-        const data = Buffer.alloc(dataLayout.span);
-        dataLayout.encode({
-                instruction: 19, // InitializeAccount portfolio
-            },
-            data,
-        );
 
-        return new TransactionInstruction({
-            keys,
-            programId,
-            data,
-        });
-    }
+
+ /**
+   * Construct an InitializePortfolio instruction
+   *
+   * @param programId SPL Token program account
+   * @param mint Token mint account
+   * @param portfolio New account
+   * @param owner Owner of the new account
+   */
+  static createInitPortfolioInstruction(
+    programId: PublicKey,
+    //mint: PublicKey,
+    metaDataUrl: any,
+    metaDataHash: number,
+    creatorPublicAddress : PublicKey , 
+    amountAsset1 : number,
+    addressAsset1 : PublicKey,
+    periodAsset1 : number ,
+    assetToSoldIntoAsset1 : PublicKey,
+    amountAsset2 : number | null,
+    addressAsset2 : PublicKey | null,
+    periodAsset2 : number | null,
+    assetToSoldIntoAsset2 : PublicKey | null,
+    amountAsset3 : number | null,
+    addressAsset3 : PublicKey | null,
+    periodAsset3 : number | null,
+    assetToSoldIntoAsset3 : PublicKey | null,
+    amountAsset4 : number | null,
+    addressAsset4 : PublicKey | null,
+    periodAsset4 : number | null,
+    assetToSoldIntoAsset4 : PublicKey | null,
+    amountAsset5 : number | null,
+    addressAsset5 : PublicKey | null,
+    periodAsset5 : number | null,
+    assetToSoldIntoAsset5 : PublicKey | null,
+    amountAsset6 : number | null,
+    addressAsset6 : PublicKey | null,
+    periodAsset6 : number | null,
+    assetToSoldIntoAsset6 : PublicKey | null,
+    amountAsset7 : number | null,
+    addressAsset7 : PublicKey | null,
+    periodAsset7 : number | null,
+    assetToSoldIntoAsset7 : PublicKey | null,
+    amountAsset8 : number | null,
+    addressAsset8 : PublicKey | null,
+    periodAsset8 : number | null,
+    assetToSoldIntoAsset8 : PublicKey | null,
+    amountAsset9 : number | null,
+    addressAsset9 : PublicKey | null,
+    periodAsset9 : number | null,
+    assetToSoldIntoAsset9 : PublicKey | null,
+    amountAsset10 : number | null,
+    addressAsset10 : PublicKey | null,
+    periodAsset10 : number | null,
+    assetToSoldIntoAsset10 : PublicKey| null,
+    owner : PublicKey
+  ): TransactionInstruction {
+    const keys = [
+      { pubkey: creatorPublicAddress , isSigner: true, isWritable: true },
+      { pubkey: addressAsset1, isSigner: false, isWritable: false },
+      { pubkey: assetToSoldIntoAsset1, isSigner: false, isWritable: false },
+      { pubkey: addressAsset2, isSigner: false, isWritable: false },
+      { pubkey: assetToSoldIntoAsset2, isSigner: false, isWritable: false },
+      { pubkey: addressAsset3, isSigner: false, isWritable: false },
+      { pubkey: assetToSoldIntoAsset3, isSigner: false, isWritable: false },
+      { pubkey: addressAsset4, isSigner: false, isWritable: false },
+      { pubkey: assetToSoldIntoAsset4, isSigner: false, isWritable: false },
+      { pubkey: addressAsset5, isSigner: false, isWritable: false },
+      { pubkey: assetToSoldIntoAsset5, isSigner: false, isWritable: false },
+      { pubkey: addressAsset6, isSigner: false, isWritable: false },
+      { pubkey: assetToSoldIntoAsset6, isSigner: false, isWritable: false },
+      { pubkey: addressAsset7, isSigner: false, isWritable: false },
+      { pubkey: assetToSoldIntoAsset7, isSigner: false, isWritable: false },
+      { pubkey: addressAsset8, isSigner: false, isWritable: false },
+      { pubkey: assetToSoldIntoAsset8, isSigner: false, isWritable: false },
+      { pubkey: addressAsset9, isSigner: false, isWritable: false },
+      { pubkey: assetToSoldIntoAsset9, isSigner: false, isWritable: false },
+      { pubkey: addressAsset10, isSigner: false, isWritable: false },
+      { pubkey: assetToSoldIntoAsset10, isSigner: false, isWritable: false },
+      { pubkey: owner, isSigner: true, isWritable: false },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+    ];
+
+
+    const dataLayout = BufferLayout.struct([
+      BufferLayout.u8('instruction'),
+      Layout.blob('metaDataUrl'),
+      Layout.u32('metaDataHash'),
+      BufferLayout.uint64('amountAsset1'),
+      BufferLayout.uint64('periodAsset1'),
+      BufferLayout.uint64('amountAsset2'),
+      BufferLayout.uint64('periodAsset2'),
+      BufferLayout.uint64('amountAsset3'),
+      BufferLayout.uint64('periodAsset3'),
+      BufferLayout.uint64('amountAsset4'),
+      BufferLayout.uint64('periodAsset4'),
+      BufferLayout.uint64('amountAsset5'),
+      BufferLayout.uint64('periodAsset5'),
+      BufferLayout.uint64('amountAsset6'),
+      BufferLayout.uint64('periodAsset6'),
+      BufferLayout.uint64('amountAsset7'),
+      BufferLayout.uint64('periodAsset7'),
+      BufferLayout.uint64('amountAsset8'),
+      BufferLayout.uint64('periodAsset8'),
+      BufferLayout.uint64('amountAsset9'),
+      BufferLayout.uint64('periodAsset9'),
+      BufferLayout.uint64('amountAsset10'),
+      BufferLayout.uint64('periodAsset10'),
+    ]);
+
+    const data = Buffer.alloc(dataLayout.span);
+    dataLayout.encode(
+      {
+        instruction: 19, // InitializeAccount portfolio
+        metaDataUrl: new blob(metaDataUrl).toBuffer(),
+        metaDataHash: new u32(metaDataHash).toBuffer(),
+        amountAsset1: new uint64(amountAsset1).toBuffer(),
+        periodAsset1: new uint64(periodAsset1).toBuffer(),
+        amountAsset2: new uint64(amountAsset1).toBuffer(),
+        periodAsset2: new uint64(periodAsset1).toBuffer(),
+        amountAsset3: new uint64(amountAsset1).toBuffer(),
+        periodAsset3: new uint64(periodAsset1).toBuffer(),
+        amountAsset4: new uint64(amountAsset1).toBuffer(),
+        periodAsset4: new uint64(periodAsset1).toBuffer(),
+        amountAsset5: new uint64(amountAsset1).toBuffer(),
+        periodAsset5: new uint64(periodAsset1).toBuffer(),
+        amountAsset6: new uint64(amountAsset1).toBuffer(),
+        periodAsset6: new uint64(periodAsset1).toBuffer(),
+        amountAsset7: new uint64(amountAsset1).toBuffer(),
+        periodAsset7: new uint64(periodAsset1).toBuffer(),
+        amountAsset8: new uint64(amountAsset1).toBuffer(),
+        periodAsset8: new uint64(periodAsset1).toBuffer(),
+        amountAsset9: new uint64(amountAsset1).toBuffer(),
+        periodAsset9: new uint64(periodAsset1).toBuffer(),
+        amountAsset10: new uint64(amountAsset1).toBuffer(),
+        periodAsset10: new uint64(periodAsset1).toBuffer(),
+      },
+      data,
+    );
+
+
+    return new TransactionInstruction({
+      keys,
+      programId,
+      data,
+  });
+}
+
 
 
     /**

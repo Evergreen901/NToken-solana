@@ -289,11 +289,65 @@ export async function createPortfolio() : Promise<void> {
   let creatorPublicAddress = await testToken.createAccount(creatorSource.publicKey);
   let amountAsset1 = 2;
   let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
   let periodAsset1 = 10;
   let assetToSoldIntoAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-  testAccount = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash , creatorPublicAddress , amountAsset1 ,
-    addressAsset1 ,periodAsset1 , assetToSoldIntoAsset1 );
+
+  let amountAsset2 ;
+  let addressAsset2 ;
+  let periodAsset2 ;
+  let assetToSoldIntoAsset2 ;
+
+  let amountAsset3 ;
+  let addressAsset3 ;
+  let periodAsset3 ;
+  let assetToSoldIntoAsset3 ;
+
+  let amountAsset4 ;
+  let addressAsset4 ;
+  let periodAsset4 ;
+  let assetToSoldIntoAsset4 ;
+
+  let amountAsset5 ;
+  let addressAsset5 ;
+  let periodAsset5 ;
+  let assetToSoldIntoAsset5 ;
+
+  let amountAsset6 ;
+  let addressAsset6 ;
+  let periodAsset6 ;
+  let assetToSoldIntoAsset6 ;
+
+  let amountAsset7 ;
+  let addressAsset7 ;
+  let periodAsset7 ;
+  let assetToSoldIntoAsset7 ;
+
+  let amountAsset8 ;
+  let addressAsset8 ;
+  let periodAsset8 ;
+  let assetToSoldIntoAsset8 ;
+
+  let amountAsset9 ;
+  let addressAsset9 ;
+  let periodAsset9 ;
+  let assetToSoldIntoAsset9 ;
+
+  let amountAsset10 ;
+  let addressAsset10 ;
+  let periodAsset10 ;
+  let assetToSoldIntoAsset10 ;
+
+  testAccount = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash , creatorPublicAddress ,
+     amountAsset1 , addressAsset1 , periodAsset1 , assetToSoldIntoAsset1 ,
+     amountAsset2 , addressAsset2 , periodAsset2 , assetToSoldIntoAsset2 ,
+     amountAsset3 , addressAsset3 , periodAsset3 , assetToSoldIntoAsset3 ,
+     amountAsset4 , addressAsset4 , periodAsset4 , assetToSoldIntoAsset4 ,
+     amountAsset5 , addressAsset5 , periodAsset5 , assetToSoldIntoAsset5 ,
+     amountAsset6 , addressAsset6 , periodAsset6 , assetToSoldIntoAsset6 ,
+     amountAsset7 , addressAsset7 , periodAsset7 , assetToSoldIntoAsset7 ,
+     amountAsset8 , addressAsset8 , periodAsset8 , assetToSoldIntoAsset8 ,
+     amountAsset9 , addressAsset9 , periodAsset9 , assetToSoldIntoAsset9 ,
+     amountAsset10 , addressAsset10 , periodAsset10 , assetToSoldIntoAsset10 );
 
 
 
