@@ -286,12 +286,12 @@ export async function createPortfolio() : Promise<void> {
   const creatorSource  = await newAccountWithLamports(connection, 10000000000 /* wag */);
   let owner = await testToken.createAccount(ownerSource.publicKey);
   let metaDataUrl = "aabbcc";
-  let metaDataHash = "abc";
-   creatorPublicAddress = await testToken.createAccount(creatorSource.publicKey);
+  let metaDataHash = 123;
+   creatorAccount = await testToken.createAccountNew(creatorSource.publicKey);
   let amountAsset1 = 2;
-  let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+  let addressAsset1 = await asset.createAccountNew(testToken.publicKey);
   let periodAsset1 = 10;
-  let assetToSoldIntoAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+  let assetToSoldIntoAsset1 =await asset.createAccountNew(testToken.publicKey);
 
   let amountAsset2 ;
   let addressAsset2 ;
@@ -338,7 +338,7 @@ export async function createPortfolio() : Promise<void> {
   let periodAsset10 ;
   let assetToSoldIntoAsset10 ;
 
-  testAccount = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash , creatorPublicAddress ,
+  testAccount = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash , creatorAccount ,
      amountAsset1 , addressAsset1 , periodAsset1 , assetToSoldIntoAsset1 ,
      amountAsset2 , addressAsset2 , periodAsset2 , assetToSoldIntoAsset2 ,
      amountAsset3 , addressAsset3 , periodAsset3 , assetToSoldIntoAsset3 ,

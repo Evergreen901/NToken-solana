@@ -1018,47 +1018,47 @@ export class nToken {
       owner: Account,
       metaDataUrl : any,
       metaDataHash : u32 ,
-      creatorPublicAddress : Account,
+      creatorAccount : Account,
       amountAsset1 : number ,
       addressAsset1 : pubkey ,
       periodAsset1 : number ,
-      assetToSoldIntoAsset1 : pubkey,
+      assetToSoldIntoAsset1 : Publickey,
       amountAsset2 : number ,
       addressAsset2 : pubkey ,
       periodAsset2 : number ,
-      assetToSoldIntoAsset2 : pubkey,
+      assetToSoldIntoAsset2 : PublicKey,
       amountAsset3 : number ,
       addressAsset3 : pubkey ,
       periodAsset3 : number ,
-      assetToSoldIntoAsset3 : pubkey,
+      assetToSoldIntoAsset3 : PublicKey,
       amountAsset4 : number ,
       addressAsset4 : pubkey ,
       periodAsset4 : number ,
-      assetToSoldIntoAsset4 : pubkey,
+      assetToSoldIntoAsset4 : PublicKey,
       amountAsset5 : number ,
       addressAsset5 : pubkey ,
       periodAsset5 : number ,
-      assetToSoldIntoAsset5 : pubkey,
+      assetToSoldIntoAsset5 : PublicKey,
       amountAsset6 : number ,
       addressAsset6 : pubkey ,
       periodAsset6 : number ,
-      assetToSoldIntoAsset6 : pubkey,
+      assetToSoldIntoAsset6 : PublicKey,
       amountAsset7 : number ,
       addressAsset7 : pubkey ,
       periodAsset7 : number ,
-      assetToSoldIntoAsset7 : pubkey,
+      assetToSoldIntoAsset7 : PublicKey,
       amountAsset8 : number ,
       addressAsset8 : pubkey ,
       periodAsset8 : number ,
-      assetToSoldIntoAsset8 : pubkey,
+      assetToSoldIntoAsset8 : PublicKey,
       amountAsset9 : number ,
       addressAsset9 : pubkey ,
       periodAsset9 : number ,
-      assetToSoldIntoAsset9 : pubkey,
+      assetToSoldIntoAsset9 : PublicKey,
       amountAsset10 : number ,
       addressAsset10 : pubkey ,
       periodAsset10 : number ,
-      assetToSoldIntoAsset10 : pubkey,
+      assetToSoldIntoAsset10 : PublicKey,
       ): Promise<Account> {
       // Allocate memory for the account
       const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
@@ -1142,6 +1142,7 @@ export class nToken {
             transaction,
             this.payer,
             creatorPublicAddress,
+
         )
 
         return newAccountPortfolio;
@@ -1202,7 +1203,7 @@ export class nToken {
      * This account may then be used as a `transfer()` or `approve()` destination
      *
      * @param owner User account that will own the new account
-     * @return Public key of the new empty account
+     * @return the new empty account
      */
     async createAccountNew(owner: PublicKey): Promise < Account > {
         // Allocate memory for the account
