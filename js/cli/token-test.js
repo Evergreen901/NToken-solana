@@ -31,6 +31,7 @@ let asset: nToken;
 let USDC: nToken;
 let managerNTokenWBTC:Account;
 let managerNTokenUSDC:Account;
+let creatorPublicAddress:Account;
 
 
 
@@ -286,7 +287,7 @@ export async function createPortfolio() : Promise<void> {
   let owner = await testToken.createAccount(ownerSource.publicKey);
   let metaDataUrl = "aabbcc";
   let metaDataHash = "abc";
-  let creatorPublicAddress = await testToken.createAccount(creatorSource.publicKey);
+   creatorPublicAddress = await testToken.createAccount(creatorSource.publicKey);
   let amountAsset1 = 2;
   let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
   let periodAsset1 = 10;

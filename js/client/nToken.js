@@ -14,6 +14,9 @@ import {
     TransactionInstruction,
     SYSVAR_RENT_PUBKEY,
 } from '@solana/web3.js';
+import {
+  blob , u
+} from 'buffer-layout'
 import type {
     Connection,
     Commitment,
@@ -1012,10 +1015,10 @@ export class nToken {
      * @return Public key of the new empty portfolio
      */
      async createPortfolio(
-      owner: PublicKey,
+      owner: Account,
       metaDataUrl : any,
       metaDataHash : u32 ,
-      creatorPublicAddress : pubkey,
+      creatorPublicAddress : Account,
       amountAsset1 : number ,
       addressAsset1 : pubkey ,
       periodAsset1 : number ,
@@ -1085,7 +1088,7 @@ export class nToken {
           // mintPublicKey,
             metaDataUrl,
             metaDataHash,
-            creatorPublicAddress,
+            newAccountPortfolio.publicKey,
             amountAsset1,
             addressAsset1,
             periodAsset1,
@@ -1138,7 +1141,7 @@ export class nToken {
             this.connection,
             transaction,
             this.payer,
-            newAccountPortfolio,
+            creatorPublicAddress,
         )
 
         return newAccountPortfolio;
@@ -2380,10 +2383,10 @@ export class nToken {
     addressAsset10 : PublicKey | null,
     periodAsset10 : number | null,
     assetToSoldIntoAsset10 : PublicKey| null,
-    owner : PublicKey
+    owner : Account
   ): TransactionInstruction {
     const keys = [
-      { pubkey: creatorPublicAddress , isSigner: true, isWritable: true },
+      { pubkey: creatorPublicAddress.publicKey , isSigner: true, isWritable: true },
       { pubkey: addressAsset1, isSigner: false, isWritable: false },
       { pubkey: assetToSoldIntoAsset1, isSigner: false, isWritable: false },
       { pubkey: addressAsset2, isSigner: false, isWritable: false },
@@ -2404,7 +2407,7 @@ export class nToken {
       { pubkey: assetToSoldIntoAsset9, isSigner: false, isWritable: false },
       { pubkey: addressAsset10, isSigner: false, isWritable: false },
       { pubkey: assetToSoldIntoAsset10, isSigner: false, isWritable: false },
-      { pubkey: owner, isSigner: true, isWritable: false },
+      { pubkey: owner.publicKey, isSigner: true, isWritable: false },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
     ];
 
@@ -2435,32 +2438,37 @@ export class nToken {
       Layout.uint64('periodAsset10'),
     ]);
 
+    console.log(JSON.stringify(metaDataUrl));
     const data = Buffer.alloc(dataLayout.span);
+/*    let metaBuffer = Buffer.alloc()
+    metaBuffer.write(metaDataUrl, 0 , metaDataUrl.length , "ascii");*/
     dataLayout.encode(
       {
         instruction: 19, // InitializeAccount portfolio
-        metaDataUrl: new (metaDataUrl).toBuffer(),
-        metaDataHash: new u32(metaDataHash).toBuffer(),
-        amountAsset1: new uint64(amountAsset1).toBuffer(),
-        periodAsset1: new uint64(periodAsset1).toBuffer(),
-        amountAsset2: new uint64(amountAsset2).toBuffer(),
-        periodAsset2: new uint64(periodAsset2).toBuffer(),
-        amountAsset3: new uint64(amountAsset3).toBuffer(),
-        periodAsset3: new uint64(periodAsset3).toBuffer(),
-        amountAsset4: new uint64(amountAsset4).toBuffer(),
-        periodAsset4: new uint64(periodAsset4).toBuffer(),
-        amountAsset5: new uint64(amountAsset5).toBuffer(),
-        periodAsset5: new uint64(periodAsset5).toBuffer(),
-        amountAsset6: new uint64(amountAsset6).toBuffer(),
-        periodAsset6: new uint64(periodAsset6).toBuffer(),
-        amountAsset7: new uint64(amountAsset7).toBuffer(),
-        periodAsset7: new uint64(periodAsset7).toBuffer(),
-        amountAsset8: new uint64(amountAsset8).toBuffer(),
-        periodAsset8: new uint64(periodAsset8).toBuffer(),
-        amountAsset9: new uint64(amountAsset9).toBuffer(),
-        periodAsset9: new uint64(periodAsset9).toBuffer(),
-        amountAsset10: new uint64(amountAsset10).toBuffer(),
-        periodAsset10: new uint64(periodAsset10).toBuffer(),
+        // metaDataUrl: new Buffer(metaDataUrl).toString('base64'),
+         //metaDataUrl: btoa(metaDataUrl),
+         metaDataUrl: Buffer.alloc(128, metaDataUrl,"ascii"),
+        metaDataHash,
+        amountAsset1: new u64(amountAsset1).toBuffer(),
+        periodAsset1: new u64(periodAsset1).toBuffer(),
+        amountAsset2: new u64(amountAsset2).toBuffer(),
+        periodAsset2: new u64(periodAsset2).toBuffer(),
+        amountAsset3: new u64(amountAsset3).toBuffer(),
+        periodAsset3: new u64(periodAsset3).toBuffer(),
+        amountAsset4: new u64(amountAsset4).toBuffer(),
+        periodAsset4: new u64(periodAsset4).toBuffer(),
+        amountAsset5: new u64(amountAsset5).toBuffer(),
+        periodAsset5: new u64(periodAsset5).toBuffer(),
+        amountAsset6: new u64(amountAsset6).toBuffer(),
+        periodAsset6: new u64(periodAsset6).toBuffer(),
+        amountAsset7: new u64(amountAsset7).toBuffer(),
+        periodAsset7: new u64(periodAsset7).toBuffer(),
+        amountAsset8: new u64(amountAsset8).toBuffer(),
+        periodAsset8: new u64(periodAsset8).toBuffer(),
+        amountAsset9: new u64(amountAsset9).toBuffer(),
+        periodAsset9: new u64(periodAsset9).toBuffer(),
+        amountAsset10: new u64(amountAsset10).toBuffer(),
+        periodAsset10: new u64(periodAsset10).toBuffer(),
       },
       data,
     );
