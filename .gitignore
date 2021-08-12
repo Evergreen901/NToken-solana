@@ -1,0 +1,6 @@
+/program/target
+js/node_modules/
+js/package-lock.json
+program/Cargo.lock
+
+#git config --global core.excludesFile .gitignore

@@ -1,2 +1,0 @@
-cargo:rustc-env=TYPENUM_BUILD_CONSTS=/home/jawaher/nasset-solana-new/program/target/debug/build/typenum-66964a7887ae2d1b/out/consts.rs
-cargo:rustc-env=TYPENUM_BUILD_OP=/home/jawaher/nasset-solana-new/program/target/debug/build/typenum-66964a7887ae2d1b/out/op.rs
