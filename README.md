@@ -26,7 +26,7 @@ https://user-images.githubusercontent.com/934740/120934721-6b0a7000-c6f7-11eb-98
 
 Test our project , follow the next steps
 ## Social 
-- [Website](https://testnova.sagecity.io/)
+- [Website](https://novafinance.app/)
 - [Twitter](https://twitter.com/NovaFinance_)
 - [Medium](https://novafinance1.medium.com/)
 - [Telegram](https://t.me/NovaFinanceGroup)
