@@ -785,9 +785,89 @@ impl Processor {
                 msg!("Instruction: Withdraw");
                 Self::process_withdraw(program_id , accounts , amount)
             },
+            TokenInstruction::InitializePortfolio {
+                metaDataUrl,
+                metaDataHash,
+                amountAsset1,
+                periodAsset1,
+                amountAsset2,
+                periodAsset2,
+                amountAsset3,
+                periodAsset3,
+                amountAsset4,
+                periodAsset4,
+                amountAsset5,
+                periodAsset5,
+                amountAsset6,
+                periodAsset6,
+                amountAsset7,
+                periodAsset7,
+                amountAsset8,
+                periodAsset8,
+                amountAsset9,
+                periodAsset9,
+                amountAsset10,
+                periodAsset10 } => {
+                msg!("Instruction: InitializePortfolio");
+                Self::process_initialize_portfolio(program_id , accounts , metaDataUrl,
+                    metaDataHash,
+                    amountAsset1,
+                    periodAsset1,
+                    amountAsset2,
+                    periodAsset2,
+                    amountAsset3,
+                    periodAsset3,
+                    amountAsset4,
+                    periodAsset4,
+                    amountAsset5,
+                    periodAsset5,
+                    amountAsset6,
+                    periodAsset6,
+                    amountAsset7,
+                    periodAsset7,
+                    amountAsset8,
+                    periodAsset8,
+                    amountAsset9,
+                    periodAsset9,
+                    amountAsset10,
+                    periodAsset10)
+            },
         }
     }
 
+    /// Deposit nAsset
+    pub fn process_initialize_portfolio(
+        program_id: &Pubkey,
+        accounts: &[AccountInfo],
+        metaDataUrl : Vec<u8>,
+        metaDataHash : u32,
+        amountAsset1 : u64,
+        periodAsset1 : u64,
+        amountAsset2 : u64,
+        periodAsset2 : u64,
+        amountAsset3 : u64,
+        periodAsset3 : u64,
+        amountAsset4 : u64,
+        periodAsset4 : u64,
+        amountAsset5 : u64,
+        periodAsset5 : u64,
+        amountAsset6 : u64,
+        periodAsset6 : u64,
+        amountAsset7 : u64,
+        periodAsset7 : u64,
+        amountAsset8 : u64,
+        periodAsset8 : u64,
+        amountAsset9 : u64,
+        periodAsset9 : u64,
+        amountAsset10 : u64,
+        periodAsset10 : u64
+    ) -> ProgramResult {
+        let accounts_iter = &mut accounts.iter();
+        let account = next_account_info(accounts_iter)?;
+        msg!("initialze portfolio ");
+        Ok(())
+
+    }
     /// Deposit nAsset
     pub fn process_deposit(
         program_id: &Pubkey,
@@ -1201,7 +1281,7 @@ mod tests {
         assert_ne!(Account::get_packed_len(), Multisig::get_packed_len());
         assert_ne!(Multisig::get_packed_len(), 0);
     }
-
+/*
     #[test]
     fn test_deposit() {
 
@@ -1375,8 +1455,10 @@ mod tests {
             Err(e) => {panic!("error after deposit {}" , e)}
         }
 
+  
+  
     }
-
+*/
 
     #[test]
     fn test_withdraw() {
@@ -1465,7 +1547,10 @@ mod tests {
 
  }
  
-
+ #[test]
+    fn test_initialzePortfolio() {
+        msg!("ok"); 
+    }
 
 
     
@@ -6384,4 +6469,5 @@ mod tests {
 
         assert_eq!(account_account, account2_account);
     }
+    
 }

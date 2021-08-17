@@ -384,7 +384,58 @@ pub enum TokenInstruction {
     Withdraw {
         /// amount to withdraw
         amount: u64,
+    },
+
+    //19
+    /// Initialize Portfolio 
+    InitializePortfolio {
+        ///the data of the new portfolio
+        metaDataUrl : Vec<u8>,
+        ///Hash of dataUrl to insure the immuability of data
+        metaDataHash : u32,
+        ///pourcentage of first asset
+        amountAsset1: u64,
+        ///period of first asset
+        periodAsset1 : u64,
+        ///pourcentage of second asset
+        amountAsset2 : u64,
+        ///period of second asset
+        periodAsset2 : u64,
+        ///pourcentage of third asset
+        amountAsset3 : u64,
+        ///period of third asset
+        periodAsset3 : u64,
+        ///pourcentage of 4 asset
+        amountAsset4 : u64,
+        ///period of 4 asset
+        periodAsset4 : u64,
+        ///pourcentage of 5 asset
+        amountAsset5 : u64,
+        ///period of 5 asset
+        periodAsset5 : u64,
+        ///pourcentage of 6 asset
+        amountAsset6 : u64,
+        ///period of 6 asset
+        periodAsset6 : u64,
+        ///pourcentage of 7 asset
+        amountAsset7 : u64,
+        ///period of 7 asset
+        periodAsset7 : u64,
+        ///pourcentage of 8 asset
+        amountAsset8 : u64,
+        ///period of 8 asset
+        periodAsset8 : u64,
+        ///pourcentage of 9 asset
+        amountAsset9 : u64,
+        ///period of 9 asset
+        periodAsset9 : u64,
+        ///pourcentage of 10 asset
+        amountAsset10 : u64,
+        ///period of 10 asset
+        periodAsset10 : u64,
     }
+
+    
 }
 impl TokenInstruction {
     /// Unpacks a byte buffer into a [TokenInstruction](enum.TokenInstruction.html).
@@ -511,6 +562,165 @@ impl TokenInstruction {
                 Self::InitializeAccount2 { owner }
             }
 
+            19 => {
+                let (metaDataUrl, rest) = rest.split_at(128);
+                let metaDataUrl = metaDataUrl
+                .try_into()
+                .ok()
+                .ok_or(InvalidInstruction)?;
+                let (metaDataHash, rest) = rest.split_at(32);
+                let metaDataHash = metaDataHash
+                .try_into()
+                .ok()
+                .map(u32::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (amountAsset1, _rest) = rest.split_at(64);
+                let amountAsset1 = amountAsset1
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (periodAsset1, _rest2) = _rest.split_at(64);
+                let periodAsset1 = periodAsset1
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (amountAsset2, _rest3) = _rest2.split_at(64);
+                let amountAsset2 = amountAsset2
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (periodAsset2, _rest4) = _rest3.split_at(64);
+                let periodAsset2 = periodAsset2
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (amountAsset3, _rest5) = _rest4.split_at(64);
+                let amountAsset3 = amountAsset3
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (periodAsset3, _rest6) = _rest5.split_at(64);
+                let periodAsset3 = periodAsset3
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (amountAsset4, _rest7) = _rest6.split_at(64);
+                let amountAsset4 = amountAsset4
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (periodAsset4, _rest8) = _rest7.split_at(64);
+                let periodAsset4 = periodAsset4
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (amountAsset5, _rest9) = _rest8.split_at(64);
+                let amountAsset5 = amountAsset5
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (periodAsset5, _rest10) = _rest9.split_at(64);
+                let periodAsset5 = periodAsset5
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (amountAsset6, _rest11) = _rest10.split_at(64);
+                let amountAsset6 = amountAsset6
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (periodAsset6, _rest12) = _rest11.split_at(64);
+                let periodAsset6 = periodAsset6
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (amountAsset7, _rest13) = _rest12.split_at(64);
+                let amountAsset7 = amountAsset7
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (periodAsset7, _rest14) = _rest13.split_at(64);
+                let periodAsset7 = periodAsset7
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (amountAsset8, _rest15) = _rest14.split_at(64);
+                let amountAsset8 = amountAsset8
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (periodAsset8, _rest16) = _rest15.split_at(64);
+                let periodAsset8 = periodAsset8
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (amountAsset9, _rest17) = _rest16.split_at(64);
+                let amountAsset9 = amountAsset9
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (periodAsset9, _rest18) = _rest17.split_at(64);
+                let periodAsset9 = periodAsset9
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (amountAsset10, _rest19) = _rest18.split_at(64);
+                let amountAsset10 = amountAsset10
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                let (periodAsset10, _rest20) = _rest19.split_at(64);
+                let periodAsset10 = periodAsset10
+                .try_into()
+                .ok()
+                .map(u64::from_le_bytes)
+                .ok_or(InvalidInstruction)?;
+                Self::InitializePortfolio {
+                    metaDataUrl,
+                    metaDataHash,
+                    amountAsset1,
+                    periodAsset1,
+                    amountAsset2,
+                    periodAsset2,
+                    amountAsset3,
+                    periodAsset3,
+                    amountAsset4,
+                    periodAsset4,
+                    amountAsset5,
+                    periodAsset5,
+                    amountAsset6,
+                    periodAsset6,
+                    amountAsset7,
+                    periodAsset7,
+                    amountAsset8,
+                    periodAsset8,
+                    amountAsset9,
+                    periodAsset9,
+                    amountAsset10,
+                    periodAsset10,
+                }
+            }
+
+
             _ => return Err(TokenError::InvalidInstruction.into()),
         })
     }
@@ -600,6 +810,56 @@ impl TokenInstruction {
             &Self::Withdraw {amount } => {
                 buf.push(18);
                 buf.extend_from_slice(&amount.to_le_bytes());
+            },
+
+            Self::InitializePortfolio {
+                metaDataUrl,
+                metaDataHash,
+                amountAsset1,
+                periodAsset1,
+                amountAsset2,
+                periodAsset2,
+                amountAsset3,
+                periodAsset3,
+                amountAsset4,
+                periodAsset4,
+                amountAsset5,
+                periodAsset5,
+                amountAsset6,
+                periodAsset6,
+                amountAsset7,
+                periodAsset7,
+                amountAsset8,
+                periodAsset8,
+                amountAsset9,
+                periodAsset9,
+                amountAsset10,
+                periodAsset10,
+            } => {
+                buf.push(19);
+                buf.extend_from_slice(&metaDataUrl);
+                buf.extend_from_slice(&metaDataHash.to_le_bytes());
+                buf.extend_from_slice(&amountAsset1.to_le_bytes());
+                buf.extend_from_slice(&periodAsset1.to_le_bytes());
+                buf.extend_from_slice(&amountAsset2.to_le_bytes());
+                buf.extend_from_slice(&periodAsset2.to_le_bytes());
+                buf.extend_from_slice(&amountAsset3.to_le_bytes());
+                buf.extend_from_slice(&periodAsset3.to_le_bytes());
+                buf.extend_from_slice(&amountAsset4.to_le_bytes());
+                buf.extend_from_slice(&periodAsset4.to_le_bytes());
+                buf.extend_from_slice(&amountAsset5.to_le_bytes());
+                buf.extend_from_slice(&periodAsset5.to_le_bytes());
+                buf.extend_from_slice(&amountAsset6.to_le_bytes());
+                buf.extend_from_slice(&periodAsset6.to_le_bytes());
+                buf.extend_from_slice(&amountAsset7.to_le_bytes());
+                buf.extend_from_slice(&periodAsset7.to_le_bytes());
+                buf.extend_from_slice(&amountAsset8.to_le_bytes());
+                buf.extend_from_slice(&periodAsset8.to_le_bytes());
+                buf.extend_from_slice(&amountAsset9.to_le_bytes());
+                buf.extend_from_slice(&periodAsset9.to_le_bytes());
+                buf.extend_from_slice(&amountAsset10.to_le_bytes());
+                buf.extend_from_slice(&periodAsset10.to_le_bytes());
+               // buf.push(periodAsset10);
             },
             
 
@@ -732,6 +992,7 @@ pub fn deposit(
 }
 
 
+
 /// Creates a `Withdraw` instruction.
 pub fn withdraw(
     program_id: &Pubkey,
@@ -757,6 +1018,120 @@ pub fn withdraw(
         data,
     })
 }
+
+
+fn convert<T, const N: usize>(v: Vec<T>) -> [T; N] {
+    v.try_into()
+        .unwrap_or_else(|v: Vec<T>| panic!("Expected a Vec of length {} but it was {}", N, v.len()))
+}
+
+/// Creates a `InitializePortfolio` instruction.
+pub fn initialize_portfolio(
+    program_id: &Pubkey,
+    creatorAccount: &Pubkey ,
+    addressAsset1: &Pubkey ,
+    assetToSoldIntoAsset1: &Pubkey ,
+    addressAsset2: &Pubkey ,
+    assetToSoldIntoAsset2: &Pubkey ,
+    addressAsset3: &Pubkey ,
+    assetToSoldIntoAsset3: &Pubkey ,
+    addressAsset4: &Pubkey ,
+    assetToSoldIntoAsset4: &Pubkey ,
+    addressAsset5: &Pubkey ,
+    assetToSoldIntoAsset5: &Pubkey ,
+    addressAsset6: &Pubkey ,
+    assetToSoldIntoAsset6: &Pubkey ,
+    addressAsset7: &Pubkey ,
+    assetToSoldIntoAsset7: &Pubkey ,
+    addressAsset8: &Pubkey ,
+    assetToSoldIntoAsset8: &Pubkey ,
+    addressAsset9: &Pubkey ,
+    assetToSoldIntoAsset9: &Pubkey ,
+    addressAsset10: &Pubkey ,
+    assetToSoldIntoAsset10: &Pubkey ,
+    owner: &Pubkey ,
+    metaDataUrl : &Vec<u8>,
+    metaDataHash : &u32,
+    amountAsset1 : &u64,
+    periodAsset1 : &u64,
+    amountAsset2 : &u64,
+    periodAsset2 : &u64,
+    amountAsset3 : &u64,
+    periodAsset3 : &u64,
+    amountAsset4 : &u64,
+    periodAsset4 : &u64,
+    amountAsset5 : &u64,
+    periodAsset5 : &u64,
+    amountAsset6 : &u64,
+    periodAsset6 : &u64,
+    amountAsset7 : &u64,
+    periodAsset7 : &u64,
+    amountAsset8 : &u64,
+    periodAsset8 : &u64,
+    amountAsset9 : &u64,
+    periodAsset9 : &u64,
+    amountAsset10 : &u64,
+    periodAsset10 : &u64,
+
+) -> Result<Instruction, ProgramError> {
+    let data = TokenInstruction::InitializePortfolio {
+        metaDataUrl: metaDataUrl.clone(),
+        metaDataHash: *metaDataHash,
+        amountAsset1: *amountAsset1,
+        periodAsset1: *periodAsset1,
+        amountAsset2: *amountAsset2,
+        periodAsset2: *periodAsset2,
+        amountAsset3: *amountAsset3,
+        periodAsset3: *periodAsset3,
+        amountAsset4: *amountAsset4,
+        periodAsset4: *periodAsset4,
+        amountAsset5: *amountAsset5,
+        periodAsset5: *periodAsset5,
+        amountAsset6: *amountAsset6,
+        periodAsset6: *periodAsset6,
+        amountAsset7: *amountAsset7,
+        periodAsset7: *periodAsset7,
+        amountAsset8: *amountAsset8,
+        periodAsset8: *periodAsset8,
+        amountAsset9: *amountAsset9,
+        periodAsset9: *periodAsset9,
+        amountAsset10: *amountAsset10,
+        periodAsset10: *periodAsset10
+     }.pack();
+
+
+    let  accounts = vec![
+        AccountMeta::new(*creatorAccount, false),
+        AccountMeta::new(*addressAsset1, false),
+        AccountMeta::new(*assetToSoldIntoAsset1, false),
+        AccountMeta::new(*addressAsset2, false),
+        AccountMeta::new(*assetToSoldIntoAsset2, false),
+        AccountMeta::new(*addressAsset3, false),
+        AccountMeta::new(*assetToSoldIntoAsset3, false),
+        AccountMeta::new(*addressAsset4, false),
+        AccountMeta::new(*assetToSoldIntoAsset4, false),
+        AccountMeta::new(*addressAsset5, false),
+        AccountMeta::new(*assetToSoldIntoAsset5, false),
+        AccountMeta::new(*addressAsset6, false),
+        AccountMeta::new(*assetToSoldIntoAsset6, false),
+        AccountMeta::new(*addressAsset7, false),
+        AccountMeta::new(*assetToSoldIntoAsset7, false),
+        AccountMeta::new(*addressAsset8, false),
+        AccountMeta::new(*assetToSoldIntoAsset8, false),
+        AccountMeta::new(*addressAsset9, false),
+        AccountMeta::new(*assetToSoldIntoAsset9, false),
+        AccountMeta::new(*addressAsset10, false),
+        AccountMeta::new(*assetToSoldIntoAsset10, false),
+        AccountMeta::new(*owner, false),
+       ];
+  
+    Ok(Instruction {
+        program_id: *program_id,
+        accounts,
+        data,
+    })
+}
+
 
 
 /// Creates a `InitializeMint` instruction.

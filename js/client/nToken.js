@@ -292,7 +292,7 @@ type PortfolioInfo = {
     /**
      * Amount usdc of tokens this account holds
      */
-    creatorPublicAddress: publicKey,
+     creatorAccount: publicKey,
     /**
      * The amount of first asset
      */
@@ -466,7 +466,7 @@ export const PortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struc
         Layout.publicKey('owner'), //32
         BufferLayout.blob(128, 'metadataUrl'), //128
         BufferLayout.u32('metadataHash'), //16
-        Layout.publicKey('creatorPublicAddress'), //32
+        Layout.publicKey('creatorAccount'), //32
 
         Layout.uint64('amountAsset1'), //8
         Layout.publicKey('addressAsset1'), //32
@@ -1140,13 +1140,116 @@ export class nToken {
             this.connection,
             transaction,
             this.payer,
-            creatorPublicAddress,
+            creatorAccount,
 
         )
 
         return newAccountPortfolio;
     }
 
+
+
+
+    
+    /**
+     * Create and initialize a new UserPortfolio.
+     *
+     * This account may then be used as a `transfer()` or `approve()` destination
+     *
+     * @param owner User account that will own the new account*
+     * @param portfolioAddress prtfolioAddress
+     * @param valueAsset1 number of asset 1..10 
+     * @param addressAsset1 adddress of asset 1..10
+     * @return UserPortfolio of the new empty account
+     */
+     async createUserPortfolio(
+      owner: PublicKey,
+      portfolioAddress: PublicKey,
+      valueAsset1: number,
+      addressAsset1: PublicKey,
+      valueAsset2: number,
+      addressAsset2: PublicKey,
+      valueAsset3: number,
+      addressAsset3: PublicKey,
+      valueAsset4: number,
+      addressAsset4: PublicKey,
+      valueAsset5: number,
+      addressAsset5: PublicKey,
+      valueAsset6: number,
+      addressAsset6: PublicKey,
+      valueAsset7: number,
+      addressAsset7: PublicKey,
+      valueAsset8: number,
+      addressAsset8: PublicKey,
+      valueAsset9: number,
+      addressAsset9: PublicKey,
+      valueAsset10: number,
+      addressAsset10: PublicKey,
+  ): Promise < PublicKey > {
+      // Allocate memory for the account
+      const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
+          this.connection,
+      );
+
+      const newUserPortfolioAccount = new Account();
+      const transaction = new Transaction();
+      transaction.add(
+          SystemProgram.createAccount({
+              fromPubkey: this.payer.publicKey,
+              newAccountPubkey: newUserPortfolioAccount.publicKey,
+              lamports: balanceNeeded,
+              space: UserPortfolioLayout.span,
+              programId: this.programId,
+          }),
+      );
+
+      // const mintPublicKey = this.publicKey;
+      /* transaction.add(
+          nToken.createInitUserPortfolioInstruction(
+              this.programId,
+              newUserPortfolioAccount.publicKey,
+              portfolioAddress,
+              valueAsset1,
+              addressAsset1,
+              valueAsset2,
+              addressAsset2,
+              valueAsset3,
+              addressAsset3,
+              valueAsset4,
+              addressAsset4,
+              valueAsset5,
+              addressAsset5,
+              valueAsset6,
+              addressAsset6,
+              valueAsset7,
+              addressAsset7,
+              valueAsset8,
+              addressAsset8,
+              valueAsset9,
+              addressAsset9,
+              valueAsset10,
+              addressAsset10,
+              owner,
+          ),
+   );*/
+
+      // Send the two instructions
+      await sendAndConfirmTransaction(
+          'createAccount and InitializeAccount',
+          this.connection,
+          transaction,
+          this.payer,
+          newUserPortfolioAccount,
+      );
+
+      return newUserPortfolioAccount;
+  }
+
+
+
+
+
+  
     /**
      * Create and initialize a new account.
      *
@@ -1195,99 +1298,7 @@ export class nToken {
         return newAccount.publicKey;
     }
 
-    /**
-     * Create and initialize a new UserPortfolio.
-     *
-     * This account may then be used as a `transfer()` or `approve()` destination
-     *
-     * @param owner User account that will own the new account*
-     * @param portfolioAddress prtfolioAddress
-     * @param valueAsset1 number of asset 1..10 
-     * @param addressAsset1 adddress of asset 1..10
-     * @return UserPortfolio of the new empty account
-     */
-    async createUserPortfolio(
-        owner: PublicKey,
-        portfolioAddress: PublicKey,
-        valueAsset1: number,
-        addressAsset1: PublicKey,
-        valueAsset2: number,
-        addressAsset2: PublicKey,
-        valueAsset3: number,
-        addressAsset3: PublicKey,
-        valueAsset4: number,
-        addressAsset4: PublicKey,
-        valueAsset5: number,
-        addressAsset5: PublicKey,
-        valueAsset6: number,
-        addressAsset6: PublicKey,
-        valueAsset7: number,
-        addressAsset7: PublicKey,
-        valueAsset8: number,
-        addressAsset8: PublicKey,
-        valueAsset9: number,
-        addressAsset9: PublicKey,
-        valueAsset10: number,
-        addressAsset10: PublicKey,
-    ): Promise < PublicKey > {
-        // Allocate memory for the account
-        const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
-            this.connection,
-        );
 
-        const newUserPortfolioAccount = new Account();
-        const transaction = new Transaction();
-        transaction.add(
-            SystemProgram.createAccount({
-                fromPubkey: this.payer.publicKey,
-                newAccountPubkey: newUserPortfolioAccount.publicKey,
-                lamports: balanceNeeded,
-                space: UserPortfolioLayout.span,
-                programId: this.programId,
-            }),
-        );
-
-        // const mintPublicKey = this.publicKey;
-        /* transaction.add(
-            nToken.createInitUserPortfolioInstruction(
-                this.programId,
-                newUserPortfolioAccount.publicKey,
-                portfolioAddress,
-                valueAsset1,
-                addressAsset1,
-                valueAsset2,
-                addressAsset2,
-                valueAsset3,
-                addressAsset3,
-                valueAsset4,
-                addressAsset4,
-                valueAsset5,
-                addressAsset5,
-                valueAsset6,
-                addressAsset6,
-                valueAsset7,
-                addressAsset7,
-                valueAsset8,
-                addressAsset8,
-                valueAsset9,
-                addressAsset9,
-                valueAsset10,
-                addressAsset10,
-                owner,
-            ),
-     );*/
-
-        // Send the two instructions
-        await sendAndConfirmTransaction(
-            'createAccount and InitializeAccount',
-            this.connection,
-            transaction,
-            this.payer,
-            newUserPortfolioAccount,
-        );
-
-        return newUserPortfolioAccount;
-    }
 
 
 
@@ -2437,7 +2448,7 @@ export class nToken {
         //mint: PublicKey,
         metaDataUrl: any,
         metaDataHash: number,
-        creatorPublicAddress: PublicKey,
+        creatorAccount: PublicKey,
         amountAsset1: number,
         addressAsset1: PublicKey,
         periodAsset1: number,
@@ -2481,7 +2492,7 @@ export class nToken {
         owner: Account
     ): TransactionInstruction {
         const keys = [
-            { pubkey: creatorPublicAddress.publicKey, isSigner: true, isWritable: true },
+            { pubkey: creatorAccount.publicKey, isSigner: true, isWritable: true },
             { pubkey: addressAsset1, isSigner: false, isWritable: false },
             { pubkey: assetToSoldIntoAsset1, isSigner: false, isWritable: false },
             { pubkey: addressAsset2, isSigner: false, isWritable: false },
