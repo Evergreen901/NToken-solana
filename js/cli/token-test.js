@@ -362,15 +362,14 @@ export async function createPortfolio() : Promise<void> {
 }
 
 export async function createUserPortfolio(): Promise < void > {
-
-
-    const owner = new Account();
-    let portfolioAddress = await testToken.createAccount(owner.publicKey);
+  let owner = new Account();
+    let portfolioAddress = new PublicKey("23338f7ce95147fedfdf7bd0703a987d2d915df18ee17a7c6edd1165ccb58b9f");
+    //let portfolio = await testToken.createAccount(PortfolioAccount);
     let valueAsset1 = 2;
     let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
-    let valueAsset2;
-    let addressAsset2;
+    let valueAsset2 = 20000;
+    let addressAsset2 = await (await USDC.createAccountNew(testToken.publicKey)).publicKey
 
 
     let valueAsset3;
@@ -398,10 +397,10 @@ export async function createUserPortfolio(): Promise < void > {
     let valueAsset9;
     let addressAsset9;
 
-    let valueAsset10;
-    let addressAsset10;
+    // let valueAsset10;
+    // let addressAsset10;
 
-    testAccount = await testToken.createUserPortfolio(owner, portfolioAddress,
+    testAccount = await testToken.createUserPortfolio(owner,portfolioAddress,
         valueAsset1, addressAsset1,
         valueAsset2, addressAsset2,
         valueAsset3, addressAsset3,
@@ -410,8 +409,8 @@ export async function createUserPortfolio(): Promise < void > {
         valueAsset6, addressAsset6,
         valueAsset7, addressAsset7,
         valueAsset8, addressAsset8,
-        valueAsset9, addressAsset9,
-        valueAsset10, addressAsset10);
+        valueAsset9, addressAsset9);
+       // valueAsset10, addressAsset10);
 
 
 

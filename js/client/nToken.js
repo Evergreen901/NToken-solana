@@ -1068,6 +1068,7 @@ export class nToken {
 
 
       const newAccountPortfolio = new Account();
+      console.log ("Account Portfolio",newAccountPortfolio.publicKey)
       const transaction = new Transaction();
       transaction.add(
           SystemProgram.createAccount({
@@ -1164,40 +1165,40 @@ export class nToken {
      * @return UserPortfolio of the new empty account
      */
      async createUserPortfolio(
-      owner: PublicKey,
+      owner:Account,
       portfolioAddress: PublicKey,
       valueAsset1: number,
       addressAsset1: PublicKey,
-      valueAsset2: number,
-      addressAsset2: PublicKey,
-      valueAsset3: number,
-      addressAsset3: PublicKey,
-      valueAsset4: number,
-      addressAsset4: PublicKey,
-      valueAsset5: number,
-      addressAsset5: PublicKey,
-      valueAsset6: number,
-      addressAsset6: PublicKey,
-      valueAsset7: number,
-      addressAsset7: PublicKey,
-      valueAsset8: number,
-      addressAsset8: PublicKey,
-      valueAsset9: number,
-      addressAsset9: PublicKey,
-      valueAsset10: number,
-      addressAsset10: PublicKey,
+      valueAsset2: number | null,
+      addressAsset2: PublicKey | null,
+      valueAsset3: number | null,
+      addressAsset3: PublicKey | null,
+      valueAsset4: number | null,
+      addressAsset4: PublicKey | null,
+      valueAsset5: number | null,
+      addressAsset5: PublicKey | null,
+      valueAsset6: number | null,
+      addressAsset6: PublicKey | null,
+      valueAsset7: number | null,
+      addressAsset7: PublicKey | null,
+      valueAsset8: number | null,
+      addressAsset8: PublicKey | null,
+      valueAsset9: number | null,
+      addressAsset9: PublicKey | null,
+      valueAsset10: number | null,
+      //addressAsset10: PublicKey,
   ): Promise < PublicKey > {
       // Allocate memory for the account
       const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
           this.connection,
       );
 
-      const newUserPortfolioAccount = new Account();
+      //const newUserPortfolioAccount = new Account();
       const transaction = new Transaction();
       transaction.add(
           SystemProgram.createAccount({
               fromPubkey: this.payer.publicKey,
-              newAccountPubkey: newUserPortfolioAccount.publicKey,
+              newAccountPubkey: owner.publicKey,
               lamports: balanceNeeded,
               space: UserPortfolioLayout.span,
               programId: this.programId,
@@ -1205,10 +1206,10 @@ export class nToken {
       );
 
       // const mintPublicKey = this.publicKey;
-      /* transaction.add(
+      transaction.add(
           nToken.createInitUserPortfolioInstruction(
               this.programId,
-              newUserPortfolioAccount.publicKey,
+              owner.publicKey,
               portfolioAddress,
               valueAsset1,
               addressAsset1,
@@ -1232,7 +1233,7 @@ export class nToken {
               addressAsset10,
               owner,
           ),
-   );*/
+   );
 
       // Send the two instructions
       await sendAndConfirmTransaction(
@@ -1240,7 +1241,7 @@ export class nToken {
           this.connection,
           transaction,
           this.payer,
-          newUserPortfolioAccount,
+          owner,
       );
 
       return newUserPortfolioAccount;
@@ -2563,8 +2564,6 @@ export class nToken {
         console.log('====================================');
         dataLayout.encode({
                 instruction: 19, // InitializeAccount portfolio
-                // metaDataUrl: new Buffer(metaDataUrl).toString('base64'),
-                //metaDataUrl: btoa(metaDataUrl),
                 metaDataUrl: Buffer.alloc(128, metaDataUrl, "ascii"),
                 metaDataHash :metaDataHash,
                 amountAsset1 ,
