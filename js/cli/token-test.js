@@ -281,64 +281,69 @@ export async function withDraw(): Promise < void > {
 
 export async function createPortfolio() : Promise<void> {
   console.log ("start");
-
+  let owner = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
   const ownerSource  = await newAccountWithLamports(connection, 10000000000 /* wag */);
-  const creatorSource  = await newAccountWithLamports(connection, 10000000000 /* wag */);
-  let owner = await testToken.createAccount(ownerSource.publicKey);
+  //const creatorSource  = await newAccountWithLamports(connection, 10000000000 /* wag */);
+  const creatorSource = await asset.createAccountNew(testToken.publicKey);
+  //let owner = await testToken.createAccount(ownerSource.publicKey);
   let metaDataUrl = "aabbcc";
-  let metaDataHash = 123;
-   creatorAccount = await testToken.createAccountNew(creatorSource.publicKey);
+  var metaDataHash = new Uint16Array([123456789]);
+  // let metaDataHash = 123;
+  let creatorAccount = await asset.createAccountNew(creatorSource.publicKey);
   let amountAsset1 = 2;
-  let addressAsset1 = await asset.createAccountNew(testToken.publicKey);
-  let periodAsset1 = 10;
-  let assetToSoldIntoAsset1 =await asset.createAccountNew(testToken.publicKey);
+  let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+  let periodAsset1 = new Uint32Array([1056985659888985457875425]);
+  let assetToSoldIntoAsset1 =await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+  // let amountAsset1 = 2;
+  // let addressAsset1: PublicKey; 
+  // let periodAsset1 = 10;
+  // let assetToSoldIntoAsset1 : PublicKey;
 
   let amountAsset2 ;
-  let addressAsset2 ;
+  let addressAsset2  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
   let periodAsset2 ;
-  let assetToSoldIntoAsset2 ;
+  let assetToSoldIntoAsset2  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
   let amountAsset3 ;
-  let addressAsset3 ;
+  let addressAsset3  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
   let periodAsset3 ;
-  let assetToSoldIntoAsset3 ;
+  let assetToSoldIntoAsset3  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
   let amountAsset4 ;
-  let addressAsset4 ;
+  let addressAsset4 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
   let periodAsset4 ;
-  let assetToSoldIntoAsset4 ;
+  let assetToSoldIntoAsset4  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
   let amountAsset5 ;
-  let addressAsset5 ;
+  let addressAsset5  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
   let periodAsset5 ;
-  let assetToSoldIntoAsset5 ;
+  let assetToSoldIntoAsset5  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
   let amountAsset6 ;
-  let addressAsset6 ;
+  let addressAsset6  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
   let periodAsset6 ;
-  let assetToSoldIntoAsset6 ;
+  let assetToSoldIntoAsset6  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
   let amountAsset7 ;
-  let addressAsset7 ;
+  let addressAsset7  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
   let periodAsset7 ;
-  let assetToSoldIntoAsset7 ;
+  let assetToSoldIntoAsset7  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
   let amountAsset8 ;
-  let addressAsset8 ;
+  let addressAsset8  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
   let periodAsset8 ;
-  let assetToSoldIntoAsset8 ;
+  let assetToSoldIntoAsset8  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
   let amountAsset9 ;
-  let addressAsset9 ;
+  let addressAsset9  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
   let periodAsset9 ;
-  let assetToSoldIntoAsset9 ;
+  let assetToSoldIntoAsset9  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
-  let amountAsset10 ;
-  let addressAsset10 ;
-  let periodAsset10 ;
-  let assetToSoldIntoAsset10 ;
-
-  testAccount = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash , creatorAccount ,
+  // let amountAsset10 ;
+  // let addressAsset10  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+  // let periodAsset10 ;
+  // let assetToSoldIntoAsset10 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+  testAccount = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash /*, creatorAccount*/ ,
      amountAsset1 , addressAsset1 , periodAsset1 , assetToSoldIntoAsset1 ,
      amountAsset2 , addressAsset2 , periodAsset2 , assetToSoldIntoAsset2 ,
      amountAsset3 , addressAsset3 , periodAsset3 , assetToSoldIntoAsset3 ,
@@ -347,8 +352,9 @@ export async function createPortfolio() : Promise<void> {
      amountAsset6 , addressAsset6 , periodAsset6 , assetToSoldIntoAsset6 ,
      amountAsset7 , addressAsset7 , periodAsset7 , assetToSoldIntoAsset7 ,
      amountAsset8 , addressAsset8 , periodAsset8 , assetToSoldIntoAsset8 ,
-     amountAsset9 , addressAsset9 , periodAsset9 , assetToSoldIntoAsset9 ,
-     amountAsset10 , addressAsset10 , periodAsset10 , assetToSoldIntoAsset10 );
+     amountAsset9 , addressAsset9 , periodAsset9 , assetToSoldIntoAsset9
+      // ,  amountAsset10 , addressAsset10 , periodAsset10 , assetToSoldIntoAsset10 
+     );
 
 
 

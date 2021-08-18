@@ -322,14 +322,14 @@ pub struct Portfolio {
     pub periodAsset9: u32,
      /// the 9th asset to sold asset
     pub assetToSoldIntoAsset9: Pubkey,
-    /// the amount of 10th asset
-    pub amountAsset10: u8,
-    /// The 10th asset's address
-    pub addressAsset10: Pubkey,
-    /// 10th Asset's period
-    pub periodAsset10: u32,
-     /// the 10th asset to sold asset
-    pub assetToSoldIntoAsset10: Pubkey,
+    // /// the amount of 10th asset
+    // pub amountAsset10: u8,
+    // /// The 10th asset's address
+    // pub addressAsset10: Pubkey,
+    // /// 10th Asset's period
+    // pub periodAsset10: u32,
+    //  /// the 10th asset to sold asset
+    // pub assetToSoldIntoAsset10: Pubkey,
 }
 
 fn convert<T, const N: usize>(v: Vec<T>) -> [T; N] {
@@ -338,20 +338,20 @@ fn convert<T, const N: usize>(v: Vec<T>) -> [T; N] {
 }
 impl Sealed for Portfolio {}
 impl Pack for Portfolio {
-    const LEN: usize = 884;
+    const LEN: usize = 815;
     fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {
-        let src = array_ref![src, 0, 884];
+        let src = array_ref![src, 0, 815];
         let (owner, metadataURL, metadataHASH, creatorPublicAddress, amountAsset1, addressAsset1, periodAsset1,
             assetToSoldIntoAsset1, amountAsset2, addressAsset2, periodAsset2,assetToSoldIntoAsset2, amountAsset3, 
             addressAsset3, periodAsset3,assetToSoldIntoAsset3, amountAsset4, addressAsset4, periodAsset4,
             assetToSoldIntoAsset4, amountAsset5, addressAsset5, periodAsset5,assetToSoldIntoAsset5, amountAsset6, 
             addressAsset6, periodAsset6,assetToSoldIntoAsset6, amountAsset7, addressAsset7, periodAsset7,
             assetToSoldIntoAsset7, amountAsset8, addressAsset8, periodAsset8,assetToSoldIntoAsset8, amountAsset9, 
-            addressAsset9, periodAsset9,assetToSoldIntoAsset9, amountAsset10, addressAsset10, periodAsset10,
-            assetToSoldIntoAsset10) =
+            addressAsset9, periodAsset9,assetToSoldIntoAsset9/*, amountAsset10, addressAsset10, periodAsset10,
+            assetToSoldIntoAsset10*/) =
             array_refs![src, 32, 128, 2, 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 
-            4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 
-            , 4 , 32];
+            4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32/*, 1, 32 
+            , 4 , 32*/];
         Ok(Portfolio {
             owner: Pubkey::new_from_array(*owner),
             metadataURL: metadataURL.to_vec(),
@@ -393,17 +393,17 @@ impl Pack for Portfolio {
             addressAsset9: Pubkey::new_from_array(*addressAsset9),
             periodAsset9: u32::from_le_bytes(*periodAsset9),
             assetToSoldIntoAsset9: Pubkey::new_from_array(*assetToSoldIntoAsset9),
-            amountAsset10: u8::from_le_bytes(*amountAsset10),
-            addressAsset10: Pubkey::new_from_array(*addressAsset10),
-            periodAsset10: u32::from_le_bytes(*periodAsset10),
-            assetToSoldIntoAsset10: Pubkey::new_from_array(*assetToSoldIntoAsset10),
+            // amountAsset10: u8::from_le_bytes(*amountAsset10),
+            // addressAsset10: Pubkey::new_from_array(*addressAsset10),
+            // periodAsset10: u32::from_le_bytes(*periodAsset10),
+            // assetToSoldIntoAsset10: Pubkey::new_from_array(*assetToSoldIntoAsset10),
         })
     }
 
 
 
     fn pack_into_slice(&self, dst: &mut [u8]) {
-        let dst = array_mut_ref![dst, 0, 884];
+        let dst = array_mut_ref![dst, 0, 815];
         let (
             owner_dst,
             metadata_URL_dst,
@@ -445,14 +445,14 @@ impl Pack for Portfolio {
             address_Asset9_dst,
             period_Asset9_dst,
             asset_To_Sold_Into_Asset9_dst,
-            amount_Asset10_dst,
-            address_Asset10_dst,
-            period_Asset10_dst,
-            asset_To_Sold_Into_Asset10_dst,
+            // amount_Asset10_dst,
+            // address_Asset10_dst,
+            // period_Asset10_dst,
+            // asset_To_Sold_Into_Asset10_dst,
 
         ) = mut_array_refs![dst, 32, 128, 2, 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 
-        4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 
-        , 4 , 32];
+        4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32/*, 1, 32 
+        , 4 , 32*/];
         let Portfolio {
             ref owner,
             metadataURL, 
@@ -493,11 +493,12 @@ impl Pack for Portfolio {
             amountAsset9, 
             ref addressAsset9, 
             periodAsset9,
-            ref assetToSoldIntoAsset9, 
-            amountAsset10, 
-            ref addressAsset10, 
-            periodAsset10,
-            ref assetToSoldIntoAsset10
+            ref assetToSoldIntoAsset9
+            //, 
+            // amountAsset10, 
+            // ref addressAsset10, 
+            // periodAsset10,
+            // ref assetToSoldIntoAsset10
         } = self;
         owner_dst.copy_from_slice(owner.as_ref());
         //*metadata_URL_dst = convert(metadataURL);
@@ -560,11 +561,11 @@ impl Pack for Portfolio {
         *period_Asset9_dst = periodAsset9.to_le_bytes();
         asset_To_Sold_Into_Asset9_dst.copy_from_slice(assetToSoldIntoAsset9.as_ref());
         //Pubkey(assetToSoldIntoAsset9,asset_To_Sold_Into_Asset9_dst);
-        *amount_Asset10_dst = amountAsset10.to_le_bytes();
-        address_Asset10_dst.copy_from_slice(addressAsset10.as_ref());
-        //Pubkey(addressAsset10,address_Asset10_dst);
-        *period_Asset10_dst = periodAsset10.to_le_bytes();
-        asset_To_Sold_Into_Asset10_dst.copy_from_slice(assetToSoldIntoAsset10.as_ref());
+        // *amount_Asset10_dst = amountAsset10.to_le_bytes();
+        // address_Asset10_dst.copy_from_slice(addressAsset10.as_ref());
+        // //Pubkey(addressAsset10,address_Asset10_dst);
+        // *period_Asset10_dst = periodAsset10.to_le_bytes();
+        // asset_To_Sold_Into_Asset10_dst.copy_from_slice(assetToSoldIntoAsset10.as_ref());
         //Pubkey(assetToSoldIntoAsset10,asset_To_Sold_Into_Asset10_dst);
        
       

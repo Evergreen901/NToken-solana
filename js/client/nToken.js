@@ -1019,47 +1019,47 @@ export class nToken {
       owner: Account,
       metaDataUrl : any,
       metaDataHash : u32 ,
-      creatorAccount : Account,
+      //creatorAccount : Account,
       amountAsset1 : number ,
-      addressAsset1 : pubkey ,
+      addressAsset1 : Publickey| null ,
       periodAsset1 : number ,
-      assetToSoldIntoAsset1 : Publickey,
+      assetToSoldIntoAsset1 : Publickey| null,
       amountAsset2 : number ,
-      addressAsset2 : pubkey ,
+      addressAsset2 : Publickey| null ,
       periodAsset2 : number ,
-      assetToSoldIntoAsset2 : PublicKey,
+      assetToSoldIntoAsset2 : PublicKey| null,
       amountAsset3 : number ,
-      addressAsset3 : pubkey ,
+      addressAsset3 : Publickey| null ,
       periodAsset3 : number ,
-      assetToSoldIntoAsset3 : PublicKey,
+      assetToSoldIntoAsset3 : PublicKey| null,
       amountAsset4 : number ,
-      addressAsset4 : pubkey ,
+      addressAsset4 : Publickey| null ,
       periodAsset4 : number ,
-      assetToSoldIntoAsset4 : PublicKey,
+      assetToSoldIntoAsset4 : PublicKey| null,
       amountAsset5 : number ,
-      addressAsset5 : pubkey ,
+      addressAsset5 : Publickey| null ,
       periodAsset5 : number ,
-      assetToSoldIntoAsset5 : PublicKey,
+      assetToSoldIntoAsset5 : PublicKey| null,
       amountAsset6 : number ,
-      addressAsset6 : pubkey ,
+      addressAsset6 : Publickey | null,
       periodAsset6 : number ,
-      assetToSoldIntoAsset6 : PublicKey,
+      assetToSoldIntoAsset6 : PublicKey| null,
       amountAsset7 : number ,
-      addressAsset7 : pubkey ,
+      addressAsset7 : Publickey| null ,
       periodAsset7 : number ,
-      assetToSoldIntoAsset7 : PublicKey,
+      assetToSoldIntoAsset7 : PublicKey| null,
       amountAsset8 : number ,
-      addressAsset8 : pubkey ,
+      addressAsset8 : Publickey| null ,
       periodAsset8 : number ,
-      assetToSoldIntoAsset8 : PublicKey,
+      assetToSoldIntoAsset8 : PublicKey| null,
       amountAsset9 : number ,
-      addressAsset9 : pubkey ,
+      addressAsset9 : Publickey| null ,
       periodAsset9 : number ,
-      assetToSoldIntoAsset9 : PublicKey,
-      amountAsset10 : number ,
-      addressAsset10 : pubkey ,
-      periodAsset10 : number ,
-      assetToSoldIntoAsset10 : PublicKey,
+      assetToSoldIntoAsset9 : PublicKey| null,
+      // amountAsset10 : number ,
+      // addressAsset10 : Publickey | null,
+      // periodAsset10 : number ,
+      // assetToSoldIntoAsset10 : PublicKey| null,
       ): Promise<Account> {
       // Allocate memory for the account
       const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
@@ -1085,6 +1085,7 @@ export class nToken {
             nToken.createInitPortfolioInstruction(
                 this.programId,
                 // mintPublicKey,
+                this.payer.publicKey,
                 metaDataUrl,
                 metaDataHash,
                 newAccountPortfolio.publicKey,
@@ -1124,23 +1125,23 @@ export class nToken {
                 addressAsset9,
                 periodAsset9,
                 assetToSoldIntoAsset9,
-                amountAsset10,
-                addressAsset10,
-                periodAsset10,
-                assetToSoldIntoAsset10,
-                owner
+                // amountAsset10,
+                // addressAsset10,
+                // periodAsset10,
+                // assetToSoldIntoAsset10
             ),
         );
 
 
 
-        // Send the two instructions
+        //Send the two instructions
         await sendAndConfirmTransaction(
             'createPortfolio and InitializePortfolio',
             this.connection,
             transaction,
             this.payer,
-            creatorAccount,
+            newAccountPortfolio
+            
 
         )
 
@@ -1249,7 +1250,7 @@ export class nToken {
 
 
 
-  
+
     /**
      * Create and initialize a new account.
      *
@@ -2446,13 +2447,14 @@ export class nToken {
     static createInitPortfolioInstruction(
         programId: PublicKey,
         //mint: PublicKey,
+        owner: PublicKey,
         metaDataUrl: any,
         metaDataHash: number,
-        creatorAccount: PublicKey,
+        creatorAccount: PublicKey| null,
         amountAsset1: number,
-        addressAsset1: PublicKey,
+        addressAsset1: PublicKey| null,
         periodAsset1: number,
-        assetToSoldIntoAsset1: PublicKey,
+        assetToSoldIntoAsset1: PublicKey| null,
         amountAsset2: number | null,
         addressAsset2: PublicKey | null,
         periodAsset2: number | null,
@@ -2484,15 +2486,18 @@ export class nToken {
         amountAsset9: number | null,
         addressAsset9: PublicKey | null,
         periodAsset9: number | null,
-        assetToSoldIntoAsset9: PublicKey | null,
-        amountAsset10: number | null,
-        addressAsset10: PublicKey | null,
-        periodAsset10: number | null,
-        assetToSoldIntoAsset10: PublicKey | null,
-        owner: Account
+        assetToSoldIntoAsset9: PublicKey | null
+        //,
+        // amountAsset10: number | null,
+        // addressAsset10: PublicKey | null,
+        // periodAsset10: number | null,
+        // assetToSoldIntoAsset10: PublicKey | null
+
     ): TransactionInstruction {
+
+      console.log ("creatorAccount : ",creatorAccount , "addressAsset1 : ",addressAsset1,"assetToSoldIntoAsset1 : ",assetToSoldIntoAsset1);
         const keys = [
-            { pubkey: creatorAccount.publicKey, isSigner: true, isWritable: true },
+            { pubkey: creatorAccount, isSigner: true, isWritable: true },
             { pubkey: addressAsset1, isSigner: false, isWritable: false },
             { pubkey: assetToSoldIntoAsset1, isSigner: false, isWritable: false },
             { pubkey: addressAsset2, isSigner: false, isWritable: false },
@@ -2511,69 +2516,79 @@ export class nToken {
             { pubkey: assetToSoldIntoAsset8, isSigner: false, isWritable: false },
             { pubkey: addressAsset9, isSigner: false, isWritable: false },
             { pubkey: assetToSoldIntoAsset9, isSigner: false, isWritable: false },
-            { pubkey: addressAsset10, isSigner: false, isWritable: false },
-            { pubkey: assetToSoldIntoAsset10, isSigner: false, isWritable: false },
-            { pubkey: owner.publicKey, isSigner: true, isWritable: false },
+            // { pubkey: addressAsset10, isSigner: false, isWritable: false },
+            // { pubkey: assetToSoldIntoAsset10, isSigner: false, isWritable: false },
+            { pubkey: owner, isSigner: true, isWritable: false },
             { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
         ];
 
-
+        const conv = num => {
+          let b = new ArrayBuffer(4);
+          new DataView(b).setUint32(0, num);
+          return Array.from(new Uint8Array(b));
+        }
+        
         const dataLayout = BufferLayout.struct([
             BufferLayout.u8('instruction'),
             BufferLayout.blob(128, 'metaDataUrl'),
-            BufferLayout.u32('metaDataHash'),
-            Layout.uint64('amountAsset1'),
-            Layout.uint64('periodAsset1'),
-            Layout.uint64('amountAsset2'),
-            Layout.uint64('periodAsset2'),
-            Layout.uint64('amountAsset3'),
-            Layout.uint64('periodAsset3'),
-            Layout.uint64('amountAsset4'),
-            Layout.uint64('periodAsset4'),
-            Layout.uint64('amountAsset5'),
-            Layout.uint64('periodAsset5'),
-            Layout.uint64('amountAsset6'),
-            Layout.uint64('periodAsset6'),
-            Layout.uint64('amountAsset7'),
-            Layout.uint64('periodAsset7'),
-            Layout.uint64('amountAsset8'),
-            Layout.uint64('periodAsset8'),
-            Layout.uint64('amountAsset9'),
-            Layout.uint64('periodAsset9'),
-            Layout.uint64('amountAsset10'),
-            Layout.uint64('periodAsset10'),
+            BufferLayout.u16('metaDataHash'),
+            BufferLayout.u8('amountAsset1'),
+            BufferLayout.u32('periodAsset1'),
+            BufferLayout.u8('amountAsset2'),
+            BufferLayout.u32('periodAsset2'),
+            BufferLayout.u8('amountAsset3'),
+            BufferLayout.u32('periodAsset3'),
+            BufferLayout.u8('amountAsset4'),
+            BufferLayout.u32('periodAsset4'),
+            BufferLayout.u8('amountAsset5'),
+            BufferLayout.u32('periodAsset5'),
+            BufferLayout.u8('amountAsset6'),
+            BufferLayout.u32('periodAsset6'),
+            BufferLayout.u8('amountAsset7'),
+            BufferLayout.u32('periodAsset7'),
+            BufferLayout.u8('amountAsset8'),
+            BufferLayout.u32('periodAsset8'),
+            BufferLayout.u8('amountAsset9'),
+            BufferLayout.u32('periodAsset9'),
+            // BufferLayout.u8('amountAsset10'),
+            // BufferLayout.u32('periodAsset10'),
         ]);
 
         console.log(JSON.stringify(metaDataUrl));
         const data = Buffer.alloc(dataLayout.span);
         /*    let metaBuffer = Buffer.alloc()
             metaBuffer.write(metaDataUrl, 0 , metaDataUrl.length , "ascii");*/
+        console.log('====================================');
+        console.log(metaDataHash, typeof metaDataHash );
+        console.log('====================================');
         dataLayout.encode({
                 instruction: 19, // InitializeAccount portfolio
                 // metaDataUrl: new Buffer(metaDataUrl).toString('base64'),
                 //metaDataUrl: btoa(metaDataUrl),
                 metaDataUrl: Buffer.alloc(128, metaDataUrl, "ascii"),
-                metaDataHash,
-                amountAsset1: new u64(amountAsset1).toBuffer(),
-                periodAsset1: new u64(periodAsset1).toBuffer(),
-                amountAsset2: new u64(amountAsset2).toBuffer(),
-                periodAsset2: new u64(periodAsset2).toBuffer(),
-                amountAsset3: new u64(amountAsset3).toBuffer(),
-                periodAsset3: new u64(periodAsset3).toBuffer(),
-                amountAsset4: new u64(amountAsset4).toBuffer(),
-                periodAsset4: new u64(periodAsset4).toBuffer(),
-                amountAsset5: new u64(amountAsset5).toBuffer(),
-                periodAsset5: new u64(periodAsset5).toBuffer(),
-                amountAsset6: new u64(amountAsset6).toBuffer(),
-                periodAsset6: new u64(periodAsset6).toBuffer(),
-                amountAsset7: new u64(amountAsset7).toBuffer(),
-                periodAsset7: new u64(periodAsset7).toBuffer(),
-                amountAsset8: new u64(amountAsset8).toBuffer(),
-                periodAsset8: new u64(periodAsset8).toBuffer(),
-                amountAsset9: new u64(amountAsset9).toBuffer(),
-                periodAsset9: new u64(periodAsset9).toBuffer(),
-                amountAsset10: new u64(amountAsset10).toBuffer(),
-                periodAsset10: new u64(periodAsset10).toBuffer(),
+                metaDataHash :metaDataHash,
+                amountAsset1 ,
+                /*amountAsset1: new u16(amountAsset1).toBuffer(),*/
+                periodAsset1,
+                amountAsset2,
+                periodAsset2,
+                amountAsset3,
+                periodAsset3,
+                amountAsset4,
+                periodAsset4,
+                amountAsset5,
+                periodAsset5,
+                amountAsset6,
+                periodAsset6,
+                amountAsset7,
+                periodAsset7,
+                amountAsset8,
+                periodAsset8,
+                amountAsset9,
+                periodAsset9,
+                // amountAsset10,
+                // periodAsset10,
+                // periodAsset10: new u64(periodAsset10).toBuffer(),
             },
             data,
         );

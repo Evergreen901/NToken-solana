@@ -806,8 +806,9 @@ impl Processor {
                 periodAsset8,
                 amountAsset9,
                 periodAsset9,
-                amountAsset10,
-                periodAsset10 } => {
+                // amountAsset10,
+                // periodAsset10
+             } => {
                 msg!("Instruction: InitializePortfolio");
                 Self::process_initialize_portfolio(program_id , accounts , metaDataUrl,
                     metaDataHash,
@@ -829,8 +830,9 @@ impl Processor {
                     periodAsset8,
                     amountAsset9,
                     periodAsset9,
-                    amountAsset10,
-                    periodAsset10)
+                    // amountAsset10,
+                    // periodAsset10
+                )
             },
         }
     }
@@ -840,31 +842,48 @@ impl Processor {
         program_id: &Pubkey,
         accounts: &[AccountInfo],
         metaDataUrl : Vec<u8>,
-        metaDataHash : u32,
-        amountAsset1 : u64,
-        periodAsset1 : u64,
-        amountAsset2 : u64,
-        periodAsset2 : u64,
-        amountAsset3 : u64,
-        periodAsset3 : u64,
-        amountAsset4 : u64,
-        periodAsset4 : u64,
-        amountAsset5 : u64,
-        periodAsset5 : u64,
-        amountAsset6 : u64,
-        periodAsset6 : u64,
-        amountAsset7 : u64,
-        periodAsset7 : u64,
-        amountAsset8 : u64,
-        periodAsset8 : u64,
-        amountAsset9 : u64,
-        periodAsset9 : u64,
-        amountAsset10 : u64,
-        periodAsset10 : u64
+        metaDataHash : u16,
+        amountAsset1 : u8,
+        periodAsset1 : u32,
+        amountAsset2 : u8,
+        periodAsset2 : u32,
+        amountAsset3 : u8,
+        periodAsset3 : u32,
+        amountAsset4 : u8,
+        periodAsset4 : u32,
+        amountAsset5 : u8,
+        periodAsset5 : u32,
+        amountAsset6 : u8,
+        periodAsset6 : u32,
+        amountAsset7 : u8,
+        periodAsset7 : u32,
+        amountAsset8 : u8,
+        periodAsset8 : u32,
+        amountAsset9 : u8,
+        periodAsset9 : u32
+        //,
+        // amountAsset10 : u8,
+        // periodAsset10 : u32
     ) -> ProgramResult {
         let accounts_iter = &mut accounts.iter();
         let account = next_account_info(accounts_iter)?;
         msg!("initialze portfolio ");
+
+/*
+        let mut portfolio = Portfolio::unpack_unchecked(&new_account_info.data.borrow())?;
+        if portfolio.is_initialized() {
+            return Err(TokenError::AlreadyInUse.into());
+        }
+
+       
+
+        portfolio.mint = *mint_info.key;
+        portfolio.owner = *owner;
+        portfolio.amount = 0;
+        portfolio.usdc = 0;
+        portfolio.asset = 0;  
+
+*/
         Ok(())
 
     }
