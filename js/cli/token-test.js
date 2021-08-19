@@ -363,8 +363,8 @@ export async function createPortfolio() : Promise<void> {
 
 export async function createUserPortfolio(): Promise < void > {
   let owner = new Account();
-    let portfolioAddress = new PublicKey("23338f7ce95147fedfdf7bd0703a987d2d915df18ee17a7c6edd1165ccb58b9f");
-    //let portfolio = await testToken.createAccount(PortfolioAccount);
+    let portfolioAddress = new PublicKey("FGvijPYEezuT3awPH1MWnbFUgqWBNTE9ArMWXirkh7CC");
+    let portfolioAcc = await asset.createAccountNew(portfolioAddress);
     let valueAsset1 = 2;
     let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
@@ -373,29 +373,28 @@ export async function createUserPortfolio(): Promise < void > {
 
 
     let valueAsset3;
-    let addressAsset3;
-
+    let addressAsset3 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
     let valueAsset4;
-    let addressAsset4;
+    let addressAsset4 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
     let valueAsset5;
-    let addressAsset5;
+    let addressAsset5 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
 
     let valueAsset6;
-    let addressAsset6;
+    let addressAsset6 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
 
     let valueAsset7;
-    let addressAsset7;
+    let addressAsset7 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
 
     let valueAsset8;
-    let addressAsset8;
+    let addressAsset8 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
     let valueAsset9;
-    let addressAsset9;
+    let addressAsset9 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
     // let valueAsset10;
     // let addressAsset10;

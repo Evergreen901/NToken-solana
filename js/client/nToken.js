@@ -1068,7 +1068,8 @@ export class nToken {
 
 
       const newAccountPortfolio = new Account();
-      console.log ("Account Portfolio",newAccountPortfolio.publicKey)
+      
+      console.log ("Account Portfolio",newAccountPortfolio.publicKey.toString());
       const transaction = new Transaction();
       transaction.add(
           SystemProgram.createAccount({
@@ -1152,7 +1153,6 @@ export class nToken {
 
 
 
-    
     /**
      * Create and initialize a new UserPortfolio.
      *
@@ -1185,20 +1185,20 @@ export class nToken {
       addressAsset8: PublicKey | null,
       valueAsset9: number | null,
       addressAsset9: PublicKey | null,
-      valueAsset10: number | null,
-      //addressAsset10: PublicKey,
+     // valueAsset10: number | null,
+      //addressAsset10: PublicKey| null,
   ): Promise < PublicKey > {
       // Allocate memory for the account
       const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
           this.connection,
       );
 
-      //const newUserPortfolioAccount = new Account();
+      const newUserPortfolioAccount = new Account();
       const transaction = new Transaction();
       transaction.add(
           SystemProgram.createAccount({
               fromPubkey: this.payer.publicKey,
-              newAccountPubkey: owner.publicKey,
+              newAccountPubkey: newUserPortfolioAccount.publicKey,
               lamports: balanceNeeded,
               space: UserPortfolioLayout.span,
               programId: this.programId,
@@ -1209,7 +1209,7 @@ export class nToken {
       transaction.add(
           nToken.createInitUserPortfolioInstruction(
               this.programId,
-              owner.publicKey,
+              newUserPortfolioAccount.publicKey,
               portfolioAddress,
               valueAsset1,
               addressAsset1,
@@ -1229,9 +1229,9 @@ export class nToken {
               addressAsset8,
               valueAsset9,
               addressAsset9,
-              valueAsset10,
-              addressAsset10,
-              owner,
+              // valueAsset10,
+              // addressAsset10,
+    
           ),
    );
 
@@ -1241,7 +1241,7 @@ export class nToken {
           this.connection,
           transaction,
           this.payer,
-          owner,
+          newUserPortfolioAccount,
       );
 
       return newUserPortfolioAccount;
@@ -1300,8 +1300,7 @@ export class nToken {
         return newAccount.publicKey;
     }
 
-
-
+  
 
 
     /**
@@ -2588,6 +2587,111 @@ export class nToken {
                 // amountAsset10,
                 // periodAsset10,
                 // periodAsset10: new u64(periodAsset10).toBuffer(),
+            },
+            data,
+        );
+
+
+        return new TransactionInstruction({
+            keys,
+            programId,
+            data,
+        });
+    }
+
+
+
+    /**
+     * Construct an InitializeUserPortfolio instruction
+     *
+     * @param programId SPL Token program account
+     * @param UserPortfolioAccount New account
+     * @param PortfolioAddress Portfolio  
+     */
+
+    static createInitUserPortfolioInstruction(
+        programId: PublicKey,
+        UserPortfolioAccount: PublicKey,
+        portfolioAddress: PublicKey,
+
+        valueAsset1: number,
+        addressAsset1: PublicKey,
+
+        valueAsset2: number | null,
+        addressAsset2: PublicKey | null,
+
+        valueAsset3: number | null,
+        addressAsset3: PublicKey | null,
+
+        valueAsset4: number | null,
+        addressAsset4: PublicKey | null,
+
+        valueAsset5: number | null,
+        addressAsset5: PublicKey | null,
+
+        valueAsset6: number | null,
+        addressAsset6: PublicKey | null,
+
+        valueAsset7: number | null,
+        addressAsset7: PublicKey | null,
+
+        valueAsset8: number | null,
+        addressAsset8: PublicKey | null,
+
+        valueAsset9: number | null,
+        addressAsset9: PublicKey | null,
+
+        // valueAsset10: number | null,
+        // addressAsset10: PublicKey | null,
+
+    
+    ): TransactionInstruction {
+
+        const keys = [
+            { pubkey: portfolioAddress, isSigner: false, isWritable: false },
+            { pubkey: UserPortfolioAccount, isSigner: true, isWritable: true },
+            { pubkey: addressAsset1, isSigner: false, isWritable: false },
+            { pubkey: addressAsset2, isSigner: false, isWritable: false },
+            { pubkey: addressAsset3, isSigner: false, isWritable: false },
+            { pubkey: addressAsset4, isSigner: false, isWritable: false },
+            { pubkey: addressAsset5, isSigner: false, isWritable: false },
+            { pubkey: addressAsset6, isSigner: false, isWritable: false },
+            { pubkey: addressAsset7, isSigner: false, isWritable: false },
+            { pubkey: addressAsset8, isSigner: false, isWritable: false },
+            { pubkey: addressAsset9, isSigner: false, isWritable: false },
+           // { pubkey: addressAsset10, isSigner: false, isWritable: false },
+        ];
+
+        const dataLayout = BufferLayout.struct([
+            BufferLayout.u8('instruction'),
+            Layout.uint64('valueAsset1'),
+            Layout.uint64('valueAsset2'),
+            Layout.uint64('valueAsset3'),
+            Layout.uint64('valueAsset4'),
+            Layout.uint64('valueAsset5'),
+            Layout.uint64('valueAsset6'),
+            Layout.uint64('valueAsset7'),
+            Layout.uint64('valueAsset8'),
+            Layout.uint64('valueAsset9'),
+           // Layout.uint64('valueAsset10'),
+        ]);
+
+
+        const data = Buffer.alloc(dataLayout.span);
+
+        dataLayout.encode({
+                instruction: 20, // Initialize Account user Portfolio
+
+                valueAsset1: new u64(valueAsset1).toBuffer(),
+                valueAsset2: new u64(valueAsset2).toBuffer(),
+                valueAsset3: new u64(valueAsset3).toBuffer(),
+                valueAsset4: new u64(valueAsset4).toBuffer(),
+                valueAsset5: new u64(valueAsset5).toBuffer(),
+                valueAsset6: new u64(valueAsset6).toBuffer(),
+                valueAsset7: new u64(valueAsset7).toBuffer(),
+                valueAsset8: new u64(valueAsset8).toBuffer(),
+                valueAsset9: new u64(valueAsset9).toBuffer(),
+           //     valueAsset10: new u64(valueAsset10).toBuffer(),
             },
             data,
         );

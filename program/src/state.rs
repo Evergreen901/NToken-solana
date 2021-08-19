@@ -357,11 +357,11 @@ impl Pack for Portfolio {
             metadataURL: metadataURL.to_vec(),
             metadataHASH: u16::from_le_bytes(*metadataHASH),
             creatorPublicAddress: Pubkey::new_from_array(*creatorPublicAddress),
-            amountAsset1: amountAsset1[0],
+            amountAsset1: u8::from_le_bytes(*amountAsset1),
             addressAsset1: Pubkey::new_from_array(*addressAsset1),
             periodAsset1: u32::from_le_bytes(*periodAsset1),
             assetToSoldIntoAsset1: Pubkey::new_from_array(*assetToSoldIntoAsset1),
-            amountAsset2: amountAsset2[0],
+            amountAsset2: u8::from_le_bytes(*amountAsset2),
             addressAsset2: Pubkey::new_from_array(*addressAsset2),
             periodAsset2: u32::from_le_bytes(*periodAsset2),
             assetToSoldIntoAsset2: Pubkey::new_from_array(*assetToSoldIntoAsset2),
@@ -572,6 +572,182 @@ impl Pack for Portfolio {
         
     }
 }
+
+
+
+
+/// Account data.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+pub struct UserPortfolio {
+    /// The owner of this account.
+    pub userPortfolioAccount: Pubkey,
+    /// The data of portfolio.
+    pub portfolioAddress: Pubkey,
+    /// the amount of first asset
+    pub valueAsset1: u64,
+    /// The first asset's address
+    pub addressAsset1: Pubkey,
+    /// the amount of second asset
+    pub valueAsset2: u64,
+    /// The second asset's address
+    pub addressAsset2: Pubkey,
+    /// the amount of third asset
+    pub valueAsset3: u64,
+    /// The third asset's address
+    pub addressAsset3: Pubkey,
+    /// the amount of firth asset
+    pub valueAsset4: u64,
+    /// The firth asset's address
+    pub addressAsset4: Pubkey,
+    /// the amount of 5th asset
+    pub valueAsset5: u64,
+    /// The 5th asset's address
+    pub addressAsset5: Pubkey,
+    /// the 6th amount of asset
+    pub valueAsset6: u64,
+    /// The 6th asset's address
+    pub addressAsset6: Pubkey,
+    /// the 7th amount of asset
+    pub valueAsset7: u64,
+    /// The 7th asset's address
+    pub addressAsset7: Pubkey,
+    /// the amount of 8th asset
+    pub valueAsset8: u64,
+    /// The 8th asset's address
+    pub addressAsset8: Pubkey,
+    /// the amount of 9th asset
+    pub valueAsset9: u64,
+    /// The 9th asset's address
+    pub addressAsset9: Pubkey,
+    // /// the amount of 10th asset
+    // pub valueAsset10: u64,
+    // /// The 10th asset's address
+    // pub addressAsset10: Pubkey,
+
+}
+
+impl Sealed for UserPortfolio {}
+impl Pack for UserPortfolio {
+    const LEN: usize = 424;
+    fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {
+        let src = array_ref![src, 0, 424];
+        let (userPortfolioAccount, portfolioAddress, valueAsset1, addressAsset1, valueAsset2, addressAsset2, valueAsset3, 
+            addressAsset3, valueAsset4, addressAsset4, valueAsset5, addressAsset5, valueAsset6, 
+            addressAsset6,  valueAsset7, addressAsset7, valueAsset8, addressAsset8,  valueAsset9, 
+            addressAsset9,/*, valueAsset10, addressAsset10,*/) =
+            array_refs![src,32, 32, 8, 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 
+            8 , 32 /*, 8, 32 */];
+        Ok(UserPortfolio {
+            userPortfolioAccount: Pubkey::new_from_array(*userPortfolioAccount),
+            portfolioAddress: Pubkey::new_from_array(*portfolioAddress),
+            valueAsset1:  u64::from_le_bytes(*valueAsset1),
+            addressAsset1: Pubkey::new_from_array(*addressAsset1),
+            valueAsset2:  u64::from_le_bytes(*valueAsset2),
+            addressAsset2: Pubkey::new_from_array(*addressAsset2),
+            valueAsset3:  u64::from_le_bytes(*valueAsset3),
+            addressAsset3: Pubkey::new_from_array(*addressAsset3),
+            valueAsset4:  u64::from_le_bytes(*valueAsset4),
+            addressAsset4: Pubkey::new_from_array(*addressAsset4),
+            valueAsset5:  u64::from_le_bytes(*valueAsset5),
+            addressAsset5: Pubkey::new_from_array(*addressAsset5),
+            valueAsset6:  u64::from_le_bytes(*valueAsset6),
+            addressAsset6: Pubkey::new_from_array(*addressAsset6),
+            valueAsset7:  u64::from_le_bytes(*valueAsset7),
+            addressAsset7: Pubkey::new_from_array(*addressAsset7),
+            valueAsset8:  u64::from_le_bytes(*valueAsset8),
+            addressAsset8: Pubkey::new_from_array(*addressAsset8),
+            valueAsset9:  u64::from_le_bytes(*valueAsset9),
+            addressAsset9: Pubkey::new_from_array(*addressAsset9),
+            
+            //  valueAsset10:  u64::from_le_bytes(*valueAsset10),
+            // addressAsset10: Pubkey::new_from_array(*addressAsset10),
+        })
+    }
+
+
+
+    fn pack_into_slice(&self, dst: &mut [u8]) {
+        let dst = array_mut_ref![dst, 0, 424];
+        let (
+            userPortfolioAccount_dst,
+            portfolioAddress_dst,
+            value_Asset1_dst,
+            address_Asset1_dst,
+            value_Asset2_dst,
+            address_Asset2_dst,
+            value_Asset3_dst,
+            address_Asset3_dst,
+            value_Asset4_dst,
+            address_Asset4_dst,
+            value_Asset5_dst,
+            address_Asset5_dst,
+            value_Asset6_dst,
+            address_Asset6_dst,
+            value_Asset7_dst,
+            address_Asset7_dst,
+            value_Asset8_dst,
+            address_Asset8_dst,
+            value_Asset9_dst,
+            address_Asset9_dst,
+            // value_Asset10_dst,
+            // address_Asset10_dst,
+           
+
+        ) = mut_array_refs![dst,32, 32, 8, 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 
+        8 , 32 /*, 8, 32 */];
+        let UserPortfolio {
+            userPortfolioAccount,
+            portfolioAddress, 
+            valueAsset1, 
+            ref addressAsset1, 
+            valueAsset2, 
+            ref addressAsset2, 
+            valueAsset3, 
+            ref addressAsset3, 
+            valueAsset4, 
+            ref addressAsset4, 
+            valueAsset5, 
+            ref addressAsset5, 
+            valueAsset6, 
+            ref addressAsset6, 
+            valueAsset7, 
+            ref  addressAsset7, 
+            valueAsset8, 
+            ref addressAsset8, 
+            valueAsset9, 
+            ref addressAsset9, 
+            // valueAsset10, 
+            // ref addressAsset10, 
+        } = self;
+        userPortfolioAccount_dst.copy_from_slice(userPortfolioAccount.as_ref());
+        portfolioAddress_dst.copy_from_slice(portfolioAddress.as_ref());
+        *value_Asset1_dst = valueAsset1.to_le_bytes();
+        address_Asset1_dst.copy_from_slice(addressAsset1.as_ref());
+        *value_Asset2_dst = valueAsset2.to_le_bytes();
+        address_Asset2_dst.copy_from_slice(addressAsset2.as_ref());
+        *value_Asset3_dst = valueAsset3.to_le_bytes();
+        address_Asset3_dst.copy_from_slice(addressAsset3.as_ref());
+        *value_Asset4_dst = valueAsset4.to_le_bytes();
+        address_Asset4_dst.copy_from_slice(addressAsset4.as_ref());
+        *value_Asset5_dst = valueAsset5.to_le_bytes();
+        address_Asset5_dst.copy_from_slice(addressAsset5.as_ref());
+        *value_Asset6_dst = valueAsset6.to_le_bytes();
+        address_Asset6_dst.copy_from_slice(addressAsset6.as_ref());
+        *value_Asset7_dst = valueAsset7.to_le_bytes();
+        address_Asset7_dst.copy_from_slice(addressAsset7.as_ref());
+        *value_Asset8_dst = valueAsset8.to_le_bytes();
+        address_Asset8_dst.copy_from_slice(addressAsset8.as_ref());
+        *value_Asset9_dst = valueAsset9.to_le_bytes();
+        address_Asset9_dst.copy_from_slice(addressAsset9.as_ref());
+        
+        // *value_Asset10_dst = valueAsset10.to_le_bytes();
+        // address_Asset10_dst.copy_from_slice(addressAsset10.as_ref());
+      
+        
+    }
+}
+
 
 
 

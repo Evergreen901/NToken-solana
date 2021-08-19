@@ -834,8 +834,60 @@ impl Processor {
                     // periodAsset10
                 )
             },
+            TokenInstruction::createInitUserPortfolio {
+                valueAsset1,
+                valueAsset2,
+                valueAsset3,
+                valueAsset4,
+                valueAsset5,
+                valueAsset6,
+                valueAsset7,
+                valueAsset8,
+                valueAsset9,
+                // valueAsset10,
+             } => {
+                msg!("Instruction: createInitUserPortfolio");
+                Self::process_create_Init_User_Portfolio(program_id , accounts ,
+                    valueAsset1,
+                    valueAsset2,
+                    valueAsset3,
+                    valueAsset4,
+                    valueAsset5,
+                    valueAsset6,
+                    valueAsset7,
+                    valueAsset8,
+                    valueAsset9,
+                    // valueAsset10,
+                )
+            },
         }
     }
+
+    /// Deposit nAsset
+    pub fn process_create_Init_User_Portfolio(
+        program_id: &Pubkey,
+        accounts: &[AccountInfo],
+        valueAsset1 : u64,
+        valueAsset2 : u64,
+        valueAsset3 : u64,
+        valueAsset4 : u64,
+        valueAsset5 : u64,
+        valueAsset6 : u64,
+        valueAsset7 : u64,
+        valueAsset8 : u64,
+        valueAsset9 : u64,
+        // amountAsset10 : u64,
+    ) -> ProgramResult {
+        let accounts_iter = &mut accounts.iter();
+        let account = next_account_info(accounts_iter)?;
+        msg!("create Init User Portfolio ");
+
+
+        Ok(())
+
+    }
+
+
 
     /// Deposit nAsset
     pub fn process_initialize_portfolio(
