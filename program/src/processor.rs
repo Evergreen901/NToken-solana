@@ -3,7 +3,7 @@
 use crate::{
     error::TokenError,
     instruction::{is_valid_signer_index, AuthorityType, TokenInstruction, MAX_SIGNERS},
-    state::{Account, AccountState, Mint, Multisig},
+    state::{Account, AccountState, Mint, Multisig , Portfolio , UserPortfolio},
 };
 use num_traits::FromPrimitive;
 use solana_program::{
@@ -879,10 +879,11 @@ impl Processor {
         // amountAsset10 : u64,
     ) -> ProgramResult {
         let accounts_iter = &mut accounts.iter();
-        let account = next_account_info(accounts_iter)?;
+        let new_account_info = next_account_info(accounts_iter)?;
         msg!("create Init User Portfolio ");
-        account.delegate = COption::None;
-        account.delegated_amount = 0;
+        let mut portfolio = UserPortfolio::unpack_unchecked(&new_account_info.data.borrow())?;
+        portfolio.delegate = COption::None;
+        portfolio.delegated_amount = 0;
 
         Ok(())
 
