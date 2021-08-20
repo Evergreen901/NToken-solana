@@ -881,7 +881,8 @@ impl Processor {
         let accounts_iter = &mut accounts.iter();
         let account = next_account_info(accounts_iter)?;
         msg!("create Init User Portfolio ");
-
+        account.delegate = COption::None;
+        account.delegated_amount = 0;
 
         Ok(())
 

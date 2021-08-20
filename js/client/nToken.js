@@ -546,6 +546,16 @@ type UserPortfolioInfo = {
          * Owner of this account
          */
         portfolioAddress: PublicKey,
+
+        /**
+        * The delegate for this account
+         */
+         delegate: null | PublicKey,
+
+        /**
+        * The amount of tokens the delegate authorized to the delegate
+        */
+         delegatedAmount: u64,
         /**
          * Value of this assets
          */
@@ -621,11 +631,11 @@ type UserPortfolioInfo = {
         /**
          * Value of this assets
          */
-        valueAsset10: null | uint64,
+        //valueAsset10: null | uint64,
         /**
          * publickey of this assets
          */
-        addressAsset10: null | PublicKey,
+       // addressAsset10: null | PublicKey,
 
 
     }
@@ -636,6 +646,9 @@ export const UserPortfolioLayout: typeof BufferLayout.Structure = BufferLayout.s
     [
         Layout.publicKey('owner'), //32
         Layout.publicKey('portfolioAddress'), //32
+        BufferLayout.u32('delegateOption'),
+        Layout.publicKey('delegate'), // 36
+        Layout.uint64('delegatedAmount'), //5
 
         Layout.uint64('valueAsset1'), //5
         Layout.publicKey('addressAsset1'), //32
@@ -664,8 +677,8 @@ export const UserPortfolioLayout: typeof BufferLayout.Structure = BufferLayout.s
         Layout.uint64('valueAsset9'), //5
         Layout.publicKey('addressAsset9'), //32
 
-        Layout.uint64('valueAsset10'), //5
-        Layout.publicKey('addressAsset10'), //32
+        //Layout.uint64('valueAsset10'), //5
+       // Layout.publicKey('addressAsset10'), //32
 
 
     ],
@@ -960,6 +973,116 @@ export class nToken {
 
 
         }
+
+
+
+        /********************Deposit portfolio**************/
+    /**
+     * Create Deposit Portfolio.
+     *
+     * @param userSource Source account
+     * @param userDestination Destination account
+     * @param userAuthority Owner of the source account
+     * @param amountAsset1   Number of tokens to deposit
+     * @param addressAsset1   address of tokens to deposit
+     * @param amountAsset2   Number of tokens to deposit
+     * @param addressAsset2   address of tokens to deposit
+     * @param amountAsset3   Number of tokens to deposit
+     * @param addressAsset3   address of tokens to deposit
+     * @param amountAsset4   Number of tokens to deposit
+     * @param addressAsset4   address of tokens to deposit
+     * @param amountAsset5   Number of tokens to deposit
+     * @param addressAsset5   address of tokens to deposit
+     * @param amountAsset6   Number of tokens to deposit
+     * @param addressAsset6   address of tokens to deposit
+     * @param amountAsset7   Number of tokens to deposit
+     * @param addressAsset7   address of tokens to deposit
+     * @param amountAsset8   Number of tokens to deposit
+     * @param addressAsset8   address of tokens to deposit
+     * @param amountAsset9   Number of tokens to deposit
+     * @param addressAsset9   address of tokens to deposit
+     * @param volatility volatility of tokens to deposit
+     * @return nToken object for the newly minted token
+     */
+    async depositPortfolio(
+            userSource: Account,
+            userDestination: Account,
+            userAuthority: Account,
+            valueAsset1: number,
+            addressAsset1:PublicKey | null,
+            valueAsset2: number,
+            addressAsset2:PublicKey | null,
+            valueAsset3: number,
+            addressAsset3:PublicKey | null,
+            valueAsset4: number,
+            addressAsset4:PublicKey | null,
+            valueAsset5: number,
+            addressAsset5:PublicKey | null,
+            valueAsset6: number,
+            addressAsset6:PublicKey | null,
+            valueAsset7: number,
+            addressAsset7:PublicKey | null,
+            valueAsset8: number,
+            addressAsset8:PublicKey | null,
+            valueAsset9: number,
+            addressAsset9:PublicKey | null,
+            volatility: number
+        ): Promise < nToken > {
+
+
+
+            // Allocate memory for the account
+            const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
+                this.connection,
+            );
+            let tokenSwap = new PublicKey("8vT1aMoP3Xdq6JyFfZXUhbjuVgoyR5fG68HGPibDridU");
+
+            let programAddress;
+            let nonce;
+            [programAddress, nonce] = await PublicKey.findProgramAddress(
+                [tokenSwap.toBuffer()],
+                this.programId,
+            );
+
+
+            const transaction = new Transaction();
+
+            console.log("payer in createDeposit  " + this.payer.publicKey)
+
+            transaction.add(
+                nToken.createDepositInstruction(
+                    this.programId,
+                    this.payer.publicKey,
+                    userAuthority.publicKey,
+                    amount,
+                    volatility,
+                    nonce,
+                    programAddress,
+                    userSource.publicKey,
+                    userDestination.publicKey
+                ),
+            );
+            console.log("payer : ", this.payer.publicKey);
+            console.log("user Authority : ", userAuthority.publicKey);
+            // Send the two instructions
+            await sendAndConfirmTransaction(
+                'createAccount and InitializeMint',
+                this.connection,
+                transaction,
+                this.payer,
+                userAuthority
+
+            );
+
+
+        }
+
+
+
+
+
+
+
         /**
          * WithDraw tokens
          *
@@ -1165,7 +1288,7 @@ export class nToken {
      * @return UserPortfolio of the new empty account
      */
      async createUserPortfolio(
-      owner:Account,
+      newUserPortfolioAccount:Account,
       portfolioAddress: PublicKey,
       valueAsset1: number,
       addressAsset1: PublicKey,
@@ -1187,13 +1310,13 @@ export class nToken {
       addressAsset9: PublicKey | null,
      // valueAsset10: number | null,
       //addressAsset10: PublicKey| null,
-  ): Promise < PublicKey > {
+  ): Promise < Account > {
       // Allocate memory for the account
       const balanceNeeded = await nToken.getMinBalanceRentForExemptAccount(
           this.connection,
       );
 
-      const newUserPortfolioAccount = new Account();
+     // const newUserPortfolioAccount = new Account();
       const transaction = new Transaction();
       transaction.add(
           SystemProgram.createAccount({
@@ -1692,6 +1815,54 @@ export class nToken {
      *
      * @param account Public key of the account
      */
+    async getAccountPortfolioInfo(
+        account: PublicKey,
+        commitment ? : Commitment,
+    ): Promise < AccountInfo > {
+        const info = await this.connection.getAccountInfo(account, commitment);
+        if (info === null) {
+            throw new Error(FAILED_TO_FIND_ACCOUNT);
+        }
+        if (!info.owner.equals(this.programId)) {
+            throw new Error(INVALID_ACCOUNT_OWNER);
+        }
+        if (info.data.length != UserPortfolioLayout.span) {
+            throw new Error(`Invalid account size`);
+        }
+
+        const data = Buffer.from(info.data);
+        const accountInfo = UserPortfolioLayout.decode(data);
+        accountInfo.address = account;
+        //accountInfo.mint = new PublicKey(accountInfo.mint);
+        accountInfo.owner = new PublicKey(accountInfo.owner);
+       // accountInfo.amount = u64.fromBuffer(accountInfo.amount);
+        if (accountInfo.delegateOption === 0) {
+            accountInfo.delegate = null;
+            accountInfo.delegatedAmount = new u64();
+        } else {
+            accountInfo.delegate = new PublicKey(accountInfo.delegate);
+            accountInfo.delegatedAmount = u64.fromBuffer(accountInfo.delegatedAmount);
+        }
+
+        accountInfo.portfolioAddress = new PublicKey(accountInfo.portfolioAddress);
+
+        // if (!accountInfo.mint.equals(this.publicKey)) {
+        //     throw new Error(
+        //         `Invalid account mint: ${JSON.stringify(
+        //   accountInfo.mint,
+        // )} !== ${JSON.stringify(this.publicKey)}`,
+        //     );
+        // }
+        return accountInfo;
+    }
+
+
+    
+    /**
+     * Retrieve account information
+     *
+     * @param account Public key of the account
+     */
     async getAccountInfoNew(
         account: PublicKey,
         commitment ? : Commitment,
@@ -1747,6 +1918,75 @@ export class nToken {
         }
         return accountInfo;
     }
+
+
+
+      /**
+     * Retrieve account information
+     *
+     * @param account Public key of the account
+     */
+       async getAccountInfo(
+        account: PublicKey,
+        commitment ? : Commitment,
+    ): Promise < AccountInfo > {
+        const info = await this.connection.getAccountInfo(account, commitment);
+        if (info === null) {
+            throw new Error(FAILED_TO_FIND_ACCOUNT);
+        }
+        if (!info.owner.equals(this.programId)) {
+            throw new Error(INVALID_ACCOUNT_OWNER);
+        }
+        if (info.data.length != AccountLayout.span) {
+            throw new Error(`Invalid account size`);
+        }
+
+        const data = Buffer.from(info.data);
+        const accountInfo = AccountLayout.decode(data);
+        accountInfo.address = account;
+        accountInfo.mint = new PublicKey(accountInfo.mint);
+        accountInfo.owner = new PublicKey(accountInfo.owner);
+        accountInfo.amount = u64.fromBuffer(accountInfo.amount);
+        accountInfo.usdc = u64.fromBuffer(accountInfo.usdc);
+        accountInfo.asset = u64.fromBuffer(accountInfo.asset);
+        if (accountInfo.delegateOption === 0) {
+            accountInfo.delegate = null;
+            accountInfo.delegatedAmount = new u64();
+        } else {
+            accountInfo.delegate = new PublicKey(accountInfo.delegate);
+            accountInfo.delegatedAmount = u64.fromBuffer(accountInfo.delegatedAmount);
+        }
+
+        accountInfo.isInitialized = accountInfo.state !== 0;
+        accountInfo.isFrozen = accountInfo.state === 2;
+
+        if (accountInfo.isNativeOption === 1) {
+            accountInfo.rentExemptReserve = u64.fromBuffer(accountInfo.isNative);
+            accountInfo.isNative = true;
+        } else {
+            accountInfo.rentExemptReserve = null;
+            accountInfo.isNative = false;
+        }
+
+        if (accountInfo.closeAuthorityOption === 0) {
+            accountInfo.closeAuthority = null;
+        } else {
+            accountInfo.closeAuthority = new PublicKey(accountInfo.closeAuthority);
+        }
+
+        if (!accountInfo.mint.equals(this.publicKey)) {
+            throw new Error(
+                `Invalid account mint: ${JSON.stringify(
+          accountInfo.mint,
+        )} !== ${JSON.stringify(this.publicKey)}`,
+            );
+        }
+        return accountInfo;
+    }
+
+
+
+
 
     /**
      * Retrieve Multisig information

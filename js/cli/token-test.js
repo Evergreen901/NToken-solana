@@ -32,7 +32,7 @@ let USDC: nToken;
 let managerNTokenWBTC: Account;
 let managerNTokenUSDC: Account;
 let creatorPublicAddress: Account;
-
+let UserPortfolioAccount : Account;
 
 
 // Accounts setup in createAccount and used by all subsequent tests
@@ -363,8 +363,7 @@ export async function createPortfolio() : Promise<void> {
 
 export async function createUserPortfolio(): Promise < void > {
   let owner = new Account();
-    let portfolioAddress = new PublicKey("FGvijPYEezuT3awPH1MWnbFUgqWBNTE9ArMWXirkh7CC");
-    let portfolioAcc = await asset.createAccountNew(portfolioAddress);
+  let portfolioAddress = new PublicKey("FGvijPYEezuT3awPH1MWnbFUgqWBNTE9ArMWXirkh7CC");
     let valueAsset1 = 2;
     let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
@@ -374,47 +373,146 @@ export async function createUserPortfolio(): Promise < void > {
 
     let valueAsset3;
     let addressAsset3 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
+    
     let valueAsset4;
     let addressAsset4 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
     let valueAsset5;
     let addressAsset5 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
-
+    
     let valueAsset6;
     let addressAsset6 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
-
+    
+    
     let valueAsset7;
     let addressAsset7 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
-
+    
+    
     let valueAsset8;
     let addressAsset8 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
+    
     let valueAsset9;
     let addressAsset9 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    
+    // let valueAsset10;
+    // let addressAsset10;
+    
+      UserPortfolioAccount = await testToken.createUserPortfolio(owner,portfolioAddress,
+      valueAsset1, addressAsset1,
+      valueAsset2, addressAsset2,
+      valueAsset3, addressAsset3,
+      valueAsset4, addressAsset4,
+      valueAsset5, addressAsset5,
+      valueAsset6, addressAsset6,
+      valueAsset7, addressAsset7,
+      valueAsset8, addressAsset8,
+      valueAsset9, addressAsset9);
+      // valueAsset10, addressAsset10);
+    }
+    
 
+
+  export async function runDepositPortfolio(): Promise < void > {
+    console.log("start Deposit in portfolio");
+
+
+
+    const connection = await getConnection();
+    const payer = await newAccountWithLamports(connection, 10000000000 /* wag */ );
+
+   // let infoMangerNToken;
+   // infoMangerNToken = await asset.getAccountInfoNew(managerNTokenWBTC.publicKey);
+   
+    //infoMangerNToken = await asset.getAccountInfoNew(assetAccount);
+   // console.log("before transferFrom infoassetAccount mint --" + infoMangerNToken.mint + " --owner --" + infoMangerNToken.owner + " -amount --" + infoMangerNToken.amount + "-- allownace --" + infoMangerNToken.delegatedAmount)
+
+
+
+   //   delegate the amount to programId 
+
+ 
+console.log ("UserPortfolioAccount : ", UserPortfolioAccount.publicKey);
+    
+    accountInfo = await testToken.getAccountPortfolioInfo(UserPortfolioAccount.publicKey);
+   console.log("**********Info nToken Account **************");
+   console.log("mint nWBTC -- " + accountInfo.mint + " -- owner UserA --" + accountInfo.owner + " -- amount --" + accountInfo.amount +
+    " -- amount wbtc --" + accountInfo.asset + " amount usdc --" + accountInfo.usdc+" --delegatedAmount : " + accountInfo.delegatedAmount)
+   console.log("***end info nToken Account ******")
+
+
+   //testAccount = await testToken.createAccount(testAccountOwner.publicKey);
+
+  let accountDeposit = UserPortfolioAccount;
+  let delegate = programId;
+  let owner ;
+  let amountDelegated;
+   //await asset.approve(accountDeposit, delegate, owner, [], amountDelegated);
+
+   // infoMangerNToken = await asset.getAccountInfoNew(assetAccount);
+   // console.log("after transferFrom infoassetAccount mint --" + infoMangerNToken.mint + " --owner --" + infoMangerNToken.owner + " -amount --" + infoMangerNToken.amount + "-- allownace --" + infoMangerNToken.delegatedAmount)
+
+
+    //infoMangerNToken = await asset.getAccountInfoNew(managerNTokenWBTC.publicKey);
+    //console.log("after transferFrom infoMangerNToken mint --" + infoMangerNToken.mint + " --owner --" + infoMangerNToken.owner + " -amount --" + infoMangerNToken.amount + "-- allownace --" + infoMangerNToken.delegatedAmount)
+
+    //let accountManagerNTokenWBTC = await asset.createAccountNew(managerNTokenWBTC.publicKey);
+
+
+    let accountInfo = await testToken.getAccountPortfolioInfo(UserPortfolioAccount);
+    console.log("**********Info nToken Account **************");
+    console.log("mint nWBTC -- " + accountInfo.mint + " -- owner UserA --" + accountInfo.owner + " -- amount --" + accountInfo.amount +
+     " -- amount wbtc --" + accountInfo.asset + " amount usdc --" + accountInfo.usdc+" --delegatedAmount : " + accountInfo.delegatedAmount)
+    console.log("***end info nToken Account ******")
+
+ 
+
+
+    let portfolioAddress = new PublicKey("FGvijPYEezuT3awPH1MWnbFUgqWBNTE9ArMWXirkh7CC");
+
+    let valueAsset1 = 2;
+    let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+
+    let valueAsset2 = 20000;
+    let addressAsset2 = await (await USDC.createAccountNew(testToken.publicKey)).publicKey
+
+
+    let valueAsset3 = 15265;
+    let addressAsset3 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    
+    let valueAsset4;
+    let addressAsset4 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+
+    let valueAsset5;
+    let addressAsset5 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+
+    
+    let valueAsset6;
+    let addressAsset6 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    
+    
+    let valueAsset7;
+    let addressAsset7 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    
+    
+    let valueAsset8;
+    let addressAsset8 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    
+    let valueAsset9;
+    let addressAsset9 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    
     // let valueAsset10;
     // let addressAsset10;
 
-    testAccount = await testToken.createUserPortfolio(owner,portfolioAddress,
-        valueAsset1, addressAsset1,
-        valueAsset2, addressAsset2,
-        valueAsset3, addressAsset3,
-        valueAsset4, addressAsset4,
-        valueAsset5, addressAsset5,
-        valueAsset6, addressAsset6,
-        valueAsset7, addressAsset7,
-        valueAsset8, addressAsset8,
-        valueAsset9, addressAsset9);
-       // valueAsset10, addressAsset10);
+    /*UserPortfolioAccount = await testToken.depositPortfolio(portfolioAddress,managerNTokenUSDC,payer, valueAsset1,
+       addressAsset1 , valueAsset2, addressAsset2, valueAsset3, addressAsset3, valueAsset4,addressAsset4,
+       valueAsset5,addressAsset5,valueAsset6,addressAsset6 ,valueAsset7 ,addressAsset7,valueAsset8
+       ,addressAsset8,valueAsset9,addressAsset9 ,volatility );
+*/
+  }
 
 
 
-
-}
 
 
 export async function infoAccountByPublicKey(): Promise < void > {
