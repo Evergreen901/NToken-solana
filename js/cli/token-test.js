@@ -432,9 +432,9 @@ export async function createUserPortfolio(): Promise < void > {
    //   delegate the amount to programId 
 
  
-console.log ("UserPortfolioAccount : ", UserPortfolioAccount.publicKey);
+console.log ("UserPortfolioAccount : ", UserPortfolioAccount.publicKey.toString());
     
-    accountInfo = await testToken.getAccountPortfolioInfo(UserPortfolioAccount.publicKey);
+    accountInfo = await asset.getAccountPortfolioInfo(UserPortfolioAccount.publicKey);
    console.log("**********Info nToken Account **************");
    console.log("mint nWBTC -- " + accountInfo.mint + " -- owner UserA --" + accountInfo.owner + " -- amount --" + accountInfo.amount +
     " -- amount wbtc --" + accountInfo.asset + " amount usdc --" + accountInfo.usdc+" --delegatedAmount : " + accountInfo.delegatedAmount)

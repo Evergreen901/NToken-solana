@@ -1343,7 +1343,7 @@ pub fn initialize_mint(
         data,
     })
 }
-
+ 
 /// Creates a `InitializeAccount` instruction.
 pub fn initialize_account(
     token_program_id: &Pubkey,

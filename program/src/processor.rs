@@ -885,6 +885,8 @@ impl Processor {
         portfolio.delegate = COption::None;
         portfolio.delegated_amount = 0;
 
+        Account::pack(portfolio, &mut new_account_info.data.borrow_mut())?;
+
         Ok(())
 
     }

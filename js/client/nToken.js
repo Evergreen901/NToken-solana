@@ -1823,26 +1823,31 @@ export class nToken {
         if (info === null) {
             throw new Error(FAILED_TO_FIND_ACCOUNT);
         }
-        if (!info.owner.equals(this.programId)) {
+       /* if (!info.owner.equals(this.programId)) {
             throw new Error(INVALID_ACCOUNT_OWNER);
-        }
+        }*/
         if (info.data.length != UserPortfolioLayout.span) {
             throw new Error(`Invalid account size`);
         }
 
         const data = Buffer.from(info.data);
+ 
         const accountInfo = UserPortfolioLayout.decode(data);
+        console.log ("accountInfo : ", JSON.stringify(accountInfo));
         accountInfo.address = account;
+        console.log ("accountInfo.owner : ", owner);
+
         //accountInfo.mint = new PublicKey(accountInfo.mint);
         accountInfo.owner = new PublicKey(accountInfo.owner);
        // accountInfo.amount = u64.fromBuffer(accountInfo.amount);
-        if (accountInfo.delegateOption === 0) {
+      /*  if (accountInfo.delegateOption === 0) {
             accountInfo.delegate = null;
             accountInfo.delegatedAmount = new u64();
         } else {
+          */
             accountInfo.delegate = new PublicKey(accountInfo.delegate);
             accountInfo.delegatedAmount = u64.fromBuffer(accountInfo.delegatedAmount);
-        }
+       // }
 
         accountInfo.portfolioAddress = new PublicKey(accountInfo.portfolioAddress);
 

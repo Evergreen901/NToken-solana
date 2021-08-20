@@ -629,7 +629,7 @@ pub struct UserPortfolio {
     // pub valueAsset10: u64,
     // /// The 10th asset's address
     // pub addressAsset10: Pubkey,
-
+ 
 }
 
 impl Sealed for UserPortfolio {}
