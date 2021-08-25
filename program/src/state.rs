@@ -8,6 +8,7 @@ use solana_program::{
     program_option::COption,
     program_pack::{IsInitialized, Pack, Sealed},
     pubkey::Pubkey,
+    msg
 };
 use std::convert::TryInto;
 
@@ -240,16 +241,17 @@ impl Default for AccountState {
 
 /// Account data.
 #[repr(C)]
-#[derive(Clone/*, Copy*/, Debug, Default, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Portfolio {
+      /// The account's creator
+      pub creatorAccount: Pubkey,
     /// The owner of this account.
     pub owner: Pubkey,
     /// The data of portfolio.
-    pub metadataURL: Vec<u8>,
+  //  pub metadataUrl: Vec<u8>,
     /// the hash of data
-    pub metadataHASH: u16,
-    /// The account's creator
-    pub creatorPublicAddress: Pubkey,
+    pub metadataHash: u16,
+  
     /// the amount of first asset
     pub amountAsset1: u8,
     /// The first asset's address
@@ -337,11 +339,18 @@ fn convert<T, const N: usize>(v: Vec<T>) -> [T; N] {
         .unwrap_or_else(|v: Vec<T>| panic!("Expected a Vec of length {} but it was {}", N, v.len()))
 }
 impl Sealed for Portfolio {}
+impl IsInitialized for Portfolio {
+    fn is_initialized(&self) -> bool {
+        return true;
+    }
+}
 impl Pack for Portfolio {
-    const LEN: usize = 815;
+    const LEN: usize = 687;
     fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {
-        let src = array_ref![src, 0, 815];
-        let (owner, metadataURL, metadataHASH, creatorPublicAddress, amountAsset1, addressAsset1, periodAsset1,
+        msg!("this is first");
+        let src = array_ref![src, 0, 687];
+    
+        let (creatorAccount,owner /*, metadataUrl*/, metadataHash,  amountAsset1, addressAsset1, periodAsset1,
             assetToSoldIntoAsset1, amountAsset2, addressAsset2, periodAsset2,assetToSoldIntoAsset2, amountAsset3, 
             addressAsset3, periodAsset3,assetToSoldIntoAsset3, amountAsset4, addressAsset4, periodAsset4,
             assetToSoldIntoAsset4, amountAsset5, addressAsset5, periodAsset5,assetToSoldIntoAsset5, amountAsset6, 
@@ -349,14 +358,16 @@ impl Pack for Portfolio {
             assetToSoldIntoAsset7, amountAsset8, addressAsset8, periodAsset8,assetToSoldIntoAsset8, amountAsset9, 
             addressAsset9, periodAsset9,assetToSoldIntoAsset9/*, amountAsset10, addressAsset10, periodAsset10,
             assetToSoldIntoAsset10*/) =
-            array_refs![src, 32, 128, 2, 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 
+            array_refs![src,32, 32/*, 128*/, 2,  1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 
             4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32/*, 1, 32 
             , 4 , 32*/];
-        Ok(Portfolio {
+            msg!("this is second");
+              Ok(Portfolio {
+            creatorAccount: Pubkey::new_from_array(*creatorAccount),
             owner: Pubkey::new_from_array(*owner),
-            metadataURL: metadataURL.to_vec(),
-            metadataHASH: u16::from_le_bytes(*metadataHASH),
-            creatorPublicAddress: Pubkey::new_from_array(*creatorPublicAddress),
+            //metadataUrl: metadataUrl.to_vec(),
+            metadataHash: u16::from_le_bytes(*metadataHash),
+            
             amountAsset1: u8::from_le_bytes(*amountAsset1),
             addressAsset1: Pubkey::new_from_array(*addressAsset1),
             periodAsset1: u32::from_le_bytes(*periodAsset1),
@@ -398,17 +409,19 @@ impl Pack for Portfolio {
             // periodAsset10: u32::from_le_bytes(*periodAsset10),
             // assetToSoldIntoAsset10: Pubkey::new_from_array(*assetToSoldIntoAsset10),
         })
+  
     }
 
 
 
     fn pack_into_slice(&self, dst: &mut [u8]) {
-        let dst = array_mut_ref![dst, 0, 815];
+        let dst = array_mut_ref![dst, 0, 687];
         let (
+            creator_Account_dst,
             owner_dst,
-            metadata_URL_dst,
+          //  metadata_URL_dst,
             metadata_HASH_dst,
-            creator_Public_Address_dst,
+           
             amount_Asset1_dst,
             address_Asset1_dst,
             period_Asset1_dst,
@@ -450,14 +463,15 @@ impl Pack for Portfolio {
             // period_Asset10_dst,
             // asset_To_Sold_Into_Asset10_dst,
 
-        ) = mut_array_refs![dst, 32, 128, 2, 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 
+        ) = mut_array_refs![dst, 32,32,/* 128,*/ 2,  1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 
         4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32/*, 1, 32 
         , 4 , 32*/];
         let Portfolio {
+            ref creatorAccount,
             ref owner,
-            metadataURL, 
-            metadataHASH,
-            ref creatorPublicAddress,
+         //   metadataUrl, 
+            metadataHash,
+           
             amountAsset1, 
             ref addressAsset1, 
             periodAsset1,
@@ -500,13 +514,14 @@ impl Pack for Portfolio {
             // periodAsset10,
             // ref assetToSoldIntoAsset10
         } = self;
+        creator_Account_dst.copy_from_slice(creatorAccount.as_ref());
+        //Pubkey(creatorAccount,creator_Account_dst);
         owner_dst.copy_from_slice(owner.as_ref());
         //*metadata_URL_dst = convert(metadataURL);
-        *metadata_URL_dst = convert(metadataURL.to_vec());
+       // *metadata_URL_dst = convert(metadataUrl.to_vec());
         // *metadata_URL_dst = metadataURL.borrow();
-        *metadata_HASH_dst = metadataHASH.to_le_bytes();
-        creator_Public_Address_dst.copy_from_slice(creatorPublicAddress.as_ref());
-        //Pubkey(creatorPublicAddress,creator_Public_Address_dst);
+        *metadata_HASH_dst = metadataHash.to_le_bytes();
+     
         *amount_Asset1_dst = amountAsset1.to_le_bytes();
         address_Asset1_dst.copy_from_slice(addressAsset1.as_ref());
         //Pubkey(addressAsset1,address_Asset1_dst);
@@ -546,7 +561,7 @@ impl Pack for Portfolio {
         *amount_Asset7_dst = amountAsset7.to_le_bytes();
         address_Asset7_dst.copy_from_slice(addressAsset7.as_ref());
         //Pubkey(addressAsset7,address_Asset7_dst);
-        *period_Asset1_dst = periodAsset1.to_le_bytes();
+        *period_Asset7_dst = periodAsset7.to_le_bytes();
         asset_To_Sold_Into_Asset7_dst.copy_from_slice(assetToSoldIntoAsset7.as_ref());
         //Pubkey(assetToSoldIntoAsset7,asset_To_Sold_Into_Asset7_dst);
         *amount_Asset8_dst = amountAsset8.to_le_bytes();
@@ -580,13 +595,15 @@ impl Pack for Portfolio {
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct UserPortfolio {
+    /// The new account.
+    pub userAccount: Pubkey,
     /// The owner of this account.
     pub userPortfolioAccount: Pubkey,
     /// The data of portfolio.
     pub portfolioAddress: Pubkey,
     /// If `delegate` is `Some` then `delegated_amount` represents
     /// the amount authorized by the delegate
-    pub delegate: COption<Pubkey>,
+    pub delegate: Pubkey,
     /// The amount delegated
     pub delegated_amount: u64,
     /// the amount of first asset
@@ -634,19 +651,21 @@ pub struct UserPortfolio {
 
 impl Sealed for UserPortfolio {}
 impl Pack for UserPortfolio {
-    const LEN: usize = 468;
+    const LEN: usize = 496;
     fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {
-        let src = array_ref![src, 0, 468];
-        let (userPortfolioAccount, portfolioAddress,delegate, delegated_amount,valueAsset1, addressAsset1, valueAsset2, addressAsset2, valueAsset3, 
+        let src = array_ref![src, 0, 496];
+        let (userAccount,userPortfolioAccount, portfolioAddress,delegate, delegated_amount,valueAsset1, addressAsset1, valueAsset2, addressAsset2, valueAsset3, 
             addressAsset3, valueAsset4, addressAsset4, valueAsset5, addressAsset5, valueAsset6, 
             addressAsset6,  valueAsset7, addressAsset7, valueAsset8, addressAsset8,  valueAsset9, 
             addressAsset9,/*, valueAsset10, addressAsset10,*/) =
-            array_refs![src,32, 32, 36, 8, 8, 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 
+            array_refs![src,32,32, 32, 32, 8, 8, 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 
             8 , 32 /*, 8, 32 */];
         Ok(UserPortfolio {
+            userAccount: Pubkey::new_from_array(*userAccount),
             userPortfolioAccount: Pubkey::new_from_array(*userPortfolioAccount),
             portfolioAddress: Pubkey::new_from_array(*portfolioAddress),
-            delegate: unpack_coption_key(delegate)?,
+           // delegate: unpack_coption_key(delegate)?,
+            delegate: Pubkey::new_from_array(*delegate),
             delegated_amount: u64::from_le_bytes(*delegated_amount),
             valueAsset1:  u64::from_le_bytes(*valueAsset1),
             addressAsset1: Pubkey::new_from_array(*addressAsset1),
@@ -675,8 +694,9 @@ impl Pack for UserPortfolio {
 
 
     fn pack_into_slice(&self, dst: &mut [u8]) {
-        let dst = array_mut_ref![dst, 0, 468];
+        let dst = array_mut_ref![dst, 0, 496];
         let (
+            userAccount_dst,
             userPortfolioAccount_dst,
             portfolioAddress_dst,
             delegate_dst,
@@ -703,9 +723,10 @@ impl Pack for UserPortfolio {
             // address_Asset10_dst,
            
 
-        ) = mut_array_refs![dst,32, 32,36 , 8 , 8, 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 
+        ) = mut_array_refs![dst,32,32, 32,32 , 8 , 8, 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 8 , 32, 8, 32 , 
         8 , 32 /*, 8, 32 */];
         let UserPortfolio {
+            userAccount,
             userPortfolioAccount,
             portfolioAddress,
             delegate,
@@ -731,9 +752,11 @@ impl Pack for UserPortfolio {
             // valueAsset10, 
             // ref addressAsset10, 
         } = self;
+        userAccount_dst.copy_from_slice(userAccount.as_ref());
         userPortfolioAccount_dst.copy_from_slice(userPortfolioAccount.as_ref());
         portfolioAddress_dst.copy_from_slice(portfolioAddress.as_ref());
-        pack_coption_key(delegate, delegate_dst);
+        //pack_coption_key(delegate, delegate_dst);
+        delegate_dst.copy_from_slice(delegate.as_ref());
         *value_Asset1_dst = valueAsset1.to_le_bytes();
         *delegated_amount_dst = delegated_amount.to_le_bytes();
         address_Asset1_dst.copy_from_slice(addressAsset1.as_ref());
@@ -841,6 +864,7 @@ fn unpack_coption_key(src: &[u8; 36]) -> Result<COption<Pubkey>, ProgramError> {
         [0, 0, 0, 0] => Ok(COption::None),
         [1, 0, 0, 0] => Ok(COption::Some(Pubkey::new_from_array(*body))),
         _ =>  {
+         
             Err(ProgramError::InvalidAccountData)
         },
     }

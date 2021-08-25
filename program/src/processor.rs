@@ -786,7 +786,7 @@ impl Processor {
                 Self::process_withdraw(program_id , accounts , amount)
             },
             TokenInstruction::InitializePortfolio {
-                metaDataUrl,
+             //   metaDataUrl,
                 metaDataHash,
                 amountAsset1,
                 periodAsset1,
@@ -810,8 +810,9 @@ impl Processor {
                 // periodAsset10
              } => {
                 msg!("Instruction: InitializePortfolio");
-                Self::process_initialize_portfolio(program_id , accounts , metaDataUrl,
-                    metaDataHash,
+                Self::process_initialize_portfolio(program_id , accounts , 
+                    //metaDataUrl,
+                   metaDataHash,
                     amountAsset1,
                     periodAsset1,
                     amountAsset2,
@@ -835,6 +836,7 @@ impl Processor {
                 )
             },
             TokenInstruction::createInitUserPortfolio {
+                delegated_amount,
                 valueAsset1,
                 valueAsset2,
                 valueAsset3,
@@ -848,6 +850,7 @@ impl Processor {
              } => {
                 msg!("Instruction: createInitUserPortfolio");
                 Self::process_create_Init_User_Portfolio(program_id , accounts ,
+                    delegated_amount,
                     valueAsset1,
                     valueAsset2,
                     valueAsset3,
@@ -867,6 +870,7 @@ impl Processor {
     pub fn process_create_Init_User_Portfolio(
         program_id: &Pubkey,
         accounts: &[AccountInfo],
+        delegated_amount:u64,
         valueAsset1 : u64,
         valueAsset2 : u64,
         valueAsset3 : u64,
@@ -878,15 +882,20 @@ impl Processor {
         valueAsset9 : u64,
         // amountAsset10 : u64,
     ) -> ProgramResult {
-        let accounts_iter = &mut accounts.iter();
-        let new_account_info = next_account_info(accounts_iter)?;
+       /* let accounts_iter = &mut accounts.iter();
+        let user_account= next_account_info(accounts_iter)?;
+        let portfolioAddress= next_account_info(accounts_iter)?;
+        let userPortfolioAccount= next_account_info(accounts_iter)?;
         msg!("create Init User Portfolio ");
-        let mut portfolio = UserPortfolio::unpack_unchecked(&new_account_info.data.borrow())?;
-        portfolio.delegate = COption::None;
+        let mut portfolio = UserPortfolio::unpack_unchecked(&user_account.data.borrow())?;
+        //portfolio.delegate = COption::None;
         portfolio.delegated_amount = 0;
+        portfolio.userAccount = *user_account.key;
+        portfolio.userPortfolioAccount = *userPortfolioAccount.key;
+        portfolio.portfolioAddress = *portfolioAddress.key;
 
-        Account::pack(portfolio, &mut new_account_info.data.borrow_mut())?;
-
+        UserPortfolio::pack(portfolio, &mut user_account.data.borrow_mut())?;
+*/
         Ok(())
 
     }
@@ -897,7 +906,7 @@ impl Processor {
     pub fn process_initialize_portfolio(
         program_id: &Pubkey,
         accounts: &[AccountInfo],
-        metaDataUrl : Vec<u8>,
+      //  metaDataUrl : Vec<u8>,
         metaDataHash : u16,
         amountAsset1 : u8,
         periodAsset1 : u32,
@@ -923,23 +932,82 @@ impl Processor {
     ) -> ProgramResult {
         let accounts_iter = &mut accounts.iter();
         let account = next_account_info(accounts_iter)?;
-        msg!("initialze portfolio ");
-
-/*
-        let mut portfolio = Portfolio::unpack_unchecked(&new_account_info.data.borrow())?;
-        if portfolio.is_initialized() {
-            return Err(TokenError::AlreadyInUse.into());
-        }
-
+        let owner = next_account_info(accounts_iter)?;
+        let addressAsset1 = next_account_info(accounts_iter)?;
+        let assetToSoldIntoAsset1 = next_account_info(accounts_iter)?;
+        let addressAsset2 = next_account_info(accounts_iter)?;
+        let assetToSoldIntoAsset2 = next_account_info(accounts_iter)?;
+        let addressAsset3 = next_account_info(accounts_iter)?;
+        let assetToSoldIntoAsset3 = next_account_info(accounts_iter)?;
+        let addressAsset4 = next_account_info(accounts_iter)?;
+        let assetToSoldIntoAsset4 = next_account_info(accounts_iter)?;
+        let addressAsset5 = next_account_info(accounts_iter)?;
+        let assetToSoldIntoAsset5 = next_account_info(accounts_iter)?;
+        let addressAsset6 = next_account_info(accounts_iter)?;
+        let assetToSoldIntoAsset6 = next_account_info(accounts_iter)?;
+        let addressAsset7 = next_account_info(accounts_iter)?;
+        let assetToSoldIntoAsset7 = next_account_info(accounts_iter)?;
+        let addressAsset8 = next_account_info(accounts_iter)?;
+        let assetToSoldIntoAsset8 = next_account_info(accounts_iter)?;
+        let addressAsset9 = next_account_info(accounts_iter)?;
+        let assetToSoldIntoAsset9 = next_account_info(accounts_iter)?;
+    
+     
        
+        msg!("initialze portfolio account : {:?} ",account );
+     //   msg!("initialze portfolio account data : {:?} ",account.data );
 
-        portfolio.mint = *mint_info.key;
-        portfolio.owner = *owner;
-        portfolio.amount = 0;
-        portfolio.usdc = 0;
-        portfolio.asset = 0;  
 
-*/
+
+        let mut creatorAccount = Portfolio::unpack(&mut account.data.borrow())?;
+ 
+            creatorAccount.creatorAccount = *account.key;
+            creatorAccount.owner = *owner.key;
+            creatorAccount.metadataHash = metaDataHash;
+            creatorAccount.amountAsset1 = amountAsset1;
+            creatorAccount.addressAsset1 = *addressAsset1.key;;
+            creatorAccount.periodAsset1 = periodAsset1;
+            creatorAccount.assetToSoldIntoAsset1 = *assetToSoldIntoAsset1.key; 
+            creatorAccount.amountAsset2 = amountAsset2;
+            creatorAccount.addressAsset2 = *addressAsset2.key;;
+            creatorAccount.periodAsset2 = periodAsset2;
+            creatorAccount.assetToSoldIntoAsset2 = *assetToSoldIntoAsset2.key; 
+            creatorAccount.amountAsset3 = amountAsset3;
+            creatorAccount.addressAsset3 = *addressAsset3.key;;
+            creatorAccount.periodAsset3 = periodAsset3;
+            creatorAccount.assetToSoldIntoAsset3 = *assetToSoldIntoAsset3.key; 
+            creatorAccount.amountAsset4 = amountAsset4;
+            creatorAccount.addressAsset4 = *addressAsset4.key;;
+            creatorAccount.periodAsset4 = periodAsset4;
+            creatorAccount.assetToSoldIntoAsset4 = *assetToSoldIntoAsset4.key; 
+            creatorAccount.amountAsset5 = amountAsset5;
+            creatorAccount.addressAsset5 = *addressAsset5.key;
+            creatorAccount.periodAsset5 = periodAsset5;
+            creatorAccount.assetToSoldIntoAsset5 = *assetToSoldIntoAsset5.key;
+            creatorAccount.amountAsset6 = amountAsset6;
+            creatorAccount.addressAsset6 = *addressAsset6.key;
+            creatorAccount.periodAsset6 = periodAsset6;
+            creatorAccount.assetToSoldIntoAsset6 = *assetToSoldIntoAsset6.key ;
+            creatorAccount.amountAsset7 = amountAsset7;
+            creatorAccount.addressAsset7 = *addressAsset7.key;
+            creatorAccount.periodAsset7 = periodAsset7;
+            creatorAccount.assetToSoldIntoAsset7 = *assetToSoldIntoAsset7.key;
+            creatorAccount.amountAsset8 = amountAsset8;
+            creatorAccount.addressAsset8 = *addressAsset8.key;
+            creatorAccount.periodAsset8 = periodAsset8;
+            creatorAccount.assetToSoldIntoAsset8 = *assetToSoldIntoAsset8.key;
+            creatorAccount.amountAsset9 = amountAsset9;
+            creatorAccount.addressAsset9 = *addressAsset9.key;
+            creatorAccount.periodAsset9 = periodAsset9;
+            creatorAccount.assetToSoldIntoAsset9 = *assetToSoldIntoAsset9.key;
+ 
+
+
+        Portfolio::pack(creatorAccount, &mut account.data.borrow_mut())?;
+        
+        msg!(" ******* creatorAccount owner {:?} , amount : {:?}  , period : {:?} ",creatorAccount.owner , creatorAccount.amountAsset1 , creatorAccount.periodAsset1 );
+        msg!(" after unpack initialze portfolio account : {:?} ",account );
+       // msg!("after unpack initialze portfolio account date : {:?} ",account.data );
         Ok(())
 
     }
@@ -1010,7 +1078,7 @@ impl Processor {
        msg!("result was  =  {:?}  " , result );
        */
        msg!("here before ");
-     /* let mut source_account = Account::unpack_unchecked(&mut source_info.data.borrow())?;
+     /* let mut source_account = Account::unpack(&mut source_info.data.borrow())?;
         if source_account.is_frozen() {
             return Err(TokenError::AccountFrozen.into());
         }
@@ -1537,7 +1605,7 @@ mod tests {
 
     #[test]
     fn test_withdraw() {
-
+/*
 
         let program_id = Pubkey::new_unique();
      let account_key = Pubkey::new_unique();
@@ -1564,11 +1632,11 @@ mod tests {
      let pubkey_swap =  Option::Some(&pubkey_swap_key);
 
 
-      do_process_instruction(
+     /* do_process_instruction(
          initialize_mint(&program_id, &mint_key, &owner_key, None, 2,mint_id_asset,pubkey_swap).unwrap(),
          vec![&mut mint_account, &mut rent_sysvar],
      )
-      .unwrap();
+      .unwrap();*/
 
 
      // create account
@@ -1619,12 +1687,293 @@ mod tests {
          Ok(_) => {msg!("ok")} ,
          Err(e) => {panic!("error after withdraw {}" , e)}
      }
-
+*/
  }
  
- #[test]
-    fn test_initialzePortfolio() {
-        msg!("ok"); 
+
+
+
+    #[test]
+    fn test_pack_unpack() {
+      // Account
+      let check = Account {
+        mint: Pubkey::new(&[1; 32]),
+        owner: Pubkey::new(&[2; 32]),
+        amount: 3,
+        asset:8,
+        usdc:8,
+        delegate: COption::Some(Pubkey::new(&[4; 32])),
+        state: AccountState::Frozen,
+        is_native: COption::Some(5),
+        delegated_amount: 6,
+        close_authority: COption::Some(Pubkey::new(&[7; 32])),
+    };
+    let mut packed = vec![0; Account::get_packed_len() + 1];
+    assert_eq!(
+        Err(ProgramError::InvalidAccountData),
+        Account::pack(check, &mut packed)
+    );
+    let mut packed = vec![0; Account::get_packed_len() - 1];
+    assert_eq!(
+        Err(ProgramError::InvalidAccountData),
+        Account::pack(check, &mut packed)
+    );
+  
+    let mut packed = vec![0; Account::get_packed_len()];
+    Account::pack(check, &mut packed).unwrap();
+    let expect = vec![
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 3, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+        4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 1, 0, 0, 0, 5, 0, 0,
+        0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+        7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 0, 0, 0, 0, 0, 0, 0, 8,
+         0, 0, 0, 0, 0, 0, 0
+    ];
+   
+    assert_eq!(packed, expect);
+    let unpacked = Account::unpack(&packed).unwrap();
+    assert_eq!(unpacked, check);
+
+    
+
+
+    //Portfolio
+
+       let check = Portfolio {
+        creatorAccount: Pubkey::new(&[1; 32]),
+        owner: Pubkey::new(&[2; 32]),
+        metadataHash: 3,
+        amountAsset1: 4,
+        addressAsset1: Pubkey::new(&[1; 32]),
+        periodAsset1: 6,
+        assetToSoldIntoAsset1: Pubkey::new(&[1; 32]),
+        amountAsset2: 4,
+        addressAsset2: Pubkey::new(&[2; 32]),
+        periodAsset2: 5,
+        assetToSoldIntoAsset2: Pubkey::new(&[2; 32]),
+        amountAsset3: 4,
+        addressAsset3: Pubkey::new(&[3; 32]),
+        periodAsset3: 5,
+        assetToSoldIntoAsset3: Pubkey::new(&[3; 32]),
+        amountAsset4: 4,
+        addressAsset4: Pubkey::new(&[4; 32]),
+        periodAsset4: 5,
+        assetToSoldIntoAsset4: Pubkey::new(&[4; 32]),
+        amountAsset5: 4,
+        addressAsset5: Pubkey::new(&[5; 32]),
+        periodAsset5: 5,
+        assetToSoldIntoAsset5: Pubkey::new(&[5; 32]),
+        amountAsset6: 4,
+        addressAsset6: Pubkey::new(&[6; 32]),
+        periodAsset6: 5,
+        assetToSoldIntoAsset6: Pubkey::new(&[6; 32]),
+        amountAsset7: 4,
+        addressAsset7: Pubkey::new(&[7; 32]),
+        periodAsset7:6,
+        assetToSoldIntoAsset7: Pubkey::new(&[7; 32]),
+        amountAsset8: 4,
+        addressAsset8: Pubkey::new(&[8; 32]),
+        periodAsset8: 5,
+        assetToSoldIntoAsset8: Pubkey::new(&[8; 32]),
+        amountAsset9: 4,
+        addressAsset9: Pubkey::new(&[9; 32]),
+        periodAsset9: 5,
+        assetToSoldIntoAsset9: Pubkey::new(&[9; 32]),
+     
+    };
+    let mut packed = vec![0; Portfolio::get_packed_len() + 1];
+    assert_eq!(
+        Err(ProgramError::InvalidAccountData),
+        Portfolio::pack(check, &mut packed)
+    );
+    let mut packed = vec![0; Portfolio::get_packed_len() - 1];
+    assert_eq!(
+        Err(ProgramError::InvalidAccountData),
+        Portfolio::pack(check, &mut packed)
+    );
+    msg!("ici");
+    let mut packed = vec![0; Portfolio::get_packed_len()];
+    Portfolio::pack(check, &mut packed).unwrap();
+    let expect = vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 0, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 0, 0, 0, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+         1, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+          2, 2, 2, 2, 2, 2, 5, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+           2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 0, 0, 0, 3, 3, 3, 3, 3,
+             3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+              4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
+              , 4, 4, 4, 4, 4, 4, 5, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+               4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+                5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 5,
+                 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 
+                 5, 5, 5, 5, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+                  6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 0, 0, 0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+                   6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 7, 7, 7, 7, 7, 7, 7, 7
+                   , 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 0, 0,
+                    0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+                     7, 7, 7, 7, 7, 7, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+                      8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 5, 0, 0, 0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+                       8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 4, 9, 9, 9, 9, 9,
+                        9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+                         9, 5, 0, 0, 0, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
+                          9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9];
+    msg!("ici packed  , {:?}", packed);
+    msg!("ici expect  , {:?}", expect);
+    assert_eq!(packed, expect);
+    let unpacked = Portfolio::unpack(&packed).unwrap();
+   assert_eq!(unpacked, check);
+
+    }
+
+
+    #[test]
+    fn test_create_portfolio() {
+
+       let program_id= Pubkey::new_unique();
+       let creatorAccount= Pubkey::new_unique();
+       let mut creator_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let  owner = Pubkey::new_unique();
+       let mut owner_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let  addressAsset1 = Pubkey::new_unique();
+       let mut addressAsset1_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let  assetToSoldIntoAsset1 = Pubkey::new_unique();
+       let mut assetToSoldIntoAsset1_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let   addressAsset2  = Pubkey::new_unique();
+       let mut addressAsset2_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let  assetToSoldIntoAsset2  = Pubkey::new_unique();
+       let mut assetToSoldIntoAsset2_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let addressAsset3 = Pubkey::new_unique();
+       let mut addressAsset3_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let   assetToSoldIntoAsset3 = Pubkey::new_unique();
+       let mut assetToSoldIntoAsset3_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let  addressAsset4 = Pubkey::new_unique();
+       let mut addressAsset4_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let  assetToSoldIntoAsset4 = Pubkey::new_unique();
+       let mut assetToSoldIntoAsset4_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let   addressAsset5 = Pubkey::new_unique();
+       let mut addressAsset5_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let  assetToSoldIntoAsset5 = Pubkey::new_unique();
+       let mut assetToSoldIntoAsset5_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let  addressAsset6 = Pubkey::new_unique();
+       let mut addressAsset6_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let  assetToSoldIntoAsset6 = Pubkey::new_unique();
+       let mut assetToSoldIntoAsset6_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let  addressAsset7 = Pubkey::new_unique();
+       let mut addressAsset7_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let   assetToSoldIntoAsset7 = Pubkey::new_unique();
+       let mut assetToSoldIntoAsset7_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+       let  addressAsset8 = Pubkey::new_unique();
+       let mut addressAsset8_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+        let  assetToSoldIntoAsset8 = Pubkey::new_unique();
+        let mut assetToSoldIntoAsset8_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+        let  addressAsset9 = Pubkey::new_unique();
+        let mut addressAsset9_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+        let  assetToSoldIntoAsset9 = Pubkey::new_unique();
+        let mut assetToSoldIntoAsset9_account = SolanaAccount::new(42, Portfolio::get_packed_len(), &program_id);
+        let mut rent_sysvar = rent_sysvar();
+         // addressAsset10: &Pubkey ,
+        // assetToSoldIntoAsset10: &Pubkey ,
+      
+     //   metaDataUrl : &Vec<u8>,
+     let  metaDataHash =3;
+     let   amountAsset1 = 4;
+     let  periodAsset1 =5 ;
+        let   amountAsset2 = 6 ;
+        let   periodAsset2 = 7 ;
+        let   amountAsset3 = 8 ;
+        let    periodAsset3  = 9 ;
+        let   amountAsset4 = 2 ;
+        let    periodAsset4 = 3;
+        let   amountAsset5 = 8;
+        let   periodAsset5 = 4 ;
+        let  amountAsset6 = 5 ;
+        let  periodAsset6 = 7 ;
+        let  amountAsset7 = 2 ;
+        let   periodAsset7 = 7 ;
+        let  amountAsset8 = 1 ;
+        let  periodAsset8 = 2 ;
+        let   amountAsset9  = 3;
+        let   periodAsset9 = 4 ;
+
+
+      
+
+
+       // create portfolio
+       do_process_instruction(
+           initialize_portfolio(&program_id, &creatorAccount,
+            &owner,
+            &metaDataHash, &amountAsset1,
+            &addressAsset1,
+            &periodAsset1,
+            &assetToSoldIntoAsset1,
+            &amountAsset2,
+            &addressAsset2,
+            &periodAsset2,
+            &assetToSoldIntoAsset2,
+            &amountAsset3,
+            &addressAsset3,
+            &periodAsset3,
+            &assetToSoldIntoAsset3,
+            &amountAsset4,
+            &addressAsset4,
+            &periodAsset4,
+            &assetToSoldIntoAsset4,
+            &amountAsset5,
+            &addressAsset5,
+            &periodAsset5, 
+            &assetToSoldIntoAsset5,
+            &amountAsset6,
+            &addressAsset6,
+            &periodAsset6,
+            &assetToSoldIntoAsset6,
+            &amountAsset7,
+            &addressAsset7,
+            &periodAsset7,
+            &assetToSoldIntoAsset7,
+            &amountAsset8, 
+            &addressAsset8,
+            &periodAsset8,
+            &assetToSoldIntoAsset8,
+            &amountAsset9, 
+            &addressAsset9,
+            &periodAsset9,
+            &assetToSoldIntoAsset9
+   
+            ).unwrap(),
+           vec![
+            &mut creator_account,
+            &mut owner_account,
+            &mut addressAsset1_account,
+            &mut assetToSoldIntoAsset1_account,
+            &mut addressAsset2_account,
+            &mut assetToSoldIntoAsset2_account,
+            &mut addressAsset3_account,
+            &mut assetToSoldIntoAsset3_account,
+            &mut addressAsset4_account,
+            &mut assetToSoldIntoAsset4_account,
+            &mut addressAsset5_account,
+            &mut assetToSoldIntoAsset5_account,
+            &mut addressAsset6_account,
+            &mut assetToSoldIntoAsset6_account,
+            &mut addressAsset7_account,
+            &mut assetToSoldIntoAsset7_account,
+            &mut addressAsset8_account,
+            &mut assetToSoldIntoAsset8_account,
+            &mut addressAsset9_account,
+            &mut assetToSoldIntoAsset9_account,
+            &mut rent_sysvar
+        ],
+
+
+
+
+     )
+    .unwrap();
     }
 
 
@@ -1737,7 +2086,7 @@ mod tests {
         assert_eq!(packed, expect);
         let unpacked = Multisig::unpack(&packed).unwrap();
         assert_eq!(unpacked, check);
-    }*/
+    }
 
     #[test]
     fn test_initialize_mint() {
@@ -6543,6 +6892,6 @@ mod tests {
         .unwrap();
 
         assert_eq!(account_account, account2_account);
-    }
+    }*/
     
 }

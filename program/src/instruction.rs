@@ -391,7 +391,7 @@ pub enum TokenInstruction {
     /// Initialize Portfolio 
     InitializePortfolio {
         ///the data of the new portfolio
-        metaDataUrl : Vec<u8>,
+        //metaDataUrl : Vec<u8>,
         ///Hash of dataUrl to insure the immuability of data
         metaDataHash : u16,
         ///pourcentage of first asset
@@ -439,6 +439,8 @@ pub enum TokenInstruction {
     //20
     /// create Init User Portfolio 
     createInitUserPortfolio {
+        /// amount delegated
+        delegated_amount: u64,
         ///user's amount of first asset
         valueAsset1: u64,
         ///user's amount  of second asset
@@ -592,13 +594,13 @@ impl TokenInstruction {
 
             19 => {
                 msg!("initial lecture {:?}",rest);
-                let (metaDataUrl, rest) = rest.split_at(128);
+              /*  let (metaDataUrl, rest) = rest.split_at(128);
                 msg!("second error1 {:?}",rest);
                 let metaDataUrl = metaDataUrl
                 .try_into()
                 .ok()
                 .ok_or(InvalidInstruction)?;
-                
+                */
                 let (metaDataHash, rest) = rest.split_at(2);
                 msg!("second error2 metadataHash {:?}", metaDataHash);
                 msg!("second error2 rest {:?}", rest);
@@ -714,12 +716,16 @@ impl TokenInstruction {
                 .map(u32::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 let (amountAsset9, _rest17) = _rest16.split_at(1);
+                msg!("second error777 {:?}", amountAsset9);
+                msg!("second _rest17 {:?}", _rest17);
                 let amountAsset9 = amountAsset9
                 .try_into()
                 .ok()
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 let (periodAsset9, _rest18) = _rest17.split_at(4);
+                msg!("second error888 {:?}", periodAsset9);
+                msg!("second _rest18 {:?}", _rest18);
                 let periodAsset9 = periodAsset9
                 .try_into()
                 .ok()
@@ -738,7 +744,7 @@ impl TokenInstruction {
                 // .map(u64::from_le_bytes)
                 // .ok_or(InvalidInstruction)?;
                 Self::InitializePortfolio {
-                    metaDataUrl,
+                    //metaDataUrl,
                     metaDataHash,
                     amountAsset1,
                     periodAsset1,
@@ -763,7 +769,14 @@ impl TokenInstruction {
                 }
             }
             20 => {
-                let (valueAsset1, rest) = rest.split_at(8);
+                let (delegated_amount, _rest) = rest.split_at(8);
+                msg!("delegated_amount : {:?}" , delegated_amount);
+                let delegated_amount = delegated_amount
+                    .try_into()
+                    .ok()
+                    .map(u64::from_le_bytes)
+                    .ok_or(InvalidInstruction)?;
+                let (valueAsset1, rest) = _rest.split_at(8);
                 let valueAsset1 = valueAsset1
                     .try_into()
                     .ok()
@@ -817,8 +830,8 @@ impl TokenInstruction {
                     .ok()
                     .map(u64::from_le_bytes)
                     .ok_or(InvalidInstruction)?;
-
-                Self::createInitUserPortfolio { valueAsset1, valueAsset2,valueAsset3,valueAsset4,valueAsset5,valueAsset6,valueAsset7,valueAsset8,valueAsset9 }
+                    msg!("valueAsset9 : {:?}" , valueAsset9);
+                Self::createInitUserPortfolio { delegated_amount,valueAsset1, valueAsset2,valueAsset3,valueAsset4,valueAsset5,valueAsset6,valueAsset7,valueAsset8,valueAsset9 }
             }
 
 
@@ -914,7 +927,7 @@ impl TokenInstruction {
             },
 
             Self::InitializePortfolio {
-                metaDataUrl,
+               // metaDataUrl,
                 metaDataHash,
                 amountAsset1,
                 periodAsset1,
@@ -938,7 +951,7 @@ impl TokenInstruction {
                 // periodAsset10,
             } => {
                 buf.push(19);
-                buf.extend_from_slice(&metaDataUrl);
+              //  buf.extend_from_slice(&metaDataUrl);
                 buf.extend_from_slice(&metaDataHash.to_le_bytes());
                 buf.extend_from_slice(&amountAsset1.to_le_bytes());
                 buf.extend_from_slice(&periodAsset1.to_le_bytes());
@@ -962,8 +975,9 @@ impl TokenInstruction {
                 // buf.extend_from_slice(&periodAsset10.to_le_bytes());
                // buf.push(periodAsset10);
             },
-            &Self::createInitUserPortfolio {valueAsset1 , valueAsset2, valueAsset3,valueAsset4,valueAsset5,valueAsset6,valueAsset7,valueAsset8,valueAsset9} => {
+            &Self::createInitUserPortfolio {delegated_amount ,valueAsset1 , valueAsset2, valueAsset3,valueAsset4,valueAsset5,valueAsset6,valueAsset7,valueAsset8,valueAsset9} => {
                 buf.push(20);
+                buf.extend_from_slice(&delegated_amount.to_le_bytes());
                 buf.extend_from_slice(&valueAsset1.to_le_bytes());
                 buf.extend_from_slice(&valueAsset2.to_le_bytes());
                 buf.extend_from_slice(&valueAsset3.to_le_bytes());
@@ -1141,53 +1155,59 @@ fn convert<T, const N: usize>(v: Vec<T>) -> [T; N] {
 pub fn initialize_portfolio(
     program_id: &Pubkey,
     creatorAccount: &Pubkey ,
+    owner: &Pubkey ,
+    metaDataHash : &u16,
+    amountAsset1 : &u8,
     addressAsset1: &Pubkey ,
+    periodAsset1 : &u32,
     assetToSoldIntoAsset1: &Pubkey ,
+    amountAsset2 : &u8,
     addressAsset2: &Pubkey ,
+    periodAsset2 : &u32,
     assetToSoldIntoAsset2: &Pubkey ,
+    amountAsset3 : &u8,
     addressAsset3: &Pubkey ,
+    periodAsset3 : &u32,
     assetToSoldIntoAsset3: &Pubkey ,
+    amountAsset4 : &u8,
     addressAsset4: &Pubkey ,
+    periodAsset4 : &u32,
     assetToSoldIntoAsset4: &Pubkey ,
+    amountAsset5 : &u8,
     addressAsset5: &Pubkey ,
+    periodAsset5 : &u32,
     assetToSoldIntoAsset5: &Pubkey ,
+    amountAsset6 : &u8,
     addressAsset6: &Pubkey ,
+    periodAsset6 : &u32,
     assetToSoldIntoAsset6: &Pubkey ,
+    amountAsset7 : &u8,
     addressAsset7: &Pubkey ,
+    periodAsset7 : &u32,
     assetToSoldIntoAsset7: &Pubkey ,
+    amountAsset8 : &u8,
     addressAsset8: &Pubkey ,
+    periodAsset8 : &u32,
     assetToSoldIntoAsset8: &Pubkey ,
+    amountAsset9 : &u8,
     addressAsset9: &Pubkey ,
+    periodAsset9 : &u32,
     assetToSoldIntoAsset9: &Pubkey ,
     // addressAsset10: &Pubkey ,
     // assetToSoldIntoAsset10: &Pubkey ,
-    owner: &Pubkey ,
-    metaDataUrl : &Vec<u8>,
-    metaDataHash : &u16,
-    amountAsset1 : &u8,
-    periodAsset1 : &u32,
-    amountAsset2 : &u8,
-    periodAsset2 : &u32,
-    amountAsset3 : &u8,
-    periodAsset3 : &u32,
-    amountAsset4 : &u8,
-    periodAsset4 : &u32,
-    amountAsset5 : &u8,
-    periodAsset5 : &u32,
-    amountAsset6 : &u8,
-    periodAsset6 : &u32,
-    amountAsset7 : &u8,
-    periodAsset7 : &u32,
-    amountAsset8 : &u8,
-    periodAsset8 : &u32,
-    amountAsset9 : &u8,
-    periodAsset9 : &u32,
+  
+ //   metaDataUrl : &Vec<u8>,
+    
+    
+   
+
+
     // amountAsset10 : &u8,
     // periodAsset10 : &u32,
 
 ) -> Result<Instruction, ProgramError> {
     let data = TokenInstruction::InitializePortfolio {
-        metaDataUrl: metaDataUrl.clone(),
+      //  metaDataUrl: metaDataUrl.clone(),
         metaDataHash: *metaDataHash,
         amountAsset1: *amountAsset1,
         periodAsset1: *periodAsset1,
@@ -1213,7 +1233,7 @@ pub fn initialize_portfolio(
 
 
     let  accounts = vec![
-        AccountMeta::new(*creatorAccount, false),
+        AccountMeta::new(*creatorAccount, true),
         AccountMeta::new(*addressAsset1, false),
         AccountMeta::new(*assetToSoldIntoAsset1, false),
         AccountMeta::new(*addressAsset2, false),
@@ -1232,9 +1252,10 @@ pub fn initialize_portfolio(
         AccountMeta::new(*assetToSoldIntoAsset8, false),
         AccountMeta::new(*addressAsset9, false),
         AccountMeta::new(*assetToSoldIntoAsset9, false),
+        AccountMeta::new(*owner, true),
         // AccountMeta::new(*addressAsset10, false),
         // AccountMeta::new(*assetToSoldIntoAsset10, false),
-        AccountMeta::new(*owner, false),
+     
        ];
   
     Ok(Instruction {
@@ -1248,8 +1269,10 @@ pub fn create_Init_User_Portfolio
 
 (
     program_id: &Pubkey,
-    portfolioAddress: &Pubkey ,
     userPortfolioAccount: &Pubkey ,
+    portfolioAddress: &Pubkey ,
+    owner: &Pubkey ,
+    delegate: &Pubkey ,
     addressAsset1: &Pubkey ,
     addressAsset2: &Pubkey ,
     addressAsset3: &Pubkey ,
@@ -1260,6 +1283,7 @@ pub fn create_Init_User_Portfolio
     addressAsset8: &Pubkey ,
     addressAsset9: &Pubkey ,
     // addressAsset10: &Pubkey ,
+    delegated_amount: &u64,
     valueAsset1 : &u64,
     valueAsset2 : &u64,
     valueAsset3 : &u64,
@@ -1273,6 +1297,7 @@ pub fn create_Init_User_Portfolio
 
 ) -> Result<Instruction, ProgramError> {
     let data = TokenInstruction::createInitUserPortfolio {
+        delegated_amount:*delegated_amount,
         valueAsset1: *valueAsset1,
         valueAsset2: *valueAsset2,
         valueAsset3: *valueAsset3,
@@ -1287,8 +1312,10 @@ pub fn create_Init_User_Portfolio
 
 
     let  accounts = vec![
-        AccountMeta::new(*portfolioAddress, false),
         AccountMeta::new(*userPortfolioAccount, false),
+        AccountMeta::new(*portfolioAddress, false),
+        AccountMeta::new(*owner, true),
+        AccountMeta::new(*delegate, false),
         AccountMeta::new(*addressAsset1, false),
         AccountMeta::new(*addressAsset2, false),
         AccountMeta::new(*addressAsset3, false),

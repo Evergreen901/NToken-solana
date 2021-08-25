@@ -288,7 +288,7 @@ type PortfolioInfo = {
     /**
      * metadata url
      */
-    metadataUrl: BufferLayout.blob,
+    //metadataUrl: BufferLayout.blob,
     /**
      * Amount usdc of tokens this account holds
      */
@@ -442,20 +442,19 @@ type PortfolioInfo = {
     assetToSoldIntoAsset9: null | PublicKey,
     /**
      * The amount of asset
-     */
-    amountAsset10: null | u64,
+ //   amountAsset10: null | u64,
     /**
      * The address of  asset
      */
-    addressAsset10: null | PublicKey,
+   // addressAsset10: null | PublicKey,
     /**
      * The period of  asset
      */
-    periodAsset10: null | u64,
+  //  periodAsset10: null | u64,
     /**
      * The asset solde of asset
      */
-    assetToSoldIntoAsset10: null | PublicKey
+   // assetToSoldIntoAsset10: null | PublicKey
 };
 
 /**
@@ -463,69 +462,70 @@ type PortfolioInfo = {
  */
 export const PortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struct(
     [
+
         Layout.publicKey('owner'), //32
-        BufferLayout.blob(128, 'metadataUrl'), //128
-        BufferLayout.u32('metadataHash'), //16
+       // BufferLayout.blob(128, 'metadataUrl'), //128
+        BufferLayout.u16('metadataHash'), //16
         Layout.publicKey('creatorAccount'), //32
 
-        Layout.uint64('amountAsset1'), //8
+        BufferLayout.u8('amountAsset1'), //8
         Layout.publicKey('addressAsset1'), //32
-        Layout.uint64('periodAsset1'), //2
+        BufferLayout.u32('periodAsset1'), //32
         Layout.publicKey('assetToSoldIntoAsset1'), //32
 
 
-        Layout.uint64('amountAsset2'), //8
+        BufferLayout.u8('amountAsset2'), //8
         Layout.publicKey('addressAsset2'), //32
-        Layout.uint64('periodAsset2'), //2
+        BufferLayout.u32('periodAsset2'), //32
         Layout.publicKey('assetToSoldIntoAsset2'), //32
 
 
-        Layout.uint64('amountAsset3'), //8
+        BufferLayout.u8('amountAsset3'), //8
         Layout.publicKey('addressAsset3'), //32
-        Layout.uint64('periodAsset3'), //2
+        BufferLayout.u32('periodAsset3'), //32
         Layout.publicKey('assetToSoldIntoAsset3'), //32
 
 
-        Layout.uint64('amountAsset4'), //8
+        BufferLayout.u8('amountAsset4'), //8
         Layout.publicKey('addressAsset4'), //32
-        Layout.uint64('periodAsset4'), //2
+        BufferLayout.u32('periodAsset4'), //2
         Layout.publicKey('assetToSoldIntoAsset4'), //32
 
 
-        Layout.uint64('amountAsset5'), //8
+        BufferLayout.u8('amountAsset5'), //8
         Layout.publicKey('addressAsset5'), //32
-        Layout.uint64('periodAsset5'), //2
+        BufferLayout.u32('periodAsset5'), //32
         Layout.publicKey('assetToSoldIntoAsset5'), //32
 
 
-        Layout.uint64('amountAsset6'), //8
+        BufferLayout.u8('amountAsset6'), //8
         Layout.publicKey('addressAsset6'), //32
-        Layout.uint64('periodAsset6'), //2
+        BufferLayout.u32('periodAsset6'), //32
         Layout.publicKey('assetToSoldIntoAsset6'), //32
 
 
-        Layout.uint64('amountAsset7'), //8
+        BufferLayout.u8('amountAsset7'), //8
         Layout.publicKey('addressAsset7'), //32
-        Layout.uint64('periodAsset7'), //2
+        BufferLayout.u32('periodAsset7'), //32
         Layout.publicKey('assetToSoldIntoAsset7'), //32
 
 
-        Layout.uint64('amountAsset8'), //8
+        BufferLayout.u8('amountAsset8'), //8
         Layout.publicKey('addressAsset8'), //32
-        Layout.uint64('periodAsset8'), //2
+        BufferLayout.u32('periodAsset8'), //32
         Layout.publicKey('assetToSoldIntoAsset8'), //32
 
 
-        Layout.uint64('amountAsset9'), //8
+        BufferLayout.u8('amountAsset9'), //8
         Layout.publicKey('addressAsset9'), //32
-        Layout.uint64('periodAsset9'), //2
+        BufferLayout.u32('periodAsset9'), //32
         Layout.publicKey('assetToSoldIntoAsset9'), //32
 
 
-        Layout.uint64('amountAsset10'), //8
+      /*  Layout.u8('amountAsset10'), //8
         Layout.publicKey('addressAsset10'), //32
-        Layout.uint64('periodAsset10'), //2
-        Layout.publicKey('assetToSoldIntoAsset10'), //32
+        Layout.u32('periodAsset10'), //32
+        Layout.publicKey('assetToSoldIntoAsset10'), //32*/
     ],
 );
 
@@ -1179,6 +1179,7 @@ export class nToken {
       addressAsset9 : Publickey| null ,
       periodAsset9 : number ,
       assetToSoldIntoAsset9 : PublicKey| null,
+
       // amountAsset10 : number ,
       // addressAsset10 : Publickey | null,
       // periodAsset10 : number ,
@@ -1196,7 +1197,7 @@ export class nToken {
       const transaction = new Transaction();
       transaction.add(
           SystemProgram.createAccount({
-              fromPubkey: this.payer.publicKey,
+              fromPubkey: owner.publicKey,
               newAccountPubkey: newAccountPortfolio.publicKey,
               lamports: balanceNeeded,
               space: PortfolioLayout.span,
@@ -1210,7 +1211,7 @@ export class nToken {
             nToken.createInitPortfolioInstruction(
                 this.programId,
                 // mintPublicKey,
-                this.payer.publicKey,
+                owner.publicKey,
                 metaDataUrl,
                 metaDataHash,
                 newAccountPortfolio.publicKey,
@@ -1250,6 +1251,7 @@ export class nToken {
                 addressAsset9,
                 periodAsset9,
                 assetToSoldIntoAsset9,
+
                 // amountAsset10,
                 // addressAsset10,
                 // periodAsset10,
@@ -1257,14 +1259,14 @@ export class nToken {
             ),
         );
 
-
+                console.log("owner : ", owner.publicKey.toString());
 
         //Send the two instructions
         await sendAndConfirmTransaction(
             'createPortfolio and InitializePortfolio',
             this.connection,
             transaction,
-            this.payer,
+            owner,
             newAccountPortfolio
             
 
@@ -1288,8 +1290,10 @@ export class nToken {
      * @return UserPortfolio of the new empty account
      */
      async createUserPortfolio(
-      newUserPortfolioAccount:Account,
+      owner:Account,
       portfolioAddress: PublicKey,
+      delegate: PublicKey | null,
+      delegated_amount: number | null,
       valueAsset1: number,
       addressAsset1: PublicKey,
       valueAsset2: number | null,
@@ -1316,12 +1320,12 @@ export class nToken {
           this.connection,
       );
 
-     // const newUserPortfolioAccount = new Account();
+      const userPortfolioAccount = new Account();
       const transaction = new Transaction();
       transaction.add(
           SystemProgram.createAccount({
-              fromPubkey: this.payer.publicKey,
-              newAccountPubkey: newUserPortfolioAccount.publicKey,
+              fromPubkey: owner.publicKey,
+              newAccountPubkey: userPortfolioAccount.publicKey,
               lamports: balanceNeeded,
               space: UserPortfolioLayout.span,
               programId: this.programId,
@@ -1332,8 +1336,11 @@ export class nToken {
       transaction.add(
           nToken.createInitUserPortfolioInstruction(
               this.programId,
-              newUserPortfolioAccount.publicKey,
+              userPortfolioAccount.publicKey,
+              owner.publicKey,
               portfolioAddress,
+              delegate,
+              delegated_amount,
               valueAsset1,
               addressAsset1,
               valueAsset2,
@@ -1363,11 +1370,11 @@ export class nToken {
           'createAccount and InitializeAccount',
           this.connection,
           transaction,
-          this.payer,
-          newUserPortfolioAccount,
+          owner,
+          userPortfolioAccount,
       );
 
-      return newUserPortfolioAccount;
+      return userPortfolioAccount;
   }
 
 
@@ -2742,7 +2749,7 @@ export class nToken {
 
       console.log ("creatorAccount : ",creatorAccount , "addressAsset1 : ",addressAsset1,"assetToSoldIntoAsset1 : ",assetToSoldIntoAsset1);
         const keys = [
-            { pubkey: creatorAccount, isSigner: true, isWritable: true },
+            { pubkey: creatorAccount, isSigner: false, isWritable: true },
             { pubkey: addressAsset1, isSigner: false, isWritable: false },
             { pubkey: assetToSoldIntoAsset1, isSigner: false, isWritable: false },
             { pubkey: addressAsset2, isSigner: false, isWritable: false },
@@ -2775,7 +2782,7 @@ export class nToken {
         
         const dataLayout = BufferLayout.struct([
             BufferLayout.u8('instruction'),
-            BufferLayout.blob(128, 'metaDataUrl'),
+          //  BufferLayout.blob(128, 'metaDataUrl'),
             BufferLayout.u16('metaDataHash'),
             BufferLayout.u8('amountAsset1'),
             BufferLayout.u32('periodAsset1'),
@@ -2808,27 +2815,27 @@ export class nToken {
         console.log('====================================');
         dataLayout.encode({
                 instruction: 19, // InitializeAccount portfolio
-                metaDataUrl: Buffer.alloc(128, metaDataUrl, "ascii"),
+              //  metaDataUrl: Buffer.alloc(128, metaDataUrl, "ascii"),
                 metaDataHash :metaDataHash,
-                amountAsset1 ,
+                amountAsset1  ,
                 /*amountAsset1: new u16(amountAsset1).toBuffer(),*/
-                periodAsset1,
+                periodAsset1 : Buffer.from(periodAsset1),
                 amountAsset2,
-                periodAsset2,
+                periodAsset2 : Buffer.from(periodAsset2),
                 amountAsset3,
-                periodAsset3,
+                periodAsset3 : Buffer.from(periodAsset3),
                 amountAsset4,
-                periodAsset4,
+                periodAsset4 : Buffer.from(periodAsset4),
                 amountAsset5,
-                periodAsset5,
+                periodAsset5 : Buffer.from(periodAsset5),
                 amountAsset6,
-                periodAsset6,
+                periodAsset6 : Buffer.from(periodAsset6),
                 amountAsset7,
-                periodAsset7,
+                periodAsset7: Buffer.from(periodAsset7),
                 amountAsset8,
-                periodAsset8,
+                periodAsset8: Buffer.from(periodAsset8),
                 amountAsset9,
-                periodAsset9,
+                periodAsset9: Buffer.from(periodAsset9),
                 // amountAsset10,
                 // periodAsset10,
                 // periodAsset10: new u64(periodAsset10).toBuffer(),
@@ -2856,8 +2863,12 @@ export class nToken {
 
     static createInitUserPortfolioInstruction(
         programId: PublicKey,
-        UserPortfolioAccount: PublicKey,
+        userPortfolioAccount: PublicKey,
+        owner: PublicKey,
         portfolioAddress: PublicKey,
+
+        delegate: PublicKey | null,
+        delegated_amount:number |null,
 
         valueAsset1: number,
         addressAsset1: PublicKey,
@@ -2893,8 +2904,10 @@ export class nToken {
     ): TransactionInstruction {
 
         const keys = [
+            { pubkey: userPortfolioAccount, isSigner: false, isWritable: true },
             { pubkey: portfolioAddress, isSigner: false, isWritable: false },
-            { pubkey: UserPortfolioAccount, isSigner: true, isWritable: true },
+            { pubkey: owner, isSigner: true, isWritable: false },
+            { pubkey: delegate, isSigner: false, isWritable: false },
             { pubkey: addressAsset1, isSigner: false, isWritable: false },
             { pubkey: addressAsset2, isSigner: false, isWritable: false },
             { pubkey: addressAsset3, isSigner: false, isWritable: false },
@@ -2909,6 +2922,7 @@ export class nToken {
 
         const dataLayout = BufferLayout.struct([
             BufferLayout.u8('instruction'),
+            Layout.uint64('delegated_amount'),
             Layout.uint64('valueAsset1'),
             Layout.uint64('valueAsset2'),
             Layout.uint64('valueAsset3'),
@@ -2927,6 +2941,7 @@ export class nToken {
         dataLayout.encode({
                 instruction: 20, // Initialize Account user Portfolio
 
+                delegated_amount: new u64(delegated_amount).toBuffer(),
                 valueAsset1: new u64(valueAsset1).toBuffer(),
                 valueAsset2: new u64(valueAsset2).toBuffer(),
                 valueAsset3: new u64(valueAsset3).toBuffer(),
