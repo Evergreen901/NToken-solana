@@ -786,7 +786,7 @@ impl Processor {
                 Self::process_withdraw(program_id , accounts , amount)
             },
             TokenInstruction::InitializePortfolio {
-             //   metaDataUrl,
+                metaDataUrl,
                 metaDataHash,
                 amountAsset1,
                 periodAsset1,
@@ -811,7 +811,7 @@ impl Processor {
              } => {
                 msg!("Instruction: InitializePortfolio");
                 Self::process_initialize_portfolio(program_id , accounts , 
-                    //metaDataUrl,
+                    metaDataUrl,
                    metaDataHash,
                     amountAsset1,
                     periodAsset1,
@@ -906,33 +906,32 @@ impl Processor {
     pub fn process_initialize_portfolio(
         program_id: &Pubkey,
         accounts: &[AccountInfo],
-      //  metaDataUrl : Vec<u8>,
+        metaDataUrl : Vec<u8>,
         metaDataHash : u16,
         amountAsset1 : u8,
-        periodAsset1 : u32,
+        periodAsset1 : u8,
         amountAsset2 : u8,
-        periodAsset2 : u32,
+        periodAsset2 : u8,
         amountAsset3 : u8,
-        periodAsset3 : u32,
+        periodAsset3 : u8,
         amountAsset4 : u8,
-        periodAsset4 : u32,
+        periodAsset4 : u8,
         amountAsset5 : u8,
-        periodAsset5 : u32,
+        periodAsset5 : u8,
         amountAsset6 : u8,
-        periodAsset6 : u32,
+        periodAsset6 : u8,
         amountAsset7 : u8,
-        periodAsset7 : u32,
+        periodAsset7 : u8,
         amountAsset8 : u8,
-        periodAsset8 : u32,
+        periodAsset8 : u8,
         amountAsset9 : u8,
-        periodAsset9 : u32
+        periodAsset9 : u8
         //,
         // amountAsset10 : u8,
         // periodAsset10 : u32
     ) -> ProgramResult {
         let accounts_iter = &mut accounts.iter();
         let account = next_account_info(accounts_iter)?;
-        let owner = next_account_info(accounts_iter)?;
         let addressAsset1 = next_account_info(accounts_iter)?;
         let assetToSoldIntoAsset1 = next_account_info(accounts_iter)?;
         let addressAsset2 = next_account_info(accounts_iter)?;
@@ -951,6 +950,7 @@ impl Processor {
         let assetToSoldIntoAsset8 = next_account_info(accounts_iter)?;
         let addressAsset9 = next_account_info(accounts_iter)?;
         let assetToSoldIntoAsset9 = next_account_info(accounts_iter)?;
+        let owner = next_account_info(accounts_iter)?;
     
      
        
@@ -963,21 +963,22 @@ impl Processor {
  
             creatorAccount.creatorAccount = *account.key;
             creatorAccount.owner = *owner.key;
+            creatorAccount.metadataUrl = metaDataUrl;
             creatorAccount.metadataHash = metaDataHash;
             creatorAccount.amountAsset1 = amountAsset1;
-            creatorAccount.addressAsset1 = *addressAsset1.key;;
+            creatorAccount.addressAsset1 = *addressAsset1.key;       
             creatorAccount.periodAsset1 = periodAsset1;
             creatorAccount.assetToSoldIntoAsset1 = *assetToSoldIntoAsset1.key; 
             creatorAccount.amountAsset2 = amountAsset2;
-            creatorAccount.addressAsset2 = *addressAsset2.key;;
+            creatorAccount.addressAsset2 = *addressAsset2.key;   
             creatorAccount.periodAsset2 = periodAsset2;
             creatorAccount.assetToSoldIntoAsset2 = *assetToSoldIntoAsset2.key; 
             creatorAccount.amountAsset3 = amountAsset3;
-            creatorAccount.addressAsset3 = *addressAsset3.key;;
+            creatorAccount.addressAsset3 = *addressAsset3.key;
             creatorAccount.periodAsset3 = periodAsset3;
             creatorAccount.assetToSoldIntoAsset3 = *assetToSoldIntoAsset3.key; 
             creatorAccount.amountAsset4 = amountAsset4;
-            creatorAccount.addressAsset4 = *addressAsset4.key;;
+            creatorAccount.addressAsset4 = *addressAsset4.key;
             creatorAccount.periodAsset4 = periodAsset4;
             creatorAccount.assetToSoldIntoAsset4 = *assetToSoldIntoAsset4.key; 
             creatorAccount.amountAsset5 = amountAsset5;
@@ -1002,12 +1003,17 @@ impl Processor {
             creatorAccount.assetToSoldIntoAsset9 = *assetToSoldIntoAsset9.key;
  
 
+        
+            msg!(" creatorAccount  ,owner {:?} , amount  {:?}  , period  {:?} ", *owner.key, amountAsset1 , periodAsset1 );
+            msg!(" after unpack account portfolio {:?} , metadatahash : {:?} ", account.key,  metaDataHash   );
+       
+
 
         Portfolio::pack(creatorAccount, &mut account.data.borrow_mut())?;
         
-        msg!(" ******* creatorAccount owner {:?} , amount : {:?}  , period : {:?} ",creatorAccount.owner , creatorAccount.amountAsset1 , creatorAccount.periodAsset1 );
-        msg!(" after unpack initialze portfolio account : {:?} ",account );
-       // msg!("after unpack initialze portfolio account date : {:?} ",account.data );
+    //    msg!(" ******* creatorAccount owner {:?} , amount : {:?}  , period : {:?} ",creatorAccount.owner , creatorAccount.amountAsset1 , creatorAccount.periodAsset1 );
+    //     msg!(" after unpack initialze portfolio account : {:?} , metadatahash : {:?} ",account ,  creatorAccount.metadataHash );
+         //msg!("after unpack initialze portfolio account date : {:?} ",account.data );
         Ok(())
 
     }
@@ -1795,32 +1801,30 @@ mod tests {
     msg!("ici");
     let mut packed = vec![0; Portfolio::get_packed_len()];
     Portfolio::pack(check, &mut packed).unwrap();
-    let expect = vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 0, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 0, 0, 0, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-         1, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-          2, 2, 2, 2, 2, 2, 5, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-           2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 0, 0, 0, 3, 3, 3, 3, 3,
-             3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-              4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
-              , 4, 4, 4, 4, 4, 4, 5, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-               4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-                5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 5,
-                 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 
-                 5, 5, 5, 5, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-                  6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 0, 0, 0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-                   6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 7, 7, 7, 7, 7, 7, 7, 7
-                   , 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6, 0, 0,
-                    0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-                     7, 7, 7, 7, 7, 7, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-                      8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 5, 0, 0, 0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
-                       8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 4, 9, 9, 9, 9, 9,
-                        9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-                         9, 5, 0, 0, 0, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-                          9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9];
+    let expect = vec!
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    , 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+     2, 2, 2, 2, 3, 0, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+         2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+          3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 3, 3, 3, 3, 3,
+           3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4,
+            4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 
+            4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+             4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+             , 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+              5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+               6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+                6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 7, 7, 7, 7, 7
+                , 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 6
+                , 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
+                , 7, 7, 7, 7, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
+                , 8, 8, 8, 8, 8, 8, 8, 8, 8, 5, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
+                , 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 4, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+                , 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 5, 9, 9, 9, 9, 9, 9, 9, 9
+                , 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9];
     msg!("ici packed  , {:?}", packed);
     msg!("ici expect  , {:?}", expect);
     assert_eq!(packed, expect);
@@ -1878,7 +1882,7 @@ mod tests {
          // addressAsset10: &Pubkey ,
         // assetToSoldIntoAsset10: &Pubkey ,
       
-     //   metaDataUrl : &Vec<u8>,
+      let   metaDataUrl = "1";
      let  metaDataHash =3;
      let   amountAsset1 = 4;
      let  periodAsset1 =5 ;

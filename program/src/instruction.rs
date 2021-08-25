@@ -391,45 +391,45 @@ pub enum TokenInstruction {
     /// Initialize Portfolio 
     InitializePortfolio {
         ///the data of the new portfolio
-        //metaDataUrl : Vec<u8>,
+        metaDataUrl : Vec<u8>,
         ///Hash of dataUrl to insure the immuability of data
         metaDataHash : u16,
         ///pourcentage of first asset
         amountAsset1: u8,
         ///period of first asset
-        periodAsset1 : u32,
+        periodAsset1 : u8,
         ///pourcentage of second asset
         amountAsset2 : u8,
         ///period of second asset
-        periodAsset2 : u32,
+        periodAsset2 : u8,
         ///pourcentage of third asset
         amountAsset3 : u8,
         ///period of third asset
-        periodAsset3 : u32,
+        periodAsset3 : u8,
         ///pourcentage of 4 asset
         amountAsset4 : u8,
         ///period of 4 asset
-        periodAsset4 : u32,
+        periodAsset4 : u8,
         ///pourcentage of 5 asset
         amountAsset5 : u8,
         ///period of 5 asset
-        periodAsset5 : u32,
+        periodAsset5 : u8,
         ///pourcentage of 6 asset
         amountAsset6 : u8,
         ///period of 6 asset
-        periodAsset6 : u32,
+        periodAsset6 : u8,
         ///pourcentage of 7 asset
         amountAsset7 : u8,
         ///period of 7 asset
-        periodAsset7 : u32,
+        periodAsset7 : u8,
         ///pourcentage of 8 asset
         amountAsset8 : u8,
         ///period of 8 asset
-        periodAsset8 : u32,
+        periodAsset8 : u8,
         ///pourcentage of 9 asset
         amountAsset9 : u8,
         ///period of 9 asset
-        periodAsset9 : u32,
+        periodAsset9 : u8,
        // ///pourcentage of 10 asset
         // amountAsset10 : u8,
         // ///period of 10 asset
@@ -594,13 +594,13 @@ impl TokenInstruction {
 
             19 => {
                 msg!("initial lecture {:?}",rest);
-              /*  let (metaDataUrl, rest) = rest.split_at(128);
+                let (metaDataUrl, rest) = rest.split_at(128);
                 msg!("second error1 {:?}",rest);
                 let metaDataUrl = metaDataUrl
                 .try_into()
                 .ok()
                 .ok_or(InvalidInstruction)?;
-                */
+                
                 let (metaDataHash, rest) = rest.split_at(2);
                 msg!("second error2 metadataHash {:?}", metaDataHash);
                 msg!("second error2 rest {:?}", rest);
@@ -619,13 +619,13 @@ impl TokenInstruction {
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 
-                let (periodAsset1, _rest2) = _rest.split_at(4);
+                let (periodAsset1, _rest2) = _rest.split_at(1);
                 msg!("second error4 periodAsset1 {:?}", periodAsset1);
                 msg!("second error4 rest {:?}", _rest2);
                 let periodAsset1 = periodAsset1
                 .try_into()
                 .ok()
-                .map(u32::from_le_bytes)
+                .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 let (amountAsset2, _rest3) = _rest2.split_at(1);
                 msg!("second error5 amountAsset2 {:?}", amountAsset2);
@@ -635,12 +635,12 @@ impl TokenInstruction {
                 .ok()
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
-                let (periodAsset2, _rest4) = _rest3.split_at(4);
+                let (periodAsset2, _rest4) = _rest3.split_at(1);
                 msg!("second error6");
                 let periodAsset2 = periodAsset2
                 .try_into()
                 .ok()
-                .map(u32::from_le_bytes)
+                .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 let (amountAsset3, _rest5) = _rest4.split_at(1);
                 msg!("second error7");
@@ -649,11 +649,11 @@ impl TokenInstruction {
                 .ok()
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
-                let (periodAsset3, _rest6) = _rest5.split_at(4);
+                let (periodAsset3, _rest6) = _rest5.split_at(1);
                 let periodAsset3 = periodAsset3
                 .try_into()
                 .ok()
-                .map(u32::from_le_bytes)
+                .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 let (amountAsset4, _rest7) = _rest6.split_at(1);
                 let amountAsset4 = amountAsset4
@@ -661,11 +661,11 @@ impl TokenInstruction {
                 .ok()
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
-                let (periodAsset4, _rest8) = _rest7.split_at(4);
+                let (periodAsset4, _rest8) = _rest7.split_at(1);
                 let periodAsset4 = periodAsset4
                 .try_into()
                 .ok()
-                .map(u32::from_le_bytes)
+                .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 let (amountAsset5, _rest9) = _rest8.split_at(1);
                 let amountAsset5 = amountAsset5
@@ -673,11 +673,11 @@ impl TokenInstruction {
                 .ok()
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
-                let (periodAsset5, _rest10) = _rest9.split_at(4);
+                let (periodAsset5, _rest10) = _rest9.split_at(1);
                 let periodAsset5 = periodAsset5
                 .try_into()
                 .ok()
-                .map(u32::from_le_bytes)
+                .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 let (amountAsset6, _rest11) = _rest10.split_at(1);
                 let amountAsset6 = amountAsset6
@@ -685,11 +685,11 @@ impl TokenInstruction {
                 .ok()
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
-                let (periodAsset6, _rest12) = _rest11.split_at(4);
+                let (periodAsset6, _rest12) = _rest11.split_at(1);
                 let periodAsset6 = periodAsset6
                 .try_into()
                 .ok()
-                .map(u32::from_le_bytes)
+                .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 let (amountAsset7, _rest13) = _rest12.split_at(1);
                 let amountAsset7 = amountAsset7
@@ -697,11 +697,11 @@ impl TokenInstruction {
                 .ok()
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
-                let (periodAsset7, _rest14) = _rest13.split_at(4);
+                let (periodAsset7, _rest14) = _rest13.split_at(1);
                 let periodAsset7 = periodAsset7
                 .try_into()
                 .ok()
-                .map(u32::from_le_bytes)
+                .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 let (amountAsset8, _rest15) = _rest14.split_at(1);
                 let amountAsset8 = amountAsset8
@@ -709,11 +709,11 @@ impl TokenInstruction {
                 .ok()
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
-                let (periodAsset8, _rest16) = _rest15.split_at(4);
+                let (periodAsset8, _rest16) = _rest15.split_at(1);
                 let periodAsset8 = periodAsset8
                 .try_into()
                 .ok()
-                .map(u32::from_le_bytes)
+                .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 let (amountAsset9, _rest17) = _rest16.split_at(1);
                 msg!("second error777 {:?}", amountAsset9);
@@ -723,13 +723,13 @@ impl TokenInstruction {
                 .ok()
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
-                let (periodAsset9, _rest18) = _rest17.split_at(4);
+                let (periodAsset9, _rest18) = _rest17.split_at(1);
                 msg!("second error888 {:?}", periodAsset9);
                 msg!("second _rest18 {:?}", _rest18);
                 let periodAsset9 = periodAsset9
                 .try_into()
                 .ok()
-                .map(u32::from_le_bytes)
+                .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
                 // let (amountAsset10, _rest19) = _rest18.split_at(8);
                 // let amountAsset10 = amountAsset10
@@ -744,7 +744,7 @@ impl TokenInstruction {
                 // .map(u64::from_le_bytes)
                 // .ok_or(InvalidInstruction)?;
                 Self::InitializePortfolio {
-                    //metaDataUrl,
+                    metaDataUrl,
                     metaDataHash,
                     amountAsset1,
                     periodAsset1,
@@ -927,7 +927,7 @@ impl TokenInstruction {
             },
 
             Self::InitializePortfolio {
-               // metaDataUrl,
+                metaDataUrl,
                 metaDataHash,
                 amountAsset1,
                 periodAsset1,
@@ -951,7 +951,7 @@ impl TokenInstruction {
                 // periodAsset10,
             } => {
                 buf.push(19);
-              //  buf.extend_from_slice(&metaDataUrl);
+                buf.extend_from_slice(&metaDataUrl);
                 buf.extend_from_slice(&metaDataHash.to_le_bytes());
                 buf.extend_from_slice(&amountAsset1.to_le_bytes());
                 buf.extend_from_slice(&periodAsset1.to_le_bytes());
@@ -1156,47 +1156,48 @@ pub fn initialize_portfolio(
     program_id: &Pubkey,
     creatorAccount: &Pubkey ,
     owner: &Pubkey ,
+    metaDataUrl : &Vec<u8>,
     metaDataHash : &u16,
     amountAsset1 : &u8,
     addressAsset1: &Pubkey ,
-    periodAsset1 : &u32,
+    periodAsset1 : &u8,
     assetToSoldIntoAsset1: &Pubkey ,
     amountAsset2 : &u8,
     addressAsset2: &Pubkey ,
-    periodAsset2 : &u32,
+    periodAsset2 : &u8,
     assetToSoldIntoAsset2: &Pubkey ,
     amountAsset3 : &u8,
     addressAsset3: &Pubkey ,
-    periodAsset3 : &u32,
+    periodAsset3 : &u8,
     assetToSoldIntoAsset3: &Pubkey ,
     amountAsset4 : &u8,
     addressAsset4: &Pubkey ,
-    periodAsset4 : &u32,
+    periodAsset4 : &u8,
     assetToSoldIntoAsset4: &Pubkey ,
     amountAsset5 : &u8,
     addressAsset5: &Pubkey ,
-    periodAsset5 : &u32,
+    periodAsset5 : &u8,
     assetToSoldIntoAsset5: &Pubkey ,
     amountAsset6 : &u8,
     addressAsset6: &Pubkey ,
-    periodAsset6 : &u32,
+    periodAsset6 : &u8,
     assetToSoldIntoAsset6: &Pubkey ,
     amountAsset7 : &u8,
     addressAsset7: &Pubkey ,
-    periodAsset7 : &u32,
+    periodAsset7 : &u8,
     assetToSoldIntoAsset7: &Pubkey ,
     amountAsset8 : &u8,
     addressAsset8: &Pubkey ,
-    periodAsset8 : &u32,
+    periodAsset8 : &u8,
     assetToSoldIntoAsset8: &Pubkey ,
     amountAsset9 : &u8,
     addressAsset9: &Pubkey ,
-    periodAsset9 : &u32,
+    periodAsset9 : &u8,
     assetToSoldIntoAsset9: &Pubkey ,
     // addressAsset10: &Pubkey ,
     // assetToSoldIntoAsset10: &Pubkey ,
   
- //   metaDataUrl : &Vec<u8>,
+ 
     
     
    
@@ -1207,7 +1208,7 @@ pub fn initialize_portfolio(
 
 ) -> Result<Instruction, ProgramError> {
     let data = TokenInstruction::InitializePortfolio {
-      //  metaDataUrl: metaDataUrl.clone(),
+        metaDataUrl: metaDataUrl.clone(),
         metaDataHash: *metaDataHash,
         amountAsset1: *amountAsset1,
         periodAsset1: *periodAsset1,
