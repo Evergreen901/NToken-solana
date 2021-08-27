@@ -391,7 +391,7 @@ pub enum TokenInstruction {
     /// Initialize Portfolio 
     InitializePortfolio {
         ///the data of the new portfolio
-        //metaDataUrl : Vec<u8>,
+        metaDataUrl : Vec<u8>,
         ///Hash of dataUrl to insure the immuability of data
         metaDataHash : u16,
         ///pourcentage of first asset
@@ -594,13 +594,13 @@ impl TokenInstruction {
 
             19 => {
                 msg!("initial lecture {:?}",rest);
-              /*  let (metaDataUrl, rest) = rest.split_at(128);
+                let (metaDataUrl, rest) = rest.split_at(128);
                 msg!("second error1 {:?}",rest);
                 let metaDataUrl = metaDataUrl
                 .try_into()
                 .ok()
                 .ok_or(InvalidInstruction)?;
-                */
+                
                 let (metaDataHash, rest) = rest.split_at(2);
                 msg!("second error2 metadataHash {:?}", metaDataHash);
                 msg!("second error2 rest {:?}", rest);
@@ -731,11 +731,11 @@ impl TokenInstruction {
                 .ok()
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
-                // let (amountAsset10, _rest19) = _rest18.split_at(8);
+                // let (amountAsset10, _rest19) = _rest18.split_at(1);
                 // let amountAsset10 = amountAsset10
                 // .try_into()
                 // .ok()
-                // .map(u64::from_le_bytes)
+                // .map(u8::from_le_bytes)
                 // .ok_or(InvalidInstruction)?;
                 // let (periodAsset10, _rest20) = _rest19.split_at(32);
                 // let periodAsset10 = periodAsset10
@@ -744,7 +744,7 @@ impl TokenInstruction {
                 // .map(u64::from_le_bytes)
                 // .ok_or(InvalidInstruction)?;
                 Self::InitializePortfolio {
-                    //metaDataUrl,
+                    metaDataUrl,
                     metaDataHash,
                     amountAsset1,
                     periodAsset1,
@@ -927,7 +927,7 @@ impl TokenInstruction {
             },
 
             Self::InitializePortfolio {
-               // metaDataUrl,
+                metaDataUrl,
                 metaDataHash,
                 amountAsset1,
                 periodAsset1,
@@ -951,7 +951,7 @@ impl TokenInstruction {
                 // periodAsset10,
             } => {
                 buf.push(19);
-              //  buf.extend_from_slice(&metaDataUrl);
+                buf.extend_from_slice(&metaDataUrl);
                 buf.extend_from_slice(&metaDataHash.to_le_bytes());
                 buf.extend_from_slice(&amountAsset1.to_le_bytes());
                 buf.extend_from_slice(&periodAsset1.to_le_bytes());
@@ -1156,6 +1156,7 @@ pub fn initialize_portfolio(
     program_id: &Pubkey,
     portfolio_account: &Pubkey ,
     creator_portfolio: &Pubkey ,
+    metaDataUrl : &Vec<u8>,
     metaDataHash : &u16,
     amountAsset1 : &u8,
     addressAsset1: &Pubkey ,
@@ -1207,7 +1208,8 @@ pub fn initialize_portfolio(
 
 ) -> Result<Instruction, ProgramError> {
     let data = TokenInstruction::InitializePortfolio {
-      //  metaDataUrl: metaDataUrl.clone(),
+       // metaDataUrl: metaDataUrl.clone(),
+        metaDataUrl: (*metaDataUrl.clone().to_vec()).to_vec(),
         metaDataHash: *metaDataHash,
         amountAsset1: *amountAsset1,
         periodAsset1: *periodAsset1,

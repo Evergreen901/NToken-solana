@@ -241,14 +241,14 @@ impl Default for AccountState {
 
 /// Account data.
 #[repr(C)]
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Clone, /*Copy,*/ Debug, Default, PartialEq)]
 pub struct Portfolio {
       /// The account's creator
       pub portfolio_account: Pubkey,
     /// The owner of this account.
     pub creator_portfolio: Pubkey,
     /// The data of portfolio.
-  //  pub metadataUrl: Vec<u8>,
+    pub metadataUrl: Vec<u8>,
     /// the hash of data
     pub metadataHash: u16,
   
@@ -345,12 +345,12 @@ impl IsInitialized for Portfolio {
     }
 }
 impl Pack for Portfolio {
-    const LEN: usize = 660;
+    const LEN: usize = 788;
     fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {
         msg!("this is first");
-        let src = array_ref![src, 0, 660];
+        let src = array_ref![src, 0, 788];
     
-        let (portfolio_account,creator_portfolio /*, metadataUrl*/, metadataHash,  amountAsset1, addressAsset1, periodAsset1,
+        let (portfolio_account,creator_portfolio , metadataUrl, metadataHash,  amountAsset1, addressAsset1, periodAsset1,
             assetToSoldIntoAsset1, amountAsset2, addressAsset2, periodAsset2,assetToSoldIntoAsset2, amountAsset3, 
             addressAsset3, periodAsset3,assetToSoldIntoAsset3, amountAsset4, addressAsset4, periodAsset4,
             assetToSoldIntoAsset4, amountAsset5, addressAsset5, periodAsset5,assetToSoldIntoAsset5, amountAsset6, 
@@ -358,14 +358,14 @@ impl Pack for Portfolio {
             assetToSoldIntoAsset7, amountAsset8, addressAsset8, periodAsset8,assetToSoldIntoAsset8, amountAsset9, 
             addressAsset9, periodAsset9,assetToSoldIntoAsset9/*, amountAsset10, addressAsset10, periodAsset10,
             assetToSoldIntoAsset10*/) =
-            array_refs![src,32, 32/*, 128*/, 2,  1, 32 , 1, 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 
+            array_refs![src,32, 32, 128, 2,  1, 32 , 1, 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 
             1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32/*, 1, 32 
             , 1 , 32*/];
             msg!("this is second");
               Ok(Portfolio {
             portfolio_account: Pubkey::new_from_array(*portfolio_account),
             creator_portfolio: Pubkey::new_from_array(*creator_portfolio),
-            //metadataUrl: metadataUrl.to_vec(),
+            metadataUrl: metadataUrl.to_vec(),
             metadataHash: u16::from_le_bytes(*metadataHash),
             
             amountAsset1: u8::from_le_bytes(*amountAsset1),
@@ -415,11 +415,11 @@ impl Pack for Portfolio {
 
 
     fn pack_into_slice(&self, dst: &mut [u8]) {
-        let dst = array_mut_ref![dst, 0, 660];
+        let dst = array_mut_ref![dst, 0, 788];
         let (
             portfolio_account_dst,
             creator_portfolio_dst,
-          //  metadata_URL_dst,
+            metadata_URL_dst,
             metadata_HASH_dst,
            
             amount_Asset1_dst,
@@ -463,13 +463,13 @@ impl Pack for Portfolio {
             // period_Asset10_dst,
             // asset_To_Sold_Into_Asset10_dst,
 
-        ) = mut_array_refs![dst, 32,32,/* 128,*/ 2,  1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 
+        ) = mut_array_refs![dst, 32,32, 128, 2,  1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 
         1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32/*, 1, 32 
         , 4 , 32*/];
         let Portfolio {
             ref portfolio_account,
             ref creator_portfolio,
-         //   metadataUrl, 
+            metadataUrl, 
             metadataHash,
            
             amountAsset1, 
@@ -520,6 +520,7 @@ impl Pack for Portfolio {
         //*metadata_URL_dst = convert(metadataURL);
        // *metadata_URL_dst = convert(metadataUrl.to_vec());
         // *metadata_URL_dst = metadataURL.borrow();
+        *metadata_URL_dst= array_ref!( metadataUrl, 0, 128).clone();/*****/
         *metadata_HASH_dst = metadataHash.to_le_bytes();
      
         *amount_Asset1_dst = amountAsset1.to_le_bytes();

@@ -786,7 +786,7 @@ impl Processor {
                 Self::process_withdraw(program_id , accounts , amount)
             },
             TokenInstruction::InitializePortfolio {
-             //   metaDataUrl,
+                metaDataUrl,
                 metaDataHash,
                 amountAsset1,
                 periodAsset1,
@@ -811,7 +811,7 @@ impl Processor {
              } => {
                 msg!("Instruction: InitializePortfolio");
                 Self::process_initialize_portfolio(program_id , accounts , 
-                    //metaDataUrl,
+                    metaDataUrl,
                    metaDataHash,
                     amountAsset1,
                     periodAsset1,
@@ -902,11 +902,11 @@ impl Processor {
 
 
 
-    /// Deposit nAsset
+    ///  Create init portfolio
     pub fn process_initialize_portfolio(
         program_id: &Pubkey,
         accounts: &[AccountInfo],
-      //  metaDataUrl : Vec<u8>,
+        metaDataUrl : Vec<u8>,
         metaDataHash : u16,
         amountAsset1 : u8,
         periodAsset1 : u8,
@@ -955,6 +955,7 @@ impl Processor {
      
        
         msg!("initialze portfolio account : {:?} ",portfolioAccount );
+       // msg!("metadataURL : {:?} ",*metaDataUrl );
      //   msg!("initialze portfolio account data : {:?} ",account.data );
 
 
@@ -963,6 +964,7 @@ impl Processor {
  
         new_portfolio.portfolio_account = *portfolioAccount.key;
         new_portfolio.creator_portfolio = *creatorPortfolio.key;
+        new_portfolio.metadataUrl = metaDataUrl;
         new_portfolio.metadataHash = metaDataHash;
         new_portfolio.amountAsset1 = amountAsset1;
         new_portfolio.addressAsset1 = *addressAsset1.key;
@@ -1004,8 +1006,8 @@ impl Processor {
 
 
         Portfolio::pack(new_portfolio, &mut portfolioAccount.data.borrow_mut())?;
-        msg!("address asset 1 {:?}", new_portfolio.addressAsset1);
-        msg!(" ******* creatorAccount portfolio_account {:?} , creator_portfolio : {:?}  , metadataHash : {:?} ",new_portfolio.portfolio_account , new_portfolio.creator_portfolio , new_portfolio.metadataHash );
+        msg!("address asset 1 {:?}  ", *addressAsset1.key ,);
+        msg!(" ******* creatorAccount portfolio_account {:?} , creator_portfolio : {:?}  ",*portfolioAccount.key , *creatorPortfolio.key );
         msg!(" after unpack initialze portfolio account : {:?} ",portfolioAccount );
        // msg!("after unpack initialze portfolio account date : {:?} ",account.data );
         Ok(())

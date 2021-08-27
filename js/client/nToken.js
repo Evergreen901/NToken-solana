@@ -468,7 +468,7 @@ export const PortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struc
 
         Layout.publicKey('portfolioAddress'), //32
         Layout.publicKey('creatorPortfolio'), //32
-       // BufferLayout.blob(128, 'metadataUrl'), //128
+        BufferLayout.blob(128, 'metadataUrl'), //128
         BufferLayout.u16('metadataHash'), //16
       
 
@@ -2787,7 +2787,7 @@ export class nToken {
         
         const dataLayout = BufferLayout.struct([
             BufferLayout.u8('instruction'),
-          //  BufferLayout.blob(128, 'metaDataUrl'),
+            BufferLayout.blob(128, 'metaDataUrl'),
             BufferLayout.u16('metaDataHash'),
             BufferLayout.u8('amountAsset1'),
             BufferLayout.u8('periodAsset1'),
@@ -2820,7 +2820,7 @@ export class nToken {
         console.log('====================================');
         dataLayout.encode({
                 instruction: 19, // InitializeAccount portfolio
-              //  metaDataUrl: Buffer.alloc(128, metaDataUrl, "ascii"),
+                metaDataUrl: Buffer.alloc(128, metaDataUrl, "ascii"),
                 metaDataHash :metaDataHash,
                 amountAsset1  ,
                 /*amountAsset1: new u16(amountAsset1).toBuffer(),*/
