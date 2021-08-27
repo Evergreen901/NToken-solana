@@ -244,9 +244,9 @@ impl Default for AccountState {
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Portfolio {
       /// The account's creator
-      pub creatorAccount: Pubkey,
+      pub portfolio_account: Pubkey,
     /// The owner of this account.
-    pub owner: Pubkey,
+    pub creator_portfolio: Pubkey,
     /// The data of portfolio.
   //  pub metadataUrl: Vec<u8>,
     /// the hash of data
@@ -257,7 +257,7 @@ pub struct Portfolio {
     /// The first asset's address
     pub addressAsset1: Pubkey,
     /// First Asset's period
-    pub periodAsset1: u32,
+    pub periodAsset1: u8,
      /// the first asset to sold asset
     pub assetToSoldIntoAsset1: Pubkey,
     /// the amount of second asset
@@ -265,7 +265,7 @@ pub struct Portfolio {
     /// The second asset's address
     pub addressAsset2: Pubkey,
     /// Second Asset's period
-    pub periodAsset2: u32,
+    pub periodAsset2: u8,
      /// the second asset to sold asset
     pub assetToSoldIntoAsset2: Pubkey,
     /// the amount of third asset
@@ -273,7 +273,7 @@ pub struct Portfolio {
     /// The third asset's address
     pub addressAsset3: Pubkey,
     /// third Asset's period
-    pub periodAsset3: u32,
+    pub periodAsset3: u8,
      /// the third asset to sold asset
     pub assetToSoldIntoAsset3: Pubkey,
     /// the amount of firth asset
@@ -281,7 +281,7 @@ pub struct Portfolio {
     /// The firth asset's address
     pub addressAsset4: Pubkey,
     /// firth Asset's period
-    pub periodAsset4: u32,
+    pub periodAsset4: u8,
      /// the firth asset to sold asset
     pub assetToSoldIntoAsset4: Pubkey,
     /// the amount of 5th asset
@@ -289,7 +289,7 @@ pub struct Portfolio {
     /// The 5th asset's address
     pub addressAsset5: Pubkey,
     /// 5th Asset's period
-    pub periodAsset5: u32,
+    pub periodAsset5: u8,
      /// the 5th asset to sold asset
     pub assetToSoldIntoAsset5: Pubkey,
     /// the 6th amount of asset
@@ -297,7 +297,7 @@ pub struct Portfolio {
     /// The 6th asset's address
     pub addressAsset6: Pubkey,
     /// 6th Asset's period
-    pub periodAsset6: u32,
+    pub periodAsset6: u8,
      /// the 6th asset to sold asset
     pub assetToSoldIntoAsset6: Pubkey,
     /// the 7th amount of asset
@@ -305,7 +305,7 @@ pub struct Portfolio {
     /// The 7th asset's address
     pub addressAsset7: Pubkey,
     /// 7th Asset's period
-    pub periodAsset7: u32,
+    pub periodAsset7: u8,
      /// the 7th asset to sold asset
     pub assetToSoldIntoAsset7: Pubkey,
     /// the amount of 8th asset
@@ -313,7 +313,7 @@ pub struct Portfolio {
     /// The 8th asset's address
     pub addressAsset8: Pubkey,
     /// 8th Asset's period
-    pub periodAsset8: u32,
+    pub periodAsset8: u8,
      /// the 8th asset to sold asset
     pub assetToSoldIntoAsset8: Pubkey,
     /// the amount of 9th asset
@@ -321,7 +321,7 @@ pub struct Portfolio {
     /// The 9th asset's address
     pub addressAsset9: Pubkey,
     /// 9th Asset's period
-    pub periodAsset9: u32,
+    pub periodAsset9: u8,
      /// the 9th asset to sold asset
     pub assetToSoldIntoAsset9: Pubkey,
     // /// the amount of 10th asset
@@ -345,12 +345,12 @@ impl IsInitialized for Portfolio {
     }
 }
 impl Pack for Portfolio {
-    const LEN: usize = 687;
+    const LEN: usize = 660;
     fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {
         msg!("this is first");
-        let src = array_ref![src, 0, 687];
+        let src = array_ref![src, 0, 660];
     
-        let (creatorAccount,owner /*, metadataUrl*/, metadataHash,  amountAsset1, addressAsset1, periodAsset1,
+        let (portfolio_account,creator_portfolio /*, metadataUrl*/, metadataHash,  amountAsset1, addressAsset1, periodAsset1,
             assetToSoldIntoAsset1, amountAsset2, addressAsset2, periodAsset2,assetToSoldIntoAsset2, amountAsset3, 
             addressAsset3, periodAsset3,assetToSoldIntoAsset3, amountAsset4, addressAsset4, periodAsset4,
             assetToSoldIntoAsset4, amountAsset5, addressAsset5, periodAsset5,assetToSoldIntoAsset5, amountAsset6, 
@@ -358,55 +358,55 @@ impl Pack for Portfolio {
             assetToSoldIntoAsset7, amountAsset8, addressAsset8, periodAsset8,assetToSoldIntoAsset8, amountAsset9, 
             addressAsset9, periodAsset9,assetToSoldIntoAsset9/*, amountAsset10, addressAsset10, periodAsset10,
             assetToSoldIntoAsset10*/) =
-            array_refs![src,32, 32/*, 128*/, 2,  1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 
-            4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32/*, 1, 32 
-            , 4 , 32*/];
+            array_refs![src,32, 32/*, 128*/, 2,  1, 32 , 1, 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 
+            1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32/*, 1, 32 
+            , 1 , 32*/];
             msg!("this is second");
               Ok(Portfolio {
-            creatorAccount: Pubkey::new_from_array(*creatorAccount),
-            owner: Pubkey::new_from_array(*owner),
+            portfolio_account: Pubkey::new_from_array(*portfolio_account),
+            creator_portfolio: Pubkey::new_from_array(*creator_portfolio),
             //metadataUrl: metadataUrl.to_vec(),
             metadataHash: u16::from_le_bytes(*metadataHash),
             
             amountAsset1: u8::from_le_bytes(*amountAsset1),
             addressAsset1: Pubkey::new_from_array(*addressAsset1),
-            periodAsset1: u32::from_le_bytes(*periodAsset1),
+            periodAsset1: u8::from_le_bytes(*periodAsset1),
             assetToSoldIntoAsset1: Pubkey::new_from_array(*assetToSoldIntoAsset1),
             amountAsset2: u8::from_le_bytes(*amountAsset2),
             addressAsset2: Pubkey::new_from_array(*addressAsset2),
-            periodAsset2: u32::from_le_bytes(*periodAsset2),
+            periodAsset2: u8::from_le_bytes(*periodAsset2),
             assetToSoldIntoAsset2: Pubkey::new_from_array(*assetToSoldIntoAsset2),
             amountAsset3: u8::from_le_bytes(*amountAsset3),
             addressAsset3: Pubkey::new_from_array(*addressAsset3),
-            periodAsset3: u32::from_le_bytes(*periodAsset3),
+            periodAsset3: u8::from_le_bytes(*periodAsset3),
             assetToSoldIntoAsset3: Pubkey::new_from_array(*assetToSoldIntoAsset3),
             amountAsset4: u8::from_le_bytes(*amountAsset4),
             addressAsset4: Pubkey::new_from_array(*addressAsset4),
-            periodAsset4: u32::from_le_bytes(*periodAsset4),
+            periodAsset4: u8::from_le_bytes(*periodAsset4),
             assetToSoldIntoAsset4: Pubkey::new_from_array(*assetToSoldIntoAsset4),
             amountAsset5: u8::from_le_bytes(*amountAsset5),
             addressAsset5: Pubkey::new_from_array(*addressAsset5),
-            periodAsset5: u32::from_le_bytes(*periodAsset5),
+            periodAsset5: u8::from_le_bytes(*periodAsset5),
             assetToSoldIntoAsset5: Pubkey::new_from_array(*assetToSoldIntoAsset5),
             amountAsset6: u8::from_le_bytes(*amountAsset6),
             addressAsset6: Pubkey::new_from_array(*addressAsset6),
-            periodAsset6: u32::from_le_bytes(*periodAsset6),
+            periodAsset6: u8::from_le_bytes(*periodAsset6),
             assetToSoldIntoAsset6: Pubkey::new_from_array(*assetToSoldIntoAsset6),
             amountAsset7: u8::from_le_bytes(*amountAsset7),
             addressAsset7: Pubkey::new_from_array(*addressAsset7),
-            periodAsset7: u32::from_le_bytes(*periodAsset7),
+            periodAsset7: u8::from_le_bytes(*periodAsset7),
             assetToSoldIntoAsset7: Pubkey::new_from_array(*assetToSoldIntoAsset7),
             amountAsset8: u8::from_le_bytes(*amountAsset8),
             addressAsset8: Pubkey::new_from_array(*addressAsset8),
-            periodAsset8: u32::from_le_bytes(*periodAsset8),
+            periodAsset8: u8::from_le_bytes(*periodAsset8),
             assetToSoldIntoAsset8: Pubkey::new_from_array(*assetToSoldIntoAsset8),
             amountAsset9: u8::from_le_bytes(*amountAsset9),
             addressAsset9: Pubkey::new_from_array(*addressAsset9),
-            periodAsset9: u32::from_le_bytes(*periodAsset9),
+            periodAsset9: u8::from_le_bytes(*periodAsset9),
             assetToSoldIntoAsset9: Pubkey::new_from_array(*assetToSoldIntoAsset9),
             // amountAsset10: u8::from_le_bytes(*amountAsset10),
             // addressAsset10: Pubkey::new_from_array(*addressAsset10),
-            // periodAsset10: u32::from_le_bytes(*periodAsset10),
+            // periodAsset10: u8::from_le_bytes(*periodAsset10),
             // assetToSoldIntoAsset10: Pubkey::new_from_array(*assetToSoldIntoAsset10),
         })
   
@@ -415,10 +415,10 @@ impl Pack for Portfolio {
 
 
     fn pack_into_slice(&self, dst: &mut [u8]) {
-        let dst = array_mut_ref![dst, 0, 687];
+        let dst = array_mut_ref![dst, 0, 660];
         let (
-            creator_Account_dst,
-            owner_dst,
+            portfolio_account_dst,
+            creator_portfolio_dst,
           //  metadata_URL_dst,
             metadata_HASH_dst,
            
@@ -463,12 +463,12 @@ impl Pack for Portfolio {
             // period_Asset10_dst,
             // asset_To_Sold_Into_Asset10_dst,
 
-        ) = mut_array_refs![dst, 32,32,/* 128,*/ 2,  1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 
-        4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32, 1, 32 , 4 , 32/*, 1, 32 
+        ) = mut_array_refs![dst, 32,32,/* 128,*/ 2,  1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 
+        1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32/*, 1, 32 
         , 4 , 32*/];
         let Portfolio {
-            ref creatorAccount,
-            ref owner,
+            ref portfolio_account,
+            ref creator_portfolio,
          //   metadataUrl, 
             metadataHash,
            
@@ -514,9 +514,9 @@ impl Pack for Portfolio {
             // periodAsset10,
             // ref assetToSoldIntoAsset10
         } = self;
-        creator_Account_dst.copy_from_slice(creatorAccount.as_ref());
+        portfolio_account_dst.copy_from_slice(portfolio_account.as_ref());
         //Pubkey(creatorAccount,creator_Account_dst);
-        owner_dst.copy_from_slice(owner.as_ref());
+        creator_portfolio_dst.copy_from_slice(creator_portfolio.as_ref());
         //*metadata_URL_dst = convert(metadataURL);
        // *metadata_URL_dst = convert(metadataUrl.to_vec());
         // *metadata_URL_dst = metadataURL.borrow();
