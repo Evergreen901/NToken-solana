@@ -1,15 +1,15 @@
-# edit appendix.md
-# edit procedures.md
-# update schemas
-# verify splu owner,delagate after swap
-# study case native solana token
-# implement deposit  pps 
-# implement deposit ppsj 
-# implement deposit ppsjr
-# implement withdraw pps 
-# implement withdraw ppsj
-# implement withdraw ppsjr
-# unit tests ppsut
-# unit tests ppsjut
-# engine IA
-# calculs
+### Edit appendix.md
+### Edit procedures.md
+### Update schemas
+### Verify splu owner,delagate after swap
+### Study case native solana token
+### Implement deposit  pps 
+### Implement deposit ppsj 
+### Implement deposit ppsjr
+### Implement withdraw pps 
+### Implement withdraw ppsj
+### Implement withdraw ppsjr
+### Unit tests ppsut
+### Unit tests ppsjut
+### Engine IA
+### Calculs
