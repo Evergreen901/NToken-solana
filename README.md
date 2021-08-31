@@ -14,6 +14,11 @@ Going forward, we will be releasing portfolios and more complex programmable ass
 
 <img src="https://raw.githubusercontent.com/NovaFi/NToken-solana/jawaher/Untitled%20Diagram-Page-2.png" style="text-align: center;">
 
+We will be using famous swap and farming protocols such as serum and saber protocols:
+
+<img src="https://raw.githubusercontent.com/NovaFi/NToken-solana/Halima/Serum_swap_saber_farm.png" style="text-align: center;">
+
+
 
 
 Here a demo from Nova Front end : 
@@ -90,7 +95,6 @@ $ npm run start
 $ cd program
 $ cargo test
 ```
-
 
 
 
