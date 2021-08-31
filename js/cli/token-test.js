@@ -9,11 +9,11 @@ import {
     BPF_LOADER_PROGRAM_ID,
 } from '@solana/web3.js';
 import {
-    nToken,
+    Portfolio,
     TOKEN_PROGRAM_ID,
     ASSOCIATED_TOKEN_PROGRAM_ID,
     NATIVE_MINT,
-} from '../client/nToken';
+} from '../client/Portfolio';
 import { url } from '../url';
 import { newAccountWithLamports } from '../client/util/new-account-with-lamports';
 import { sleep } from '../client/util/sleep';
@@ -24,13 +24,13 @@ let associatedProgramId: PublicKey;
 
 // Accounts setup in createMint and used by all subsequent tests
 let testMintAuthority: Account;
-let testToken: nToken;
+let testToken: Portfolio;
 let testTokenDecimals: number = 2;
 
-let asset: nToken;
-let USDC: nToken;
-let managerNTokenWBTC: Account;
-let managerNTokenUSDC: Account;
+let asset: Portfolio;
+let USDC: Portfolio;
+let managerPortfolioWBTC: Account;
+let managerPortfolioUSDC: Account;
 let creatorPublicAddress: Account;
 let UserPortfolioAccount : Account;
 
@@ -112,7 +112,7 @@ async function GetPrograms(connection: Connection): Promise < void > {
     const store = new Store();
     try {
         const config = await store.load('config.json');
-        console.log('Using pre-loaded nToken programs');
+        console.log('Using pre-loaded Portfolio programs');
         console.log(
             `  Note: To reload program remove ${Store.getFilename('config.json')}`,
         );
@@ -125,7 +125,7 @@ async function GetPrograms(connection: Connection): Promise < void > {
         assert(info != null);
     } catch (err) {
         console.log(
-            'Checking pre-loaded nToken programs failed, will load new programs:',
+            'Checking pre-loaded Portfolio programs failed, will load new programs:',
         );
         console.log({ err });
 
@@ -145,8 +145,8 @@ export async function loadTokenProgram(): Promise < void > {
     const connection = await getConnection();
     await GetPrograms(connection);
 
-    console.log('nToken Program ID', programId.toString());
-    console.log('Associated nToken Program ID', associatedProgramId.toString());
+    console.log('Portfolio Program ID', programId.toString());
+    console.log('Associated Portfolio Program ID', associatedProgramId.toString());
 }
 
 
@@ -155,7 +155,7 @@ export async function createMint(): Promise < void > {
     const payer = await newAccountWithLamports(connection, 1000000000 /* wag */ );
     testMintAuthority = new Account();
     //nWBTC
-    testToken = await nToken.createMint(
+    testToken = await Portfolio.createMint(
         connection,
         payer,
         testMintAuthority.publicKey,
@@ -165,7 +165,7 @@ export async function createMint(): Promise < void > {
         new PublicKey("9ZFJWoBMQuYiBvbGpExs3smE59kQZbPnVmJp7F8iUsDG"),
         new PublicKey("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE")
     );
-    testToken = new nToken(
+    testToken = new Portfolio(
         connection,
         //new PublicKey("887xCkc7KNUTQTJLHrrPAqHvcBCdbaBWFDqzXkXNjxkS"),
         new PublicKey("6ykyxd7bZFnvEHq61vnd69BkU3gabiDmKGEQb4sGiPQG"),
@@ -174,13 +174,13 @@ export async function createMint(): Promise < void > {
     );
 
     console.log("createMint publickey asset -- " + testToken.publicKey)
-    asset = new nToken(
+    asset = new Portfolio(
         connection,
         new PublicKey("9ZFJWoBMQuYiBvbGpExs3smE59kQZbPnVmJp7F8iUsDG"),
         TOKEN_PROGRAM_ID,
         payer
     );
-    USDC = new nToken(
+    USDC = new Portfolio(
         connection,
         new PublicKey("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE"),
         TOKEN_PROGRAM_ID,
@@ -197,20 +197,20 @@ export async function runApprove(): Promise < void > {
     // testAccount ==>  nTokeen // 
     let testAccountInfo;
 
-    managerNTokenWBTC = await asset.createAccountNew(testToken.publicKey);
-    managerNTokenUSDC = await USDC.createAccountNew(testToken.publicKey);
+    managerPortfolioWBTC = await asset.createAccountNew(testToken.publicKey);
+    managerPortfolioUSDC = await USDC.createAccountNew(testToken.publicKey);
 
-    console.log(" publickey mangerNtoken -- " + managerNTokenWBTC.publicKey);
+    console.log(" publickey mangerPortfolio -- " + managerPortfolioWBTC.publicKey);
 
     testAccountInfo = await asset.getAccountInfoNew(assetAccount);
-    console.log("before approve info managerNToken mint --" + testAccountInfo.mint + " --owner --" + testAccountInfo.owner + " -amount --" + testAccountInfo.amount + "-- allownace --" + testAccountInfo.delegatedAmount.toNumber())
+    console.log("before approve info managerPortfolio mint --" + testAccountInfo.mint + " --owner --" + testAccountInfo.owner + " -amount --" + testAccountInfo.amount + "-- allownace --" + testAccountInfo.delegatedAmount.toNumber())
 
     console.log(" assetaccount is : " + assetAccount + " -- testAccount owner --" + testAccountOwner.publicKey);
 
-    await asset.approveChecked(assetAccount, managerNTokenWBTC.publicKey, testAccountOwner, [], 2000000000, 9);
+    await asset.approveChecked(assetAccount, managerPortfolioWBTC.publicKey, testAccountOwner, [], 2000000000, 9);
 
     testAccountInfo = await asset.getAccountInfoNew(assetAccount);
-    console.log("after approve info managerNToken mint --" + testAccountInfo.mint + " --owner --" + testAccountInfo.owner + " -amount --" + testAccountInfo.amount + "-- allownace --" + testAccountInfo.delegatedAmount.toNumber())
+    console.log("after approve info managerPortfolio mint --" + testAccountInfo.mint + " --owner --" + testAccountInfo.owner + " -amount --" + testAccountInfo.amount + "-- allownace --" + testAccountInfo.delegatedAmount.toNumber())
 
 }
 export async function runApproveChecked(): Promise < void > {
@@ -228,23 +228,23 @@ export async function runDeposit(): Promise < void > {
     const connection = await getConnection();
     const payer = await newAccountWithLamports(connection, 10000000000 /* wag */ );
 
-    let infoMangerNToken;
-    infoMangerNToken = await asset.getAccountInfoNew(managerNTokenWBTC.publicKey);
-    console.log(assetAccount + "before transferFrom infoMangerNToken mint --" + infoMangerNToken.mint + " --owner --" + infoMangerNToken.owner + " -amount --" + infoMangerNToken.amount + "-- allownace --" + infoMangerNToken.delegatedAmount)
-    infoMangerNToken = await asset.getAccountInfoNew(assetAccount);
-    console.log("before transferFrom infoassetAccount mint --" + infoMangerNToken.mint + " --owner --" + infoMangerNToken.owner + " -amount --" + infoMangerNToken.amount + "-- allownace --" + infoMangerNToken.delegatedAmount)
+    let infoMangerPortfolio;
+    infoMangerPortfolio = await asset.getAccountInfoNew(managerPortfolioWBTC.publicKey);
+    console.log(assetAccount + "before transferFrom infoMangerPortfolio mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
+    infoMangerPortfolio = await asset.getAccountInfoNew(assetAccount);
+    console.log("before transferFrom infoassetAccount mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
 
-    await asset.transfer(assetAccount, managerNTokenWBTC.publicKey, managerNTokenWBTC, [], 5000000);
+    await asset.transfer(assetAccount, managerPortfolioWBTC.publicKey, managerPortfolioWBTC, [], 5000000);
 
-    infoMangerNToken = await asset.getAccountInfoNew(assetAccount);
-    console.log("after transferFrom infoassetAccount mint --" + infoMangerNToken.mint + " --owner --" + infoMangerNToken.owner + " -amount --" + infoMangerNToken.amount + "-- allownace --" + infoMangerNToken.delegatedAmount)
+    infoMangerPortfolio = await asset.getAccountInfoNew(assetAccount);
+    console.log("after transferFrom infoassetAccount mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
 
 
-    infoMangerNToken = await asset.getAccountInfoNew(managerNTokenWBTC.publicKey);
+    infoMangerPortfolio = await asset.getAccountInfoNew(managerPortfolioWBTC.publicKey);
 
-    console.log("after transferFrom infoMangerNToken mint --" + infoMangerNToken.mint + " --owner --" + infoMangerNToken.owner + " -amount --" + infoMangerNToken.amount + "-- allownace --" + infoMangerNToken.delegatedAmount)
+    console.log("after transferFrom infoMangerPortfolio mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
 
-    let accountManagerNTokenWBTC = await asset.createAccountNew(managerNTokenWBTC.publicKey);
+    let accountManagerPortfolioWBTC = await asset.createAccountNew(managerPortfolioWBTC.publicKey);
 
     const source = await newAccountWithLamports(connection, 10000000000 /* wag */ );
 
@@ -255,14 +255,14 @@ export async function runDeposit(): Promise < void > {
     let accountInfo;
     accountInfo = await testToken.getAccountInfo(testAccount);
 
-    console.log("**********Info nToken Account **************");
+    console.log("**********Info Portfolio Account **************");
     console.log("mint nWBTC -- " + accountInfo.mint + " -- owner UserA --" + accountInfo.owner + " -- amount --" + accountInfo.amount + " -- amount wbtc --" + accountInfo.asset + " amount usdc --" + accountInfo.usdc)
-    console.log("***end info nToken Account ******")
+    console.log("***end info Portfolio Account ******")
 
 
 
-    await testToken.createDeposit(managerNTokenWBTC, managerNTokenUSDC, payer, 1000, 10);
-    //await testToken.createDeposit(accountManagerNTokenWBTC,managerNTokenUSDC,payer, 1000 , 10);
+    await testToken.createDeposit(managerPortfolioWBTC, managerPortfolioUSDC, payer, 1000, 10);
+    //await testToken.createDeposit(accountManagerPortfolioWBTC,managerPortfolioUSDC,payer, 1000 , 10);
 
     //await transferAfterDeposit(accountKey,payer);
 }
@@ -427,11 +427,11 @@ export async function createUserPortfolio(): Promise < void > {
     const connection = await getConnection();
     const payer = await newAccountWithLamports(connection, 10000000000 /* wag */ );
 
-   // let infoMangerNToken;
-   // infoMangerNToken = await asset.getAccountInfoNew(managerNTokenWBTC.publicKey);
+   // let infoMangerPortfolio;
+   // infoMangerPortfolio = await asset.getAccountInfoNew(managerPortfolioWBTC.publicKey);
    
-    //infoMangerNToken = await asset.getAccountInfoNew(assetAccount);
-   // console.log("before transferFrom infoassetAccount mint --" + infoMangerNToken.mint + " --owner --" + infoMangerNToken.owner + " -amount --" + infoMangerNToken.amount + "-- allownace --" + infoMangerNToken.delegatedAmount)
+    //infoMangerPortfolio = await asset.getAccountInfoNew(assetAccount);
+   // console.log("before transferFrom infoassetAccount mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
 
 
 
@@ -447,21 +447,21 @@ console.log ("UserPortfolioAccount : ", UserPortfolioAccount.publicKey.toString(
   let amountDelegated=5;
    await testToken.approve(accountDeposit, delegate, payer, [], amountDelegated);
 
-   // infoMangerNToken = await asset.getAccountInfoNew(assetAccount);
-   // console.log("after transferFrom infoassetAccount mint --" + infoMangerNToken.mint + " --owner --" + infoMangerNToken.owner + " -amount --" + infoMangerNToken.amount + "-- allownace --" + infoMangerNToken.delegatedAmount)
+   // infoMangerPortfolio = await asset.getAccountInfoNew(assetAccount);
+   // console.log("after transferFrom infoassetAccount mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
 
 
-    //infoMangerNToken = await asset.getAccountInfoNew(managerNTokenWBTC.publicKey);
-    //console.log("after transferFrom infoMangerNToken mint --" + infoMangerNToken.mint + " --owner --" + infoMangerNToken.owner + " -amount --" + infoMangerNToken.amount + "-- allownace --" + infoMangerNToken.delegatedAmount)
+    //infoMangerPortfolio = await asset.getAccountInfoNew(managerPortfolioWBTC.publicKey);
+    //console.log("after transferFrom infoMangerPortfolio mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
 
-    //let accountManagerNTokenWBTC = await asset.createAccountNew(managerNTokenWBTC.publicKey);
+    //let accountManagerPortfolioWBTC = await asset.createAccountNew(managerPortfolioWBTC.publicKey);
 
 
     let accountInfo = await testToken.getAccountPortfolioInfo(UserPortfolioAccount);
-    console.log("**********Info nToken Account **************");
+    console.log("**********Info Portfolio Account **************");
     console.log("mint nWBTC -- " + accountInfo.mint + " -- owner UserA --" + accountInfo.owner + " -- amount --" + accountInfo.amount +
      " -- amount wbtc --" + accountInfo.asset + " amount usdc --" + accountInfo.usdc+" --delegatedAmount : " + accountInfo.delegatedAmount)
-    console.log("***end info nToken Account ******")
+    console.log("***end info Portfolio Account ******")
 
  
 
@@ -502,7 +502,7 @@ console.log ("UserPortfolioAccount : ", UserPortfolioAccount.publicKey.toString(
     // let valueAsset10;
     // let addressAsset10;
 
-   /* UserPortfolioAccount = await testToken.depositPortfolio(portfolioAddress,managerNTokenUSDC,payer, valueAsset1,
+   /* UserPortfolioAccount = await testToken.depositPortfolio(portfolioAddress,managerPortfolioUSDC,payer, valueAsset1,
        addressAsset1 , valueAsset2, addressAsset2, valueAsset3, addressAsset3, valueAsset4,addressAsset4,
        valueAsset5,addressAsset5,valueAsset6,addressAsset6 ,valueAsset7 ,addressAsset7,valueAsset8
        ,addressAsset8,valueAsset9,addressAsset9 ,volatility );
@@ -540,7 +540,7 @@ export async function createAccount(): Promise < void > {
     testAccountOwner = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
 
 
-    //nToken Account nWBTC: 
+    //Portfolio Account nWBTC: 
 
     testAccount = await testToken.createAccount(testAccountOwner.publicKey);
     // testAccount=new PublicKey("6wyLxVejQGiUSzdNS7VvUM4ETBkpXYtSRgTqDtTVoXsX");
@@ -551,9 +551,9 @@ export async function createAccount(): Promise < void > {
     let accountInfo;
     accountInfo = await testToken.getAccountInfo(testAccount);
 
-    console.log("**********Info nToken Account **************");
+    console.log("**********Info Portfolio Account **************");
     console.log("mint nWBTC -- " + accountInfo.mint + " -- owner UserA --" + accountInfo.owner + " -- amount --" + accountInfo.amount + " -- amount wbtc --" + accountInfo.asset + " amount usdc --" + accountInfo.usdc)
-    console.log("***end info nToken Account ******")
+    console.log("***end info Portfolio Account ******")
 
     //Token Account WBTC:
 
@@ -602,7 +602,7 @@ export async function createAssociatedAccount(): Promise < void > {
     const connection = await getConnection();
 
     const owner = new Account();
-    const associatedAddress = await nToken.getAssociatedTokenAddress(
+    const associatedAddress = await Portfolio.getAssociatedTokenAddress(
         associatedProgramId,
         programId,
         testToken.publicKey,
@@ -1064,9 +1064,9 @@ export async function nativeToken(): Promise < void > {
     const payer = await newAccountWithLamports(connection, 2000000000 /* wag */ );
     const lamportsToWrap = 1000000000;
 
-    const token = new nToken(connection, NATIVE_MINT, programId, payer);
+    const token = new Portfolio(connection, NATIVE_MINT, programId, payer);
     const owner = new Account();
-    const native = await nToken.createWrappedNativeAccount(
+    const native = await Portfolio.createWrappedNativeAccount(
         connection,
         programId,
         owner.publicKey,
