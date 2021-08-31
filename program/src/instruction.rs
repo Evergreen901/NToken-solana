@@ -441,27 +441,6 @@ pub enum TokenInstruction {
     createInitUserPortfolio {
         /// amount delegated
         delegated_amount: u64,
-        ///user's amount of first asset
-        valueAsset1: u64,
-        ///user's amount  of second asset
-        valueAsset2 : u64,
-        ///user's amount  of third asset
-        valueAsset3 : u64,
-        ///user's amount  of 4 asset
-        valueAsset4 : u64,
-        ///user's amount  of 5 asset
-        valueAsset5 : u64,
-        ///user's amount  of 6 asset
-        valueAsset6 : u64,
-        ///user's amount  of 7 asset
-        valueAsset7 : u64,
-        ///user's amount  of 8 asset
-        valueAsset8 : u64,
-        ///user's amount  of 9 asset
-        valueAsset9 : u64,
-       // ///user's amount  of 10 asset
-        // valueAsset10 : u64,
-
     }
 
     
@@ -776,62 +755,8 @@ impl TokenInstruction {
                     .ok()
                     .map(u64::from_le_bytes)
                     .ok_or(InvalidInstruction)?;
-                let (valueAsset1, rest) = _rest.split_at(8);
-                let valueAsset1 = valueAsset1
-                    .try_into()
-                    .ok()
-                    .map(u64::from_le_bytes)
-                    .ok_or(InvalidInstruction)?;
-                let (valueAsset2, rest1) = rest.split_at(8);
-                let valueAsset2 = valueAsset2
-                    .try_into()
-                    .ok()
-                    .map(u64::from_le_bytes)
-                    .ok_or(InvalidInstruction)?;
-                let (valueAsset3, rest2) = rest1.split_at(8);
-                let valueAsset3 = valueAsset3
-                    .try_into()
-                    .ok()
-                    .map(u64::from_le_bytes)
-                    .ok_or(InvalidInstruction)?;
-                let (valueAsset4, rest3) = rest2.split_at(8);
-                let valueAsset4 = valueAsset4
-                    .try_into()
-                    .ok()
-                    .map(u64::from_le_bytes)
-                    .ok_or(InvalidInstruction)?;
-                let (valueAsset5, rest4) = rest3.split_at(8);
-                let valueAsset5 = valueAsset5
-                    .try_into()
-                    .ok()
-                    .map(u64::from_le_bytes)
-                    .ok_or(InvalidInstruction)?;
-                let (valueAsset6, rest5) = rest4.split_at(8);
-                let valueAsset6 = valueAsset6
-                    .try_into()
-                    .ok()
-                    .map(u64::from_le_bytes)
-                    .ok_or(InvalidInstruction)?;
-                let (valueAsset7, rest6) = rest5.split_at(8);
-                let valueAsset7 = valueAsset7
-                    .try_into()
-                    .ok()
-                    .map(u64::from_le_bytes)
-                    .ok_or(InvalidInstruction)?;
-                let (valueAsset8, rest7) = rest6.split_at(8);
-                let valueAsset8 = valueAsset8
-                    .try_into()
-                    .ok()
-                    .map(u64::from_le_bytes)
-                    .ok_or(InvalidInstruction)?;
-                let (valueAsset9, rest8) = rest7.split_at(8);
-                let valueAsset9 = valueAsset9
-                    .try_into()
-                    .ok()
-                    .map(u64::from_le_bytes)
-                    .ok_or(InvalidInstruction)?;
-                    msg!("valueAsset9 : {:?}" , valueAsset9);
-                Self::createInitUserPortfolio { delegated_amount,valueAsset1, valueAsset2,valueAsset3,valueAsset4,valueAsset5,valueAsset6,valueAsset7,valueAsset8,valueAsset9 }
+              
+                Self::createInitUserPortfolio { delegated_amount}
             }
 
 
@@ -975,18 +900,9 @@ impl TokenInstruction {
                 // buf.extend_from_slice(&periodAsset10.to_le_bytes());
                // buf.push(periodAsset10);
             },
-            &Self::createInitUserPortfolio {delegated_amount ,valueAsset1 , valueAsset2, valueAsset3,valueAsset4,valueAsset5,valueAsset6,valueAsset7,valueAsset8,valueAsset9} => {
+            &Self::createInitUserPortfolio {delegated_amount } => {
                 buf.push(20);
                 buf.extend_from_slice(&delegated_amount.to_le_bytes());
-                buf.extend_from_slice(&valueAsset1.to_le_bytes());
-                buf.extend_from_slice(&valueAsset2.to_le_bytes());
-                buf.extend_from_slice(&valueAsset3.to_le_bytes());
-                buf.extend_from_slice(&valueAsset4.to_le_bytes());
-                buf.extend_from_slice(&valueAsset5.to_le_bytes());
-                buf.extend_from_slice(&valueAsset6.to_le_bytes());
-                buf.extend_from_slice(&valueAsset7.to_le_bytes());
-                buf.extend_from_slice(&valueAsset8.to_le_bytes());
-                buf.extend_from_slice(&valueAsset9.to_le_bytes());
             },
 
         };
@@ -1275,41 +1191,22 @@ pub fn create_Init_User_Portfolio
     portfolioAddress: &Pubkey ,
     owner: &Pubkey ,
     delegate: &Pubkey ,
-    addressAsset1: &Pubkey ,
-    addressAsset2: &Pubkey ,
-    addressAsset3: &Pubkey ,
-    addressAsset4: &Pubkey ,
-    addressAsset5: &Pubkey ,
-    addressAsset6: &Pubkey ,
-    addressAsset7: &Pubkey ,
-    addressAsset8: &Pubkey ,
-    addressAsset9: &Pubkey ,
+    spluAsset1: &Pubkey ,
+    spluAsset2: &Pubkey ,
+    spluAsset3: &Pubkey ,
+    spluAsset4: &Pubkey ,
+    spluAsset5: &Pubkey ,
+    spluAsset6: &Pubkey ,
+    spluAsset7: &Pubkey ,
+    spluAsset8: &Pubkey ,
+    spluAsset9: &Pubkey ,
     // addressAsset10: &Pubkey ,
     delegated_amount: &u64,
-    valueAsset1 : &u64,
-    valueAsset2 : &u64,
-    valueAsset3 : &u64,
-    valueAsset4 : &u64,
-    valueAsset5 : &u64,
-    valueAsset6 : &u64,
-    valueAsset7 : &u64,
-    valueAsset8 : &u64,
-    valueAsset9 : &u64,
-    // valueAsset10 : &u64,
+
 
 ) -> Result<Instruction, ProgramError> {
     let data = TokenInstruction::createInitUserPortfolio {
         delegated_amount:*delegated_amount,
-        valueAsset1: *valueAsset1,
-        valueAsset2: *valueAsset2,
-        valueAsset3: *valueAsset3,
-        valueAsset4: *valueAsset4,
-        valueAsset5: *valueAsset5,
-        valueAsset6: *valueAsset6,
-        valueAsset7: *valueAsset7,
-        valueAsset8: *valueAsset8,
-        valueAsset9: *valueAsset9,
-        // valueAsset10: *valueAsset10,
      }.pack();
 
 
@@ -1318,16 +1215,15 @@ pub fn create_Init_User_Portfolio
         AccountMeta::new(*portfolioAddress, false),
         AccountMeta::new(*owner, true),
         AccountMeta::new(*delegate, false),
-        AccountMeta::new(*addressAsset1, false),
-        AccountMeta::new(*addressAsset2, false),
-        AccountMeta::new(*addressAsset3, false),
-        AccountMeta::new(*addressAsset4, false),
-        AccountMeta::new(*addressAsset5, false),
-        AccountMeta::new(*addressAsset6, false),
-        AccountMeta::new(*addressAsset7, false),
-        AccountMeta::new(*addressAsset8, false),
-        AccountMeta::new(*addressAsset9, false),
-        // AccountMeta::new(*addressAsset10, false),
+        AccountMeta::new(*spluAsset1, false),
+        AccountMeta::new(*spluAsset2, false),
+        AccountMeta::new(*spluAsset3, false),
+        AccountMeta::new(*spluAsset4, false),
+        AccountMeta::new(*spluAsset5, false),
+        AccountMeta::new(*spluAsset6, false),
+        AccountMeta::new(*spluAsset7, false),
+        AccountMeta::new(*spluAsset8, false),
+        AccountMeta::new(*spluAsset9, false),
        ];
   
     Ok(Instruction {

@@ -837,30 +837,10 @@ impl Processor {
             },
             TokenInstruction::createInitUserPortfolio {
                 delegated_amount,
-                valueAsset1,
-                valueAsset2,
-                valueAsset3,
-                valueAsset4,
-                valueAsset5,
-                valueAsset6,
-                valueAsset7,
-                valueAsset8,
-                valueAsset9,
-                // valueAsset10,
              } => {
                 msg!("Instruction: createInitUserPortfolio");
                 Self::process_create_Init_User_Portfolio(program_id , accounts ,
                     delegated_amount,
-                    valueAsset1,
-                    valueAsset2,
-                    valueAsset3,
-                    valueAsset4,
-                    valueAsset5,
-                    valueAsset6,
-                    valueAsset7,
-                    valueAsset8,
-                    valueAsset9,
-                    // valueAsset10,
                 )
             },
         }
@@ -871,16 +851,6 @@ impl Processor {
         program_id: &Pubkey,
         accounts: &[AccountInfo],
         delegated_amount:u64,
-        valueAsset1 : u64,
-        valueAsset2 : u64,
-        valueAsset3 : u64,
-        valueAsset4 : u64,
-        valueAsset5 : u64,
-        valueAsset6 : u64,
-        valueAsset7 : u64,
-        valueAsset8 : u64,
-        valueAsset9 : u64,
-        // amountAsset10 : u64,
     ) -> ProgramResult {
        /* let accounts_iter = &mut accounts.iter();
         let user_account= next_account_info(accounts_iter)?;
@@ -1753,9 +1723,11 @@ mod tests {
     //Portfolio
 
        let check = Portfolio {
-        creatorAccount: Pubkey::new(&[1; 32]),
-        owner: Pubkey::new(&[2; 32]),
+        portfolio_account: Pubkey::new(&[1; 32]),
+        creator_portfolio: Pubkey::new(&[2; 32]),
+        metadataUrl: [97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97].to_vec(),
         metadataHash: 3,
+        is_initialize:0,
         amountAsset1: 4,
         addressAsset1: Pubkey::new(&[1; 32]),
         periodAsset1: 6,
@@ -1810,7 +1782,14 @@ mod tests {
     let expect = vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
     , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2
     , 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
-    , 3, 0, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    ,97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99
+    , 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99
+    , 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99
+    , 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99
+    , 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99
+    , 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99
+    , 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99
+    , 97, 97, 3,0,  4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
     , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
     , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4
     , 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
@@ -1893,7 +1872,7 @@ mod tests {
          // addressAsset10: &Pubkey ,
         // assetToSoldIntoAsset10: &Pubkey ,
       
-      let   metaDataUrl = "1";
+      let   metaDataUrl = [97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97, 98, 98, 99, 99, 97, 97].to_vec();
      let  metaDataHash =3;
      let   amountAsset1 = 4;
      let  periodAsset1 =5 ;
@@ -1922,7 +1901,9 @@ mod tests {
        do_process_instruction(
            initialize_portfolio(&program_id, &creatorAccount,
             &owner,
-            &metaDataHash, &amountAsset1,
+            &metaDataUrl,
+            &metaDataHash,
+            &amountAsset1,
             &addressAsset1,
             &periodAsset1,
             &assetToSoldIntoAsset1,
