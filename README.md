@@ -12,7 +12,7 @@ Within our Solana MVP, our first nAsset token type allows users to execute a sim
 Going forward, we will be releasing portfolios and more complex programmable assets that take profit and redistribute when certain conditions are met. Follow our repository to stay updated!
 
 
-<img src="https://github.com/NovaFi/NToken-solana/SchemaOfProject.png" style="text-align: center;">
+<img src="https://raw.githubusercontent.com/NovaFi/NToken-solana/jawaher/Untitled%20Diagram-Page-2.png" style="text-align: center;">
 
 
 
