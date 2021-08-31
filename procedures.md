@@ -12,7 +12,7 @@
 * Transfer : Transfers tokens 'splm' from one account 'splu' to another 'splu' either directly or via a delegate 'pp'.
 ### Execute Swap :
 * Swap : The Token Swap Program 'swapp' allows simple trading of token pairs 'splm1-splm2' without a centralized limit order book.
-This function is called through cross program invocotion
+This function is called through cross program invocation.
 ### Execute Invest :
 * invest : 'splu' invest on yield. 
 
