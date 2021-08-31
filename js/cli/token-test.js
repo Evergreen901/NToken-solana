@@ -287,12 +287,15 @@ export async function createPortfolio() : Promise<void> {
   const creatorSource = await asset.createAccountNew(testToken.publicKey);
   //let owner = await testToken.createAccount(ownerSource.publicKey);
   let metaDataUrl = "aabbcc";
-  var metaDataHash = new Uint16Array([123456789]);
+  var metaDataHash = new Uint16Array([789]);
+  console.log ("metaDataHash  ",metaDataHash );
   // let metaDataHash = 123;
  // let creatorAccount = await asset.createAccountNew(creatorSource.publicKey);
   let amountAsset1 = 2;
   let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-  let periodAsset1 = new Uint32Array([123]);
+ // let periodAsset1 = new Uint32Array([123]);
+  let periodAsset1 = 123;
+  console.log ("period asset 1 ",periodAsset1 );
   let assetToSoldIntoAsset1 =await (await asset.createAccountNew(testToken.publicKey)).publicKey;
   // let amountAsset1 = 2;
   // let addressAsset1: PublicKey; 

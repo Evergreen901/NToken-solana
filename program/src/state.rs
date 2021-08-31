@@ -531,7 +531,7 @@ impl Pack for Portfolio {
         //Pubkey(creatorAccount,creator_Account_dst);
         creator_portfolio_dst.copy_from_slice(creator_portfolio.as_ref());
         //*metadata_URL_dst = convert(metadataURL);
-       // *metadata_URL_dst = convert(metadataUrl.to_vec());
+        *metadata_URL_dst = convert(metadataUrl.to_vec());
         // *metadata_URL_dst = metadataURL.borrow();
         *metadata_URL_dst= array_ref!( metadataUrl, 0, 128).clone();/*****/
         *metadata_HASH_dst = metadataHash.to_le_bytes();

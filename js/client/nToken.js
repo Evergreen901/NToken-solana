@@ -302,7 +302,7 @@ type PortfolioInfo = {
     /**
      * The amount of first asset
      */
-    amountAsset1: null | u64,
+    amountAsset1: null | u8,
     /**
      * The address of first asset
      */
@@ -310,7 +310,7 @@ type PortfolioInfo = {
     /**
      * The period of first asset
      */
-    periodAsset1: null | u64,
+    periodAsset1: null | u8,
     /**
      * The asset solde of first asset
      */
@@ -318,7 +318,7 @@ type PortfolioInfo = {
     /**
      * The amount of asset
      */
-    amountAsset2: null | u64,
+    amountAsset2: null | u8,
     /**
      * The address of  asset
      */
@@ -326,7 +326,7 @@ type PortfolioInfo = {
     /**
      * The period of  asset
      */
-    periodAsset2: null | u64,
+    periodAsset2: null | u8,
     /**
      * The asset solde of asset
      */
@@ -335,7 +335,7 @@ type PortfolioInfo = {
     /**
      * The amount of asset
      */
-    amountAsset3: null | u64,
+    amountAsset3: null | u8,
     /**
      * The address of  asset
      */
@@ -343,7 +343,7 @@ type PortfolioInfo = {
     /**
      * The period of  asset
      */
-    periodAsset3: null | u64,
+    periodAsset3: null | u8,
     /**
      * The asset solde of asset
      */
@@ -351,7 +351,7 @@ type PortfolioInfo = {
     /**
      * The amount of asset
      */
-    amountAsset4: null | u64,
+    amountAsset4: null | u8,
     /**
      * The address of  asset
      */
@@ -359,7 +359,7 @@ type PortfolioInfo = {
     /**
      * The period of  asset
      */
-    periodAsset4: null | u64,
+    periodAsset4: null | u8,
     /**
      * The asset solde of asset
      */
@@ -367,7 +367,7 @@ type PortfolioInfo = {
     /**
      * The amount of asset
      */
-    amountAsset5: null | u64,
+    amountAsset5: null | u8,
     /**
      * The address of  asset
      */
@@ -375,7 +375,7 @@ type PortfolioInfo = {
     /**
      * The period of  asset
      */
-    periodAsset5: null | u64,
+    periodAsset5: null | u8,
     /**
      * The asset solde of asset
      */
@@ -384,7 +384,7 @@ type PortfolioInfo = {
     /**
      * The amount of first asset
      */
-    amountAsset6: null | u64,
+    amountAsset6: null | u8,
     /**
      * The address of first asset
      */
@@ -392,7 +392,7 @@ type PortfolioInfo = {
     /**
      * The period of first asset
      */
-    periodAsset6: null | u64,
+    periodAsset6: null | u8,
     /**
      * The asset solde of first asset
      */
@@ -400,7 +400,7 @@ type PortfolioInfo = {
     /**
      * The amount of asset
      */
-    amountAsset7: null | u64,
+    amountAsset7: null | u8,
     /**
      * The address of  asset
      */
@@ -408,7 +408,7 @@ type PortfolioInfo = {
     /**
      * The period of  asset
      */
-    periodAsset7: null | u64,
+    periodAsset7: null | u8,
     /**
      * The asset solde of asset
      */
@@ -417,7 +417,7 @@ type PortfolioInfo = {
     /**
      * The amount of asset
      */
-    amountAsset8: null | u64,
+    amountAsset8: null | u8,
     /**
      * The address of  asset
      */
@@ -425,7 +425,7 @@ type PortfolioInfo = {
     /**
      * The period of  asset
      */
-    periodAsset8: null | u64,
+    periodAsset8: null | u8,
     /**
      * The asset solde of asset
      */
@@ -433,7 +433,7 @@ type PortfolioInfo = {
     /**
      * The amount of asset
      */
-    amountAsset9: null | u64,
+    amountAsset9: null | u8,
     /**
      * The address of  asset
      */
@@ -441,7 +441,7 @@ type PortfolioInfo = {
     /**
      * The period of  asset
      */
-    periodAsset9: null | u64,
+    periodAsset9: null | u8,
     /**
      * The asset solde of asset
      */
@@ -481,57 +481,57 @@ export const PortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struc
         Layout.publicKey('assetToSoldIntoAsset1'), //32
 
 
-        BufferLayout.u8('amountAsset2'), //8
+        BufferLayout.u8('amountAsset2'), //1
         Layout.publicKey('addressAsset2'), //32
         BufferLayout.u8('periodAsset2'), //8
         Layout.publicKey('assetToSoldIntoAsset2'), //32
 
 
-        BufferLayout.u8('amountAsset3'), //8
+        BufferLayout.u8('amountAsset3'), //1
         Layout.publicKey('addressAsset3'), //32
         BufferLayout.u8('periodAsset3'), //8
         Layout.publicKey('assetToSoldIntoAsset3'), //32
 
 
-        BufferLayout.u8('amountAsset4'), //8
+        BufferLayout.u8('amountAsset4'), //1
         Layout.publicKey('addressAsset4'), //32
         BufferLayout.u8('periodAsset4'), //8
         Layout.publicKey('assetToSoldIntoAsset4'), //32
 
 
-        BufferLayout.u8('amountAsset5'), //8
+        BufferLayout.u8('amountAsset5'), //1
         Layout.publicKey('addressAsset5'), //32
         BufferLayout.u8('periodAsset5'), //8
         Layout.publicKey('assetToSoldIntoAsset5'), //32
 
 
-        BufferLayout.u8('amountAsset6'), //8
+        BufferLayout.u8('amountAsset6'), //1
         Layout.publicKey('addressAsset6'), //32
-        BufferLayout.u8('periodAsset6'), //8
+        BufferLayout.u8('periodAsset6'), //1
         Layout.publicKey('assetToSoldIntoAsset6'), //32
 
 
-        BufferLayout.u8('amountAsset7'), //8
+        BufferLayout.u8('amountAsset7'), //1
         Layout.publicKey('addressAsset7'), //32
-        BufferLayout.u8('periodAsset7'), //8
+        BufferLayout.u8('periodAsset7'), //1
         Layout.publicKey('assetToSoldIntoAsset7'), //32
 
 
-        BufferLayout.u8('amountAsset8'), //8
+        BufferLayout.u8('amountAsset8'), //1
         Layout.publicKey('addressAsset8'), //32
-        BufferLayout.u8('periodAsset8'), //8
+        BufferLayout.u8('periodAsset8'), //1
         Layout.publicKey('assetToSoldIntoAsset8'), //32
 
 
-        BufferLayout.u8('amountAsset9'), //8
+        BufferLayout.u8('amountAsset9'), //1
         Layout.publicKey('addressAsset9'), //32
-        BufferLayout.u8('periodAsset9'), //8
+        BufferLayout.u8('periodAsset9'), //1
         Layout.publicKey('assetToSoldIntoAsset9'), //32
 
 
-      /*  Layout.u8('amountAsset10'), //8
+      /*  Layout.u8('amountAsset10'), //1
         Layout.publicKey('addressAsset10'), //32
-        Layout.u32('periodAsset10'), //32
+        Layout.u32('periodAsset10'), //1
         Layout.publicKey('assetToSoldIntoAsset10'), //32*/
     ],
 );
@@ -1148,7 +1148,7 @@ export class nToken {
      async createPortfolio(
       creator: Account,
       metaDataUrl : any,
-      metaDataHash : u32 ,
+      metaDataHash : u16 ,
       //creatorAccount : Account,
       amountAsset1 : number ,
       addressAsset1 : Publickey| null ,
@@ -1200,7 +1200,8 @@ export class nToken {
 
       const newAccountPortfolio = new Account();
       
-      console.log ("Account Portfolio",newAccountPortfolio.publicKey.toString());
+      console.log ("Account Portfolio : ",newAccountPortfolio.publicKey.toString());
+     
       const transaction = new Transaction();
       transaction.add(
           SystemProgram.createAccount({

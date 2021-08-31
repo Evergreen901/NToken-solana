@@ -951,6 +951,7 @@ impl Processor {
         let assetToSoldIntoAsset8 = next_account_info(accounts_iter)?;
         let addressAsset9 = next_account_info(accounts_iter)?;
         let assetToSoldIntoAsset9 = next_account_info(accounts_iter)?;
+        let owner = next_account_info(accounts_iter)?;
     
      
        
@@ -1892,7 +1893,7 @@ mod tests {
          // addressAsset10: &Pubkey ,
         // assetToSoldIntoAsset10: &Pubkey ,
       
-     //   metaDataUrl : &Vec<u8>,
+      let   metaDataUrl = "1";
      let  metaDataHash =3;
      let   amountAsset1 = 4;
      let  periodAsset1 =5 ;
