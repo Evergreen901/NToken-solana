@@ -310,7 +310,7 @@ export async function createPortfolio() : Promise<void> {
 
   let amountAsset3=3 ;
   let addressAsset3  = addressAsset1;
-  let periodAsset3 = 3;
+  let periodAsset3 =3;
   let assetToSoldIntoAsset3  = addressAsset1;
 
   let amountAsset4 =3;
@@ -320,27 +320,27 @@ export async function createPortfolio() : Promise<void> {
 
   let amountAsset5 =3;
   let addressAsset5  = addressAsset1;
-  let periodAsset5= 3;
+  let periodAsset5=3;
   let assetToSoldIntoAsset5  =addressAsset1;
 
   let amountAsset6 =3;
   let addressAsset6  = addressAsset1;
-  let periodAsset6= 3;
+  let periodAsset6=3;
   let assetToSoldIntoAsset6  = addressAsset1;
 
   let amountAsset7=3 ;
   let addressAsset7  = addressAsset1;
-  let periodAsset7=  3;
+  let periodAsset7=3;
   let assetToSoldIntoAsset7  = addressAsset1;
 
   let amountAsset8 =3;
   let addressAsset8  = addressAsset1;
-  let periodAsset8= 3;
+  let periodAsset8=3;
   let assetToSoldIntoAsset8  = addressAsset1;
 
   let amountAsset9 =3;
   let addressAsset9  = addressAsset1;
-  let periodAsset9 = 3;
+  let periodAsset9 =3;
   let assetToSoldIntoAsset9  = addressAsset1;
 
   // let amountAsset10 ;

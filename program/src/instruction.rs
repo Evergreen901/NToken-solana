@@ -433,7 +433,7 @@ pub enum TokenInstruction {
        // ///pourcentage of 10 asset
         // amountAsset10 : u8,
         // ///period of 10 asset
-        // periodAsset10 : u32,
+        // periodAsset10 : u8,
     },
 
     //20
@@ -731,11 +731,11 @@ impl TokenInstruction {
                 .ok()
                 .map(u8::from_le_bytes)
                 .ok_or(InvalidInstruction)?;
-                // let (amountAsset10, _rest19) = _rest18.split_at(8);
+                // let (amountAsset10, _rest19) = _rest18.split_at(1);
                 // let amountAsset10 = amountAsset10
                 // .try_into()
                 // .ok()
-                // .map(u64::from_le_bytes)
+                // .map(u8::from_le_bytes)
                 // .ok_or(InvalidInstruction)?;
                 // let (periodAsset10, _rest20) = _rest19.split_at(32);
                 // let periodAsset10 = periodAsset10
@@ -1154,8 +1154,8 @@ fn convert<T, const N: usize>(v: Vec<T>) -> [T; N] {
 /// Creates a `InitializePortfolio` instruction.
 pub fn initialize_portfolio(
     program_id: &Pubkey,
-    creatorAccount: &Pubkey ,
-    owner: &Pubkey ,
+    portfolio_account: &Pubkey ,
+    creator_portfolio: &Pubkey ,
     metaDataUrl : &Vec<u8>,
     metaDataHash : &u16,
     amountAsset1 : &u8,
@@ -1204,11 +1204,12 @@ pub fn initialize_portfolio(
 
 
     // amountAsset10 : &u8,
-    // periodAsset10 : &u32,
+    // periodAsset10 : &u8,
 
 ) -> Result<Instruction, ProgramError> {
     let data = TokenInstruction::InitializePortfolio {
-        metaDataUrl: metaDataUrl.clone(),
+       // metaDataUrl: metaDataUrl.clone(),
+        metaDataUrl: (*metaDataUrl.clone().to_vec()).to_vec(),
         metaDataHash: *metaDataHash,
         amountAsset1: *amountAsset1,
         periodAsset1: *periodAsset1,
@@ -1234,7 +1235,8 @@ pub fn initialize_portfolio(
 
 
     let  accounts = vec![
-        AccountMeta::new(*creatorAccount, true),
+        AccountMeta::new(*portfolio_account, true),
+        AccountMeta::new(*creator_portfolio, true),
         AccountMeta::new(*addressAsset1, false),
         AccountMeta::new(*assetToSoldIntoAsset1, false),
         AccountMeta::new(*addressAsset2, false),
@@ -1253,7 +1255,6 @@ pub fn initialize_portfolio(
         AccountMeta::new(*assetToSoldIntoAsset8, false),
         AccountMeta::new(*addressAsset9, false),
         AccountMeta::new(*assetToSoldIntoAsset9, false),
-        AccountMeta::new(*owner, true),
         // AccountMeta::new(*addressAsset10, false),
         // AccountMeta::new(*assetToSoldIntoAsset10, false),
      

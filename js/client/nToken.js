@@ -275,24 +275,30 @@ type PortfolioInfo = {
     /**
      * The address of this account
      */
-    address: PublicKey,
+    portfoliAddress: PublicKey,
+      /**
+     * the address of the creator
+     */
+    creatorPortfolio: publicKey,
     /**
      * Owner of this account
      */
     owner: PublicKey,
 
+       /**
+     * metadata url
+     */
+    metadataUrl: BufferLayout.blob,
+
     /**
      * metadata hash
      */
     metadataHash: u32,
+ 
     /**
-     * metadata url
+     * initialized account 
      */
-    metadataUrl: BufferLayout.blob,
-    /**
-     * Amount usdc of tokens this account holds
-     */
-     creatorAccount: publicKey,
+     is_initialize:null | u64,
     /**
      * The amount of first asset
      */
@@ -463,38 +469,39 @@ type PortfolioInfo = {
 export const PortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struct(
     [
 
-        Layout.publicKey('owner'), //32
+        Layout.publicKey('portfolioAddress'), //32
+        Layout.publicKey('creatorPortfolio'), //32
         BufferLayout.blob(128, 'metadataUrl'), //128
-        BufferLayout.u16('metadataHash'), //2
-        Layout.publicKey('creatorAccount'), //32
-
-        BufferLayout.u8('amountAsset1'), //1
+        BufferLayout.u16('metadataHash'), //16
+        BufferLayout.u8('is_initialize'), //8
+      
+        BufferLayout.u8('amountAsset1'), //8
         Layout.publicKey('addressAsset1'), //32
-        BufferLayout.u8('periodAsset1'), //1
+        BufferLayout.u8('periodAsset1'), //8
         Layout.publicKey('assetToSoldIntoAsset1'), //32
 
 
         BufferLayout.u8('amountAsset2'), //1
         Layout.publicKey('addressAsset2'), //32
-        BufferLayout.u8('periodAsset2'), //1
+        BufferLayout.u8('periodAsset2'), //8
         Layout.publicKey('assetToSoldIntoAsset2'), //32
 
 
         BufferLayout.u8('amountAsset3'), //1
         Layout.publicKey('addressAsset3'), //32
-        BufferLayout.u8('periodAsset3'), //1
+        BufferLayout.u8('periodAsset3'), //8
         Layout.publicKey('assetToSoldIntoAsset3'), //32
 
 
         BufferLayout.u8('amountAsset4'), //1
         Layout.publicKey('addressAsset4'), //32
-        BufferLayout.u8('periodAsset4'), //1
+        BufferLayout.u8('periodAsset4'), //8
         Layout.publicKey('assetToSoldIntoAsset4'), //32
 
 
         BufferLayout.u8('amountAsset5'), //1
         Layout.publicKey('addressAsset5'), //32
-        BufferLayout.u8('periodAsset5'), //1
+        BufferLayout.u8('periodAsset5'), //8
         Layout.publicKey('assetToSoldIntoAsset5'), //32
 
 
@@ -1139,7 +1146,7 @@ export class nToken {
      * @return Public key of the new empty portfolio
      */
      async createPortfolio(
-      owner: Account,
+      creator: Account,
       metaDataUrl : any,
       metaDataHash : u16 ,
       //creatorAccount : Account,
@@ -1194,11 +1201,11 @@ export class nToken {
       const newAccountPortfolio = new Account();
       
       console.log ("Account Portfolio : ",newAccountPortfolio.publicKey.toString());
-      console.log ("owner.publicKey : ", owner.publicKey)
+     
       const transaction = new Transaction();
       transaction.add(
           SystemProgram.createAccount({
-              fromPubkey: owner.publicKey,
+              fromPubkey: creator.publicKey,
               newAccountPubkey: newAccountPortfolio.publicKey,
               lamports: balanceNeeded,
               space: PortfolioLayout.span,
@@ -1212,7 +1219,7 @@ export class nToken {
             nToken.createInitPortfolioInstruction(
                 this.programId,
                 // mintPublicKey,
-                owner.publicKey,
+                creator.publicKey,
                 metaDataUrl,
                 metaDataHash,
                 newAccountPortfolio.publicKey,
@@ -1260,14 +1267,14 @@ export class nToken {
             ),
         );
 
-                console.log("owner : ", owner.publicKey.toString());
+                console.log("creator : ", creator.publicKey.toString());
 
         //Send the two instructions
         await sendAndConfirmTransaction(
             'createPortfolio and InitializePortfolio',
             this.connection,
             transaction,
-            owner,
+            creator,
             newAccountPortfolio
             
 
@@ -2695,15 +2702,15 @@ export class nToken {
      * @param programId SPL Token program account
      * @param mint Token mint account
      * @param portfolio New account
-     * @param owner Owner of the new account
+     * @param creator Creator of the new portfolio
      */
     static createInitPortfolioInstruction(
         programId: PublicKey,
         //mint: PublicKey,
-        owner: PublicKey,
+        creator: PublicKey,
         metaDataUrl: any,
         metaDataHash: number,
-        creatorAccount: PublicKey| null,
+        PortfolioAccount: PublicKey| null,
         amountAsset1: number,
         addressAsset1: PublicKey| null,
         periodAsset1: number,
@@ -2748,9 +2755,10 @@ export class nToken {
 
     ): TransactionInstruction {
 
-      console.log ("creatorAccount : ",creatorAccount , "addressAsset1 : ",addressAsset1,"assetToSoldIntoAsset1 : ",assetToSoldIntoAsset1);
+      console.log ("creatorAccount : ",creator.toString() , "addressAsset1 : ",addressAsset1,"assetToSoldIntoAsset1 : ",assetToSoldIntoAsset1);
         const keys = [
-            { pubkey: creatorAccount, isSigner: false, isWritable: true },
+            { pubkey: PortfolioAccount, isSigner: false, isWritable: true },
+            { pubkey: creator, isSigner: true, isWritable: false },
             { pubkey: addressAsset1, isSigner: false, isWritable: false },
             { pubkey: assetToSoldIntoAsset1, isSigner: false, isWritable: false },
             { pubkey: addressAsset2, isSigner: false, isWritable: false },
@@ -2771,7 +2779,7 @@ export class nToken {
             { pubkey: assetToSoldIntoAsset9, isSigner: false, isWritable: false },
             // { pubkey: addressAsset10, isSigner: false, isWritable: false },
             // { pubkey: assetToSoldIntoAsset10, isSigner: false, isWritable: false },
-            { pubkey: owner, isSigner: true, isWritable: false },
+           
             { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
         ];
 
@@ -2804,7 +2812,7 @@ export class nToken {
             BufferLayout.u8('amountAsset9'),
             BufferLayout.u8('periodAsset9'),
             // BufferLayout.u8('amountAsset10'),
-            // BufferLayout.u32('periodAsset10'),
+            // BufferLayout.u8('periodAsset10'),
         ]);
 
         console.log(JSON.stringify(metaDataUrl));
@@ -2820,16 +2828,16 @@ export class nToken {
                 metaDataHash :metaDataHash,
                 amountAsset1  ,
                 /*amountAsset1: new u16(amountAsset1).toBuffer(),*/
-               // periodAsset1 : Buffer.from(periodAsset1),
                 periodAsset1 ,
+                // periodAsset1 : Buffer.from(periodAsset1),
                 amountAsset2,
                 periodAsset2 ,
                 amountAsset3,
                 periodAsset3 ,
                 amountAsset4,
-                periodAsset4 ,
+                periodAsset4,
                 amountAsset5,
-                periodAsset5 ,
+                periodAsset5,
                 amountAsset6,
                 periodAsset6 ,
                 amountAsset7,
