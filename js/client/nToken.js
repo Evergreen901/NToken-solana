@@ -295,7 +295,10 @@ type PortfolioInfo = {
      */
     metadataHash: u32,
  
-  
+    /**
+     * initialized account 
+     */
+     is_initialize:null | u64,
     /**
      * The amount of first asset
      */
@@ -470,8 +473,8 @@ export const PortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struc
         Layout.publicKey('creatorPortfolio'), //32
         BufferLayout.blob(128, 'metadataUrl'), //128
         BufferLayout.u16('metadataHash'), //16
+        BufferLayout.u8('is_initialize'), //8
       
-
         BufferLayout.u8('amountAsset1'), //8
         Layout.publicKey('addressAsset1'), //32
         BufferLayout.u8('periodAsset1'), //8

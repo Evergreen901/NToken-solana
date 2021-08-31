@@ -251,7 +251,8 @@ pub struct Portfolio {
     pub metadataUrl: Vec<u8>,
     /// the hash of data
     pub metadataHash: u16,
-  
+    /// is initialize
+    pub is_initialize: u8,
     /// the amount of first asset
     pub amountAsset1: u8,
     /// The first asset's address
@@ -341,16 +342,20 @@ fn convert<T, const N: usize>(v: Vec<T>) -> [T; N] {
 impl Sealed for Portfolio {}
 impl IsInitialized for Portfolio {
     fn is_initialized(&self) -> bool {
-        return true;
-    }
+  return true;
+  
+      // return self.is_initialized == 1;
 }
+}
+
+
 impl Pack for Portfolio {
-    const LEN: usize = 788;
+    const LEN: usize = 789;
     fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {
-        msg!("this is first");
-        let src = array_ref![src, 0, 788];
+   
+        let src = array_ref![src, 0, 789];
     
-        let (portfolio_account,creator_portfolio , metadataUrl, metadataHash,  amountAsset1, addressAsset1, periodAsset1,
+        let (portfolio_account,creator_portfolio , metadataUrl, metadataHash, is_initialize, amountAsset1, addressAsset1, periodAsset1,
             assetToSoldIntoAsset1, amountAsset2, addressAsset2, periodAsset2,assetToSoldIntoAsset2, amountAsset3, 
             addressAsset3, periodAsset3,assetToSoldIntoAsset3, amountAsset4, addressAsset4, periodAsset4,
             assetToSoldIntoAsset4, amountAsset5, addressAsset5, periodAsset5,assetToSoldIntoAsset5, amountAsset6, 
@@ -358,16 +363,24 @@ impl Pack for Portfolio {
             assetToSoldIntoAsset7, amountAsset8, addressAsset8, periodAsset8,assetToSoldIntoAsset8, amountAsset9, 
             addressAsset9, periodAsset9,assetToSoldIntoAsset9/*, amountAsset10, addressAsset10, periodAsset10,
             assetToSoldIntoAsset10*/) =
-            array_refs![src,32, 32, 128, 2,  1, 32 , 1, 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 
+            array_refs![src,32, 32, 128, 2, 1, 1, 32 , 1, 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 
             1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32/*, 1, 32 
             , 1 , 32*/];
-            msg!("this is second");
+   
               Ok(Portfolio {
             portfolio_account: Pubkey::new_from_array(*portfolio_account),
             creator_portfolio: Pubkey::new_from_array(*creator_portfolio),
             metadataUrl: metadataUrl.to_vec(),
             metadataHash: u16::from_le_bytes(*metadataHash),
             
+            /*is_initialized:  match is_initialized {
+                [0] => 0,
+                [1] => 1,
+                _ => return  { 
+                    Err(ProgramError::InvalidAccountData)
+                },
+            },*/
+            is_initialize: u8::from_le_bytes(*is_initialize),
             amountAsset1: u8::from_le_bytes(*amountAsset1),
             addressAsset1: Pubkey::new_from_array(*addressAsset1),
             periodAsset1: u8::from_le_bytes(*periodAsset1),
@@ -415,13 +428,13 @@ impl Pack for Portfolio {
 
 
     fn pack_into_slice(&self, dst: &mut [u8]) {
-        let dst = array_mut_ref![dst, 0, 788];
+        let dst = array_mut_ref![dst, 0, 789];
         let (
             portfolio_account_dst,
             creator_portfolio_dst,
             metadata_URL_dst,
             metadata_HASH_dst,
-           
+            is_initialize_dst,
             amount_Asset1_dst,
             address_Asset1_dst,
             period_Asset1_dst,
@@ -463,7 +476,7 @@ impl Pack for Portfolio {
             // period_Asset10_dst,
             // asset_To_Sold_Into_Asset10_dst,
 
-        ) = mut_array_refs![dst, 32,32, 128, 2,  1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 
+        ) = mut_array_refs![dst, 32,32, 128, 2, 1, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 
         1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32, 1, 32 , 1 , 32/*, 1, 32 
         , 4 , 32*/];
         let Portfolio {
@@ -471,7 +484,7 @@ impl Pack for Portfolio {
             ref creator_portfolio,
             metadataUrl, 
             metadataHash,
-           
+            is_initialize,
             amountAsset1, 
             ref addressAsset1, 
             periodAsset1,
@@ -522,6 +535,7 @@ impl Pack for Portfolio {
         // *metadata_URL_dst = metadataURL.borrow();
         *metadata_URL_dst= array_ref!( metadataUrl, 0, 128).clone();/*****/
         *metadata_HASH_dst = metadataHash.to_le_bytes();
+        *is_initialize_dst = is_initialize.to_le_bytes();
      
         *amount_Asset1_dst = amountAsset1.to_le_bytes();
         address_Asset1_dst.copy_from_slice(addressAsset1.as_ref());

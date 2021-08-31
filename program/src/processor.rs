@@ -955,13 +955,22 @@ impl Processor {
      
        
         msg!("initialze portfolio account : {:?} ",portfolioAccount );
-       // msg!("metadataURL : {:?} ",*metaDataUrl );
+        /*for data_url in &metaDataUrl {
+            msg!("metadataURL : {:?} ",data_url );
+        }*/
+     
+       
      //   msg!("initialze portfolio account data : {:?} ",account.data );
 
 
 
         let mut new_portfolio = Portfolio::unpack(&mut portfolioAccount.data.borrow())?;
- 
+
+        if new_portfolio.is_initialize == 1 {
+            return Err(TokenError::AlreadyInUse.into());
+        }
+       // msg!("initialze portfolio account isinitilized : {:?} ",new_portfolio.is_initialize );
+        new_portfolio.is_initialize = 1 ;
         new_portfolio.portfolio_account = *portfolioAccount.key;
         new_portfolio.creator_portfolio = *creatorPortfolio.key;
         new_portfolio.metadataUrl = metaDataUrl;
@@ -1003,7 +1012,7 @@ impl Processor {
         new_portfolio.periodAsset9 = periodAsset9;
         new_portfolio.assetToSoldIntoAsset9 = *assetToSoldIntoAsset9.key;
  
-
+        msg!("initialze portfolio account isinitilized after  : {:?} ",new_portfolio.is_initialize );
 
         Portfolio::pack(new_portfolio, &mut portfolioAccount.data.borrow_mut())?;
         msg!("address asset 1 {:?}  ", *addressAsset1.key ,);
