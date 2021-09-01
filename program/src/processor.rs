@@ -852,12 +852,20 @@ impl Processor {
         accounts: &[AccountInfo],
         delegated_amount:u64,
     ) -> ProgramResult {
-       /* let accounts_iter = &mut accounts.iter();
-        let user_account= next_account_info(accounts_iter)?;
-        let portfolioAddress= next_account_info(accounts_iter)?;
-        let userPortfolioAccount= next_account_info(accounts_iter)?;
+        let accounts_iter = &mut accounts.iter();
+        let user_portfolio_account = next_account_info(accounts_iter)?;
+        let portfolio_address = next_account_info(accounts_iter)?;
+        let owner = next_account_info(accounts_iter)?;
+        let delegate = next_account_info(accounts_iter)?;
         msg!("create Init User Portfolio ");
-        let mut portfolio = UserPortfolio::unpack_unchecked(&user_account.data.borrow())?;
+        let mut user_portfolio = UserPortfolio::unpack(&mut user_portfolio_account.data.borrow())?;
+
+
+        user_portfolio.user_portfolio_account = *user_portfolio_account.key;
+        user_portfolio.portfolio_address = *portfolio_address.key;
+        user_portfolio.owner =* owner.key;
+        user_portfolio.delegated_amount = delegated_amount;
+     /*
         //portfolio.delegate = COption::None;
         portfolio.delegated_amount = 0;
         portfolio.userAccount = *user_account.key;
@@ -865,7 +873,9 @@ impl Processor {
         portfolio.portfolioAddress = *portfolioAddress.key;
 
         UserPortfolio::pack(portfolio, &mut user_account.data.borrow_mut())?;
-*/
+*/       msg!("user portfolio account afet exec  : {:?} ",user_portfolio );
+        UserPortfolio::pack(user_portfolio, &mut user_portfolio_account.data.borrow_mut())?;
+        msg!("final create user with success") ;
         Ok(())
 
     }
