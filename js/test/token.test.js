@@ -2,11 +2,11 @@
 import {expect} from 'chai';
 import {Account, PublicKey} from '@solana/web3.js';
 
-import {ASSOCIATED_TOKEN_PROGRAM_ID, nToken, TOKEN_PROGRAM_ID} from '../client/nToken';
+import {ASSOCIATED_TOKEN_PROGRAM_ID, Portfolio, TOKEN_PROGRAM_ID} from '../client/Portfolio';
 
 describe('Token', () => {
   it('createTransfer', () => {
-    const ix = nToken.createTransferCheckedInstruction(
+    const ix = Portfolio.createTransferCheckedInstruction(
       TOKEN_PROGRAM_ID,
       new Account().publicKey,
       new Account().publicKey,
@@ -21,7 +21,7 @@ describe('Token', () => {
   });
 
   it('createInitMint', () => {
-    const ix = nToken.createInitMintInstruction(
+    const ix = Portfolio.createInitMintInstruction(
       TOKEN_PROGRAM_ID,
       new Account().publicKey,
       9,
@@ -33,7 +33,7 @@ describe('Token', () => {
   });
 
   it('getAssociatedTokenAddress', async () => {
-    const associatedPublicKey = await nToken.getAssociatedTokenAddress(
+    const associatedPublicKey = await Portfolio.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
       new PublicKey('7o36UsWR1JQLpZ9PE2gn9L4SQ69CNNiWAXd4Jt7rqz9Z'),
@@ -45,7 +45,7 @@ describe('Token', () => {
   });
 
   it('createAssociatedTokenAccount', () => {
-    const ix = nToken.createAssociatedTokenAccountInstruction(
+    const ix = Portfolio.createAssociatedTokenAccountInstruction(
       ASSOCIATED_TOKEN_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
       new Account().publicKey,
