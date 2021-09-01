@@ -343,10 +343,7 @@ export async function createPortfolio() : Promise<void> {
   let periodAsset9 =3;
   let assetToSoldIntoAsset9  = splmAsset1;
 
-  // let amountAsset10 ;
-  // let addressAsset10  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-  // let periodAsset10 ;
-  // let assetToSoldIntoAsset10 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+
   testAccount = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash /*, creatorAccount*/ ,
      amountAsset1 , splmAsset1 , periodAsset1 , assetToSoldIntoAsset1 ,
      amountAsset2 , splmAsset2 , periodAsset2 , assetToSoldIntoAsset2 ,
@@ -357,7 +354,7 @@ export async function createPortfolio() : Promise<void> {
      amountAsset7 , splmAsset7 , periodAsset7 , assetToSoldIntoAsset7 ,
      amountAsset8 , splmAsset8 , periodAsset8 , assetToSoldIntoAsset8 ,
      amountAsset9 , splmAsset9 , periodAsset9 , assetToSoldIntoAsset9
-      // ,  amountAsset10 , addressAsset10 , periodAsset10 , assetToSoldIntoAsset10 
+  
      );
 
 
@@ -367,37 +364,37 @@ export async function createPortfolio() : Promise<void> {
 
 export async function createUserPortfolio(): Promise < void > {
     let owner = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
-  let portfolioAddress = new PublicKey("2miGqxYAjpv2huXSEk3q8tUDzjvuxoVruW3EQabg6JCT");
+  let portfolio_address = new PublicKey("2miGqxYAjpv2huXSEk3q8tUDzjvuxoVruW3EQabg6JCT");
   let delegate = programId ;
-  let delegated_amount = 5
-    let spluAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+  let delegated_amount = 5;
+    let splu_asset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
-    let spluAsset2 = await (await USDC.createAccountNew(testToken.publicKey)).publicKey
+    let splu_asset2 = await (await USDC.createAccountNew(testToken.publicKey)).publicKey
 
-    let spluAsset3 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let splu_asset3 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
-    let spluAsset4 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let splu_asset4 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
-    let spluAsset5 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let splu_asset5 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
-    let spluAsset6 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let splu_asset6 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
   
-    let spluAsset7 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let splu_asset7 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
     
-    let spluAsset8 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let splu_asset8 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
     
-    let spluAsset9 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let splu_asset9 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
     
-      UserPortfolioAccount = await testToken.createUserPortfolio(owner,portfolioAddress,delegate , delegated_amount,
-       spluAsset1,
-       spluAsset2,
-       spluAsset3,
-       spluAsset4,
-       spluAsset5,
-       spluAsset6,
-       spluAsset7,
-       spluAsset8,
-       spluAsset9);
+      UserPortfolioAccount = await testToken.createUserPortfolio(owner,portfolio_address,delegate , delegated_amount,
+       splu_asset1,
+       splu_asset2,
+       splu_asset3,
+       splu_asset4,
+       splu_asset5,
+       splu_asset6,
+       splu_asset7,
+       splu_asset8,
+       splu_asset9);
 
     }
     

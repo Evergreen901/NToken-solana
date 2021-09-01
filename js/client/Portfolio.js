@@ -543,7 +543,7 @@ type UserPortfolioInfo = {
         /**
          * The address of this account
          */
-        address: PublicKey,
+        user_portfolio_address: PublicKey,
         /**
          * Owner of this account
          */
@@ -552,7 +552,7 @@ type UserPortfolioInfo = {
         /**
          * Owner of this account
          */
-        portfolioAddress: PublicKey,
+        portfolio_address: PublicKey,
 
         /**
         * The delegate for this account
@@ -564,128 +564,61 @@ type UserPortfolioInfo = {
         */
          delegatedAmount: u64,
         /**
-         * Value of this assets
+         * publickey of this assets
          */
-        valueAsset1: null | uint64,
+        splu_asset1: null | PublicKey,
         /**
          * publickey of this assets
          */
-        addressAsset1: null | PublicKey,
-        /**
-         * Value of this assets
-         */
-        valueAsset2: null | uint64,
+        splu_asset2: null | PublicKey,
         /**
          * publickey of this assets
          */
-        addressAsset2: null | PublicKey,
-        /**
-         * Value of this assets
-         */
-        valueAsset3: null | uint64,
+        splu_asset3: null | PublicKey,
         /**
          * publickey of this assets
          */
-        addressAsset3: null | PublicKey,
-        /**
-         * Value of this assets
-         */
-        valueAsset4: null | uint64,
+        splu_asset4: null | PublicKey,
         /**
          * publickey of this assets
          */
-        addressAsset4: null | PublicKey,
-        /**
-         * Value of this assets
-         */
-        valueAsset5: null | uint64,
+        splu_asset5: null | PublicKey,
         /**
          * publickey of this assets
          */
-        addressAsset5: null | PublicKey,
-        /**
-         * Value of this assets
-         */
-        valueAsset6: null | uint64,
+        splu_asset6: null | PublicKey,
         /**
          * publickey of this assets
          */
-        addressAsset6: null | PublicKey,
-        /**
-         * Value of this assets
-         */
-        valueAsset7: null | uint64,
+        splu_asset7: null | PublicKey,
         /**
          * publickey of this assets
          */
-        addressAsset7: null | PublicKey,
-        /**
-         * Value of this assets
-         */
-        valueAsset8: null | uint64,
+        splu_asset8: null | PublicKey,
         /**
          * publickey of this assets
          */
-        addressAsset8: null | PublicKey,
-        /**
-         * Value of this assets
-         */
-        valueAsset9: null | uint64,
-        /**
-         * publickey of this assets
-         */
-        addressAsset9: null | PublicKey,
-        /**
-         * Value of this assets
-         */
-        //valueAsset10: null | uint64,
-        /**
-         * publickey of this assets
-         */
-       // addressAsset10: null | PublicKey,
-
-
+        splu_asset9: null | PublicKey,
     }
     /**
      * @private
      */
 export const UserPortfolioLayout: typeof BufferLayout.Structure = BufferLayout.struct(
     [
+        Layout.publicKey('user_portfolio_address'), //32
         Layout.publicKey('owner'), //32
-        Layout.publicKey('portfolioAddress'), //32
-        BufferLayout.u32('delegateOption'),
+        Layout.publicKey('portfolio_address'), //32
         Layout.publicKey('delegate'), // 36
         Layout.uint64('delegatedAmount'), //5
-
-        Layout.uint64('valueAsset1'), //5
-        Layout.publicKey('addressAsset1'), //32
-
-        Layout.uint64('valueAsset2'), //5
-        Layout.publicKey('addressAsset2'), //32
-
-        Layout.uint64('valueAsset3'), //5
-        Layout.publicKey('addressAsset3'), //32
-
-        Layout.uint64('valueAsset4'), //5
-        Layout.publicKey('addressAsset4'), //32
-
-        Layout.uint64('valueAsset5'), //5
-        Layout.publicKey('addressAsset5'), //32
-
-        Layout.uint64('valueAsset6'), //5
-        Layout.publicKey('addressAsset6'), //32
-
-        Layout.uint64('valueAsset7'), //5
-        Layout.publicKey('addressAsset7'), //32
-
-        Layout.uint64('valueAsset8'), //5
-        Layout.publicKey('addressAsset8'), //32
-
-        Layout.uint64('valueAsset9'), //5
-        Layout.publicKey('addressAsset9'), //32
-
-        //Layout.uint64('valueAsset10'), //5
-       // Layout.publicKey('addressAsset10'), //32
+        Layout.publicKey('splu_asset1'), //32
+        Layout.publicKey('splu_asset2'), //32
+        Layout.publicKey('splu_asset3'), //32
+        Layout.publicKey('splu_asset4'), //32
+        Layout.publicKey('splu_asset5'), //32
+        Layout.publicKey('splu_asset6'), //32
+        Layout.publicKey('splu_asset7'), //32
+        Layout.publicKey('splu_asset8'), //32
+        Layout.publicKey('splu_asset9'), //32
 
 
     ],
@@ -1298,27 +1231,27 @@ export class Portfolio {
      */
      async createUserPortfolio(
       owner:Account,
-      portfolioAddress: PublicKey,
+      portfolio_address: PublicKey,
       delegate: PublicKey | null,
       delegated_amount: number | null,
     
-         spluAsset1: PublicKey,
+         splu_asset1: PublicKey,
    
-         spluAsset2: PublicKey | null,
+         splu_asset2: PublicKey | null,
 
-         spluAsset3: PublicKey | null,
+         splu_asset3: PublicKey | null,
  
-         spluAsset4: PublicKey | null,
+         splu_asset4: PublicKey | null,
 
-         spluAsset5: PublicKey | null,
+         splu_asset5: PublicKey | null,
      
-         spluAsset6: PublicKey | null,
+         splu_asset6: PublicKey | null,
  
-        spluAsset7: PublicKey | null,
+        splu_asset7: PublicKey | null,
      
-        spluAsset8: PublicKey | null,
+        splu_asset8: PublicKey | null,
 
-        spluAsset9: PublicKey | null,
+        splu_asset9: PublicKey | null,
      // valueAsset10: number | null,
       //addressAsset10: PublicKey| null,
   ): Promise < Account > {
@@ -1345,18 +1278,18 @@ export class Portfolio {
               this.programId,
               userPortfolioAccount.publicKey,
               owner.publicKey,
-              portfolioAddress,
+              portfolio_address,
               delegate,
               delegated_amount,
-              spluAsset1,
-              spluAsset2,
-              spluAsset3,
-              spluAsset4,
-              spluAsset5,
-              spluAsset6,
-              spluAsset7,
-              spluAsset8,
-              spluAsset9,
+              splu_asset1,
+              splu_asset2,
+              splu_asset3,
+              splu_asset4,
+              splu_asset5,
+              splu_asset6,
+              splu_asset7,
+              splu_asset8,
+              splu_asset9,
           ),
    );
 
@@ -2860,41 +2793,40 @@ export class Portfolio {
 
     static createInitUserPortfolioInstruction(
         programId: PublicKey,
-        userPortfolioAccount: PublicKey,
+        user_portfolio_account: PublicKey,
         owner: PublicKey,
-        portfolioAddress: PublicKey,
+        portfolio_address: PublicKey,
 
         delegate: PublicKey | null,
         delegated_amount:number |null,
-        spluAsset1: PublicKey,
-        spluAsset2: PublicKey | null,
-        spluAsset3: PublicKey | null,
-        spluAsset4: PublicKey | null,
-        spluAsset5: PublicKey | null,
-        spluAsset6: PublicKey | null,
-        spluAsset7: PublicKey | null,
-        spluAsset8: PublicKey | null,
-        spluAsset9: PublicKey | null,
+        splu_asset1: PublicKey,
+        splu_asset2: PublicKey | null,
+        splu_asset3: PublicKey | null,
+        splu_asset4: PublicKey | null,
+        splu_asset5: PublicKey | null,
+        splu_asset6: PublicKey | null,
+        splu_asset7: PublicKey | null,
+        splu_asset8: PublicKey | null,
+        splu_asset9: PublicKey | null,
 
 
     
     ): TransactionInstruction {
 
         const keys = [
-            { pubkey: userPortfolioAccount, isSigner: false, isWritable: true },
-            { pubkey: portfolioAddress, isSigner: false, isWritable: false },
+            { pubkey: user_portfolio_account, isSigner: false, isWritable: true },
+            { pubkey: portfolio_address, isSigner: false, isWritable: false },
             { pubkey: owner, isSigner: true, isWritable: false },
             { pubkey: delegate, isSigner: false, isWritable: false },
-            { pubkey: spluAsset1, isSigner: false, isWritable: false },
-            { pubkey: spluAsset2, isSigner: false, isWritable: false },
-            { pubkey: spluAsset3, isSigner: false, isWritable: false },
-            { pubkey: spluAsset4, isSigner: false, isWritable: false },
-            { pubkey: spluAsset5, isSigner: false, isWritable: false },
-            { pubkey: spluAsset6, isSigner: false, isWritable: false },
-            { pubkey: spluAsset7, isSigner: false, isWritable: false },
-            { pubkey: spluAsset8, isSigner: false, isWritable: false },
-            { pubkey: spluAsset9, isSigner: false, isWritable: false },
-           // { pubkey: addressAsset10, isSigner: false, isWritable: false },
+            { pubkey: splu_asset1, isSigner: false, isWritable: false },
+            { pubkey: splu_asset2, isSigner: false, isWritable: false },
+            { pubkey: splu_asset3, isSigner: false, isWritable: false },
+            { pubkey: splu_asset4, isSigner: false, isWritable: false },
+            { pubkey: splu_asset5, isSigner: false, isWritable: false },
+            { pubkey: splu_asset6, isSigner: false, isWritable: false },
+            { pubkey: splu_asset7, isSigner: false, isWritable: false },
+            { pubkey: splu_asset8, isSigner: false, isWritable: false },
+            { pubkey: splu_asset9, isSigner: false, isWritable: false },
         ];
 
         const dataLayout = BufferLayout.struct([

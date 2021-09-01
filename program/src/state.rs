@@ -611,34 +611,34 @@ impl Pack for Portfolio {
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct UserPortfolio {
     /// The new account.
-    pub userAccount: Pubkey,
+    pub user_portfolio_account: Pubkey,
+    /// portfolio depends of new account
+    pub portfolio_address: Pubkey,
     /// The owner of this account.
-    pub userPortfolioAccount: Pubkey,
-    /// The data of portfolio.
-    pub portfolioAddress: Pubkey,
+    pub owner: Pubkey,
     /// If `delegate` is `Some` then `delegated_amount` represents
     /// the amount authorized by the delegate
     pub delegate: Pubkey,
     /// The amount delegated
     pub delegated_amount: u64,
     /// The first asset's address
-    pub spluAsset1: Pubkey,
+    pub splu_asset1: Pubkey,
     /// The second asset's address
-    pub spluAsset2: Pubkey,
+    pub splu_asset2: Pubkey,
     /// The third asset's address
-    pub spluAsset3: Pubkey,
+    pub splu_asset3: Pubkey,
     /// The firth asset's address
-    pub spluAsset4: Pubkey,
+    pub splu_asset4: Pubkey,
     /// The 5th asset's address
-    pub spluAsset5: Pubkey,
+    pub splu_asset5: Pubkey,
     /// The 6th asset's address
-    pub spluAsset6: Pubkey,
+    pub splu_asset6: Pubkey,
     /// The 7th asset's address
-    pub spluAsset7: Pubkey,
+    pub splu_asset7: Pubkey,
     /// The 8th asset's address
-    pub spluAsset8: Pubkey,
+    pub splu_asset8: Pubkey,
     /// The 9th asset's address
-    pub spluAsset9: Pubkey,
+    pub splu_asset9: Pubkey,
    
 }
 
@@ -647,25 +647,25 @@ impl Pack for UserPortfolio {
     const LEN: usize = 424;
     fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {
         let src = array_ref![src, 0, 424];
-        let (userAccount,userPortfolioAccount, portfolioAddress,delegate, delegated_amount, spluAsset1,  spluAsset2,
-            spluAsset3, spluAsset4,  spluAsset5, spluAsset6,  spluAsset7, spluAsset8, spluAsset9) =
+        let (user_portfolio_account,portfolio_address,owner ,delegate, delegated_amount, splu_asset1,  splu_asset2,
+            splu_asset3, splu_asset4,  splu_asset5, splu_asset6,  splu_asset7, splu_asset8, splu_asset9) =
             array_refs![src,32,32, 32, 32, 8, 32, 32 , 32, 32 , 32, 32 , 32, 32 , 32 ];
         Ok(UserPortfolio {
-            userAccount: Pubkey::new_from_array(*userAccount),
-            userPortfolioAccount: Pubkey::new_from_array(*userPortfolioAccount),
-            portfolioAddress: Pubkey::new_from_array(*portfolioAddress),
+            user_portfolio_account: Pubkey::new_from_array(*user_portfolio_account),
+            portfolio_address: Pubkey::new_from_array(*portfolio_address),
+            owner: Pubkey::new_from_array(*owner),
            // delegate: unpack_coption_key(delegate)?,
             delegate: Pubkey::new_from_array(*delegate),
             delegated_amount: u64::from_le_bytes(*delegated_amount),
-            spluAsset1: Pubkey::new_from_array(*spluAsset1),
-            spluAsset2: Pubkey::new_from_array(*spluAsset2),
-            spluAsset3: Pubkey::new_from_array(*spluAsset3),
-            spluAsset4: Pubkey::new_from_array(*spluAsset4),
-            spluAsset5: Pubkey::new_from_array(*spluAsset5),
-            spluAsset6: Pubkey::new_from_array(*spluAsset6),
-            spluAsset7: Pubkey::new_from_array(*spluAsset7),
-            spluAsset8: Pubkey::new_from_array(*spluAsset8),
-            spluAsset9: Pubkey::new_from_array(*spluAsset9),
+            splu_asset1: Pubkey::new_from_array(*splu_asset1),
+            splu_asset2: Pubkey::new_from_array(*splu_asset2),
+            splu_asset3: Pubkey::new_from_array(*splu_asset3),
+            splu_asset4: Pubkey::new_from_array(*splu_asset4),
+            splu_asset5: Pubkey::new_from_array(*splu_asset5),
+            splu_asset6: Pubkey::new_from_array(*splu_asset6),
+            splu_asset7: Pubkey::new_from_array(*splu_asset7),
+            splu_asset8: Pubkey::new_from_array(*splu_asset8),
+            splu_asset9: Pubkey::new_from_array(*splu_asset9),
 
         })
     }
@@ -675,54 +675,54 @@ impl Pack for UserPortfolio {
     fn pack_into_slice(&self, dst: &mut [u8]) {
         let dst = array_mut_ref![dst, 0, 424];
         let (
-            userAccount_dst,
-            userPortfolioAccount_dst,
-            portfolioAddress_dst,
+            user_portfolio_account_dst,
+            portfolio_address_dst,
+            owner_dst,
             delegate_dst,
             delegated_amount_dst,
-            splu_Asset1_dst,
-            splu_Asset2_dst,
-            splu_Asset3_dst,
-            splu_Asset4_dst,
-            splu_Asset5_dst,
-            splu_Asset6_dst,
-            splu_Asset7_dst,
-            splu_Asset8_dst,
-            splu_Asset9_dst,
+            splu_asset1_dst,
+            splu_asset2_dst,
+            splu_asset3_dst,
+            splu_asset4_dst,
+            splu_asset5_dst,
+            splu_asset6_dst,
+            splu_asset7_dst,
+            splu_asset8_dst,
+            splu_asset9_dst,
 
         ) = mut_array_refs![dst,32,32, 32,32 , 8 ,  32, 32 ,  32, 32 , 32, 32 , 32,  32  , 32];
         let UserPortfolio {
-            userAccount,
-            userPortfolioAccount,
-            portfolioAddress,
+            user_portfolio_account,
+            portfolio_address,
+            owner,
             delegate,
             delegated_amount,
-            ref spluAsset1, 
-            ref spluAsset2, 
-            ref spluAsset3, 
-            ref spluAsset4, 
-            ref spluAsset5, 
-            ref spluAsset6, 
-            ref  spluAsset7, 
-            ref spluAsset8, 
-            ref spluAsset9, 
+            ref splu_asset1, 
+            ref splu_asset2, 
+            ref splu_asset3, 
+            ref splu_asset4, 
+            ref splu_asset5, 
+            ref splu_asset6, 
+            ref  splu_asset7, 
+            ref splu_asset8, 
+            ref splu_asset9, 
 
         } = self;
-        userAccount_dst.copy_from_slice(userAccount.as_ref());
-        userPortfolioAccount_dst.copy_from_slice(userPortfolioAccount.as_ref());
-        portfolioAddress_dst.copy_from_slice(portfolioAddress.as_ref());
+        user_portfolio_account_dst.copy_from_slice(user_portfolio_account.as_ref());
+        portfolio_address_dst.copy_from_slice(portfolio_address.as_ref());
+        owner_dst.copy_from_slice(owner.as_ref());
         //pack_coption_key(delegate, delegate_dst);
         delegate_dst.copy_from_slice(delegate.as_ref());
         *delegated_amount_dst = delegated_amount.to_le_bytes();
-        splu_Asset1_dst.copy_from_slice(spluAsset1.as_ref());
-        splu_Asset2_dst.copy_from_slice(spluAsset2.as_ref());
-        splu_Asset3_dst.copy_from_slice(spluAsset3.as_ref());
-        splu_Asset4_dst.copy_from_slice(spluAsset4.as_ref());
-        splu_Asset5_dst.copy_from_slice(spluAsset5.as_ref());
-        splu_Asset6_dst.copy_from_slice(spluAsset6.as_ref());
-        splu_Asset7_dst.copy_from_slice(spluAsset7.as_ref());
-        splu_Asset8_dst.copy_from_slice(spluAsset8.as_ref());
-        splu_Asset9_dst.copy_from_slice(spluAsset9.as_ref());
+        splu_asset1_dst.copy_from_slice(splu_asset1.as_ref());
+        splu_asset2_dst.copy_from_slice(splu_asset2.as_ref());
+        splu_asset3_dst.copy_from_slice(splu_asset3.as_ref());
+        splu_asset4_dst.copy_from_slice(splu_asset4.as_ref());
+        splu_asset5_dst.copy_from_slice(splu_asset5.as_ref());
+        splu_asset6_dst.copy_from_slice(splu_asset6.as_ref());
+        splu_asset7_dst.copy_from_slice(splu_asset7.as_ref());
+        splu_asset8_dst.copy_from_slice(splu_asset8.as_ref());
+        splu_asset9_dst.copy_from_slice(splu_asset9.as_ref());
     }
 }
 
