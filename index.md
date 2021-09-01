@@ -23,6 +23,8 @@
 #
 * usreA : wallet public address 
 #
+* creatorA : address of creator portfolio 
+#
 * Gost : A temporary account created to generated a writable account. That account will sign account creation transaction then it will be deleted.
 
 
