@@ -26,6 +26,9 @@
 * creatorA : address of creator portfolio 
 #
 * Gost : A temporary account created to generated a writable account. That account will sign account creation transaction then it will be deleted.
-
+#
+* kp : Pair of public and private keys
+* za : Public key that we don't know its private key
+* da : Writable data account
 
 
