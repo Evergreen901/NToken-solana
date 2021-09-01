@@ -643,6 +643,12 @@ pub struct UserPortfolio {
 }
 
 impl Sealed for UserPortfolio {}
+
+impl IsInitialized for UserPortfolio {
+    fn is_initialized(&self) -> bool {
+  return true;
+}
+}
 impl Pack for UserPortfolio {
     const LEN: usize = 424;
     fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {

@@ -422,11 +422,11 @@ export async function createUserPortfolio(): Promise < void > {
 console.log ("UserPortfolioAccount : ", UserPortfolioAccount.publicKey.toString());
 
 
-  let accountDeposit = UserPortfolioAccount;
+  let account_deposit = UserPortfolioAccount;
   let delegate = programId;
   let owner ;
-  let amountDelegated=5;
-   await testToken.approve(accountDeposit, delegate, payer, [], amountDelegated);
+  let amount_delegated=5;
+  // await testToken.approve(accountDeposit, delegate, payer, [], amountDelegated);
 
    // infoMangerPortfolio = await asset.getAccountInfoNew(assetAccount);
    // console.log("after transferFrom infoassetAccount mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
@@ -437,48 +437,48 @@ console.log ("UserPortfolioAccount : ", UserPortfolioAccount.publicKey.toString(
 
     //let accountManagerPortfolioWBTC = await asset.createAccountNew(managerPortfolioWBTC.publicKey);
 
-
-    let accountInfo = await testToken.getAccountPortfolioInfo(UserPortfolioAccount);
+/*
+    let accountInfo = await testToken.getAccountPortfolioInfo(UserPortfolioAccount.publicKey);
     console.log("**********Info Portfolio Account **************");
     console.log("mint nWBTC -- " + accountInfo.mint + " -- owner UserA --" + accountInfo.owner + " -- amount --" + accountInfo.amount +
      " -- amount wbtc --" + accountInfo.asset + " amount usdc --" + accountInfo.usdc+" --delegatedAmount : " + accountInfo.delegatedAmount)
     console.log("***end info Portfolio Account ******")
 
- 
+ */
 
 
-    let portfolioAddress = new PublicKey("FGvijPYEezuT3awPH1MWnbFUgqWBNTE9ArMWXirkh7CC");
+    let portfolio_address = new PublicKey("2miGqxYAjpv2huXSEk3q8tUDzjvuxoVruW3EQabg6JCT");
 
     let valueAsset1 = 2;
     let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
-    let valueAsset2 = 20000;
-    let addressAsset2 = await (await USDC.createAccountNew(testToken.publicKey)).publicKey
+    let value_asset2 = 20000;
+    let splm_asset2 = await (await USDC.createAccountNew(testToken.publicKey)).publicKey
 
 
-    let valueAsset3 = 15265;
-    let addressAsset3 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let value_asset3 = 15265;
+    let splm_asset3 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
     
-    let valueAsset4;
-    let addressAsset4 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let value_asset4;
+    let splm_asset4 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
-    let valueAsset5;
-    let addressAsset5 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let value_asset5;
+    let splm_asset5 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
 
     
-    let valueAsset6;
-    let addressAsset6 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let value_asset6;
+    let splm_asset6 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
     
     
-    let valueAsset7;
-    let addressAsset7 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let value_asset7;
+    let splm_asset7 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
     
     
-    let valueAsset8;
-    let addressAsset8 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let value_asset8;
+    let splm_asset8 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
     
-    let valueAsset9;
-    let addressAsset9 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+    let value_asset9;
+    let splm_asset9 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
     
     // let valueAsset10;
     // let addressAsset10;

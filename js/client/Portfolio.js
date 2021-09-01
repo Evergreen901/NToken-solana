@@ -1758,9 +1758,9 @@ export class Portfolio {
         if (info === null) {
             throw new Error(FAILED_TO_FIND_ACCOUNT);
         }
-       /* if (!info.owner.equals(this.programId)) {
+       if (!info.owner.equals(this.programId)) {
             throw new Error(INVALID_ACCOUNT_OWNER);
-        }*/
+        }
         if (info.data.length != UserPortfolioLayout.span) {
             throw new Error(`Invalid account size`);
         }
@@ -1769,30 +1769,28 @@ export class Portfolio {
  
         const accountInfo = UserPortfolioLayout.decode(data);
         console.log ("accountInfo : ", JSON.stringify(accountInfo));
-        accountInfo.address = account;
-        console.log ("accountInfo.owner : ", owner);
-
-        //accountInfo.mint = new PublicKey(accountInfo.mint);
-        accountInfo.owner = new PublicKey(accountInfo.owner);
-       // accountInfo.amount = u64.fromBuffer(accountInfo.amount);
-      /*  if (accountInfo.delegateOption === 0) {
-            accountInfo.delegate = null;
-            accountInfo.delegatedAmount = new u64();
-        } else {
-          */
-            accountInfo.delegate = new PublicKey(accountInfo.delegate);
-            accountInfo.delegatedAmount = u64.fromBuffer(accountInfo.delegatedAmount);
-       // }
-
+        console.log ("ici 1");
+        accountInfo.user_portfolio_address = new PublicKey( accountInfo.user_portfolio_address);
+        console.log ("ici 2");
+        accountInfo.portfolio_address = new PublicKey(accountInfo.portfolio_address);
+        console.log ("ici 13");
         accountInfo.portfolioAddress = new PublicKey(accountInfo.portfolioAddress);
+        console.log("before owner");
+        accountInfo.owner = new PublicKey(accountInfo.owner);
+        console.log("after owner");
+        accountInfo.delegate = new PublicKey(accountInfo.delegate);
+        accountInfo.delegated_amount = u64.fromBuffer(accountInfo.delegated_amount);
+        accountInfo.splu_asset1 = new PublicKey(accountInfo.splu_asset1);
+        accountInfo.splu_asset2 = new PublicKey(accountInfo.splu_asset2);
+        accountInfo.splu_asset3 = new PublicKey(accountInfo.splu_asset3);
+        accountInfo.splu_asset4 = new PublicKey(accountInfo.splu_asset4);
+        accountInfo.splu_asset5 = new PublicKey(accountInfo.splu_asset5);
+        accountInfo.splu_asset6 = new PublicKey(accountInfo.splu_asset6);
+        accountInfo.splu_asset7 = new PublicKey(accountInfo.splu_asset7);
+        accountInfo.splu_asset8 = new PublicKey(accountInfo.splu_asset8);
+        accountInfo.splu_asset9 = new PublicKey(accountInfo.splu_asset9);
 
-        // if (!accountInfo.mint.equals(this.publicKey)) {
-        //     throw new Error(
-        //         `Invalid account mint: ${JSON.stringify(
-        //   accountInfo.mint,
-        // )} !== ${JSON.stringify(this.publicKey)}`,
-        //     );
-        // }
+
         return accountInfo;
     }
 
