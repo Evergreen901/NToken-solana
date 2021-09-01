@@ -31,4 +31,12 @@
 * za : Public key that we don't know its private key
 * da : Writable data account
 
+#
+* TA : Token account
+* mma : Market Maker account
+* splus : User's stable token address 
+* spluss : User's  token address corresponding to saber swap 
+* splusf : User's  token address corresponding to saber farm 
+* dexp : serum dex program
+
 
