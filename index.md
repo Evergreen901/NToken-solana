@@ -32,11 +32,12 @@
 * da : Writable data account
 
 #
-* TA : Token account
-* mma : Market Maker account
-* splus : User's stable token address 
-* spluss : User's  token address corresponding to saber swap 
-* splusf : User's  token address corresponding to saber farm 
+* MM : Market Maker
+* SPLUS : User's stable token address 
+* SPLUSM : User's  token address corresponding to saber swap 
+* SPLUSF : User's  token address corresponding to saber farm 
 * dexp : serum dex program
-
+* SPLMS : minted token address 
+* SPLMSM : minted  token address corresponding to saber swap 
+* SPLMSF : minted  token address corresponding to saber farm 
 
