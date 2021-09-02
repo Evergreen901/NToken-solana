@@ -412,36 +412,12 @@ export async function createUserPortfolio(): Promise < void > {
     const connection = await getConnection();
     const payer = await newAccountWithLamports(connection, 10000000000 /* wag */ );
 
-   // let infoMangerPortfolio;
-   // infoMangerPortfolio = await asset.getAccountInfoNew(managerPortfolioWBTC.publicKey);
    
-    //infoMangerPortfolio = await asset.getAccountInfoNew(assetAccount);
-   // console.log("before transferFrom infoassetAccount mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
-
-
-
-   //   delegate the amount to programId 
-
- 
-//console.log ("UserPortfolioAccount : ", UserPortfolioAccount.publicKey.toString());
-//let owner = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
-
   let account_deposit = UserPortfolioAccount;
   let delegate = programId;
   let amount_delegated=5;
   console.log ("ownerPortfolio : ", ownerPortfolio.publicKey.toString());
-  // await testToken.approve(testAccount, delegate, testAccountOwner, [], 5);
    await testToken.approveUserPortfolio(account_deposit.publicKey, delegate, ownerPortfolio , [], 5);
-
-   // infoMangerPortfolio = await asset.getAccountInfoNew(assetAccount);
-   // console.log("after transferFrom infoassetAccount mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
-
-
-    //infoMangerPortfolio = await asset.getAccountInfoNew(managerPortfolioWBTC.publicKey);
-    //console.log("after transferFrom infoMangerPortfolio mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
-
-    //let accountManagerPortfolioWBTC = await asset.createAccountNew(managerPortfolioWBTC.publicKey);
-
 
     let accountInfo = await testToken.getAccountUserPortfolioInfo(UserPortfolioAccount.publicKey);
     console.log("**********Info Portfolio Account **************");
