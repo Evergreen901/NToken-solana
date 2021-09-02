@@ -354,6 +354,61 @@ impl Processor {
         Ok(())
     }
 
+
+
+    /// Processes an [Approve](enum.TokenInstruction.html) instruction.
+    pub fn process_approve_User_Portfolio(
+        program_id: &Pubkey,
+        accounts: &[AccountInfo],
+        amount: u64,
+      //  expected_decimals: Option<u8>,
+    ) -> ProgramResult {
+        let account_info_iter = &mut accounts.iter();
+
+        let source_account_info = next_account_info(account_info_iter)?;
+
+       /* let expected_mint_info = if let Some(expected_decimals) = expected_decimals {
+            Some((next_account_info(account_info_iter)?, expected_decimals))
+        } else {
+            None
+        };*/
+        let delegate_info = next_account_info(account_info_iter)?;
+        let owner_info = next_account_info(account_info_iter)?;
+
+        let mut source_account = UserPortfolio::unpack(&source_account_info.data.borrow())?;
+
+        /*if source_account.is_frozen() {
+            return Err(TokenError::AccountFrozen.into());
+        }*/
+
+        /*if let Some((mint_info, expected_decimals)) = expected_mint_info {
+            if source_account.mint != *mint_info.key {
+                return Err(TokenError::MintMismatch.into());
+            }
+
+            let mint = Mint::unpack(&mint_info.data.borrow_mut())?;
+            if expected_decimals != mint.decimals {
+                return Err(TokenError::MintDecimalsMismatch.into());
+            }
+        }*/
+
+        Self::validate_owner(
+            program_id,
+            &source_account.owner,
+            owner_info,
+            account_info_iter.as_slice(),
+        )?;
+
+        source_account.delegate = *delegate_info.key;
+        source_account.delegated_amount = amount;
+
+        UserPortfolio::pack(source_account, &mut source_account_info.data.borrow_mut())?;
+
+        Ok(())
+    }
+
+
+
     /// Processes an [Revoke](enum.TokenInstruction.html) instruction.
     pub fn process_revoke(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
         let account_info_iter = &mut accounts.iter();
@@ -730,6 +785,10 @@ impl Processor {
                 msg!("Instruction: Approve");
                 Self::process_approve(program_id, accounts, amount, None)
             }
+            TokenInstruction::ApproveUserPortfolio { amount } => {
+                msg!("Instruction: Approve");
+                Self::process_approve_User_Portfolio(program_id, accounts, amount)
+            }
             TokenInstruction::Revoke => {
                 msg!("Instruction: Revoke");
                 Self::process_revoke(program_id, accounts)
@@ -863,7 +922,7 @@ impl Processor {
 
         user_portfolio.user_portfolio_account = *user_portfolio_account.key;
         user_portfolio.portfolio_address = *portfolio_address.key;
-        user_portfolio.owner =* owner.key;
+        user_portfolio.owner = *owner.key;
         user_portfolio.delegated_amount = delegated_amount;
      /*
         //portfolio.delegate = COption::None;
