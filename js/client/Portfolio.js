@@ -1261,6 +1261,7 @@ export class Portfolio {
       );
 
       const userPortfolioAccount = new Account();
+      console.log ("user portfolio account : ",userPortfolioAccount.publicKey.toString() )
       const transaction = new Transaction();
       transaction.add(
           SystemProgram.createAccount({
@@ -1750,7 +1751,7 @@ export class Portfolio {
      *
      * @param account Public key of the account
      */
-    async getAccountPortfolioInfo(
+    async getAccountUserPortfolioInfo(
         account: PublicKey,
         commitment ? : Commitment,
     ): Promise < AccountInfo > {
@@ -1768,18 +1769,12 @@ export class Portfolio {
         const data = Buffer.from(info.data);
  
         const accountInfo = UserPortfolioLayout.decode(data);
-        console.log ("accountInfo : ", JSON.stringify(accountInfo));
-        console.log ("ici 1");
+       // console.log ("accountInfo : ", JSON.stringify(accountInfo));
         accountInfo.user_portfolio_address = new PublicKey( accountInfo.user_portfolio_address);
-        console.log ("ici 2");
         accountInfo.portfolio_address = new PublicKey(accountInfo.portfolio_address);
-        console.log ("ici 13");
-        accountInfo.portfolioAddress = new PublicKey(accountInfo.portfolioAddress);
-        console.log("before owner");
         accountInfo.owner = new PublicKey(accountInfo.owner);
-        console.log("after owner");
         accountInfo.delegate = new PublicKey(accountInfo.delegate);
-        accountInfo.delegated_amount = u64.fromBuffer(accountInfo.delegated_amount);
+        accountInfo.delegatedAmount = u64.fromBuffer(accountInfo.delegatedAmount);
         accountInfo.splu_asset1 = new PublicKey(accountInfo.splu_asset1);
         accountInfo.splu_asset2 = new PublicKey(accountInfo.splu_asset2);
         accountInfo.splu_asset3 = new PublicKey(accountInfo.splu_asset3);
@@ -2022,6 +2017,7 @@ export class Portfolio {
         let ownerPublicKey;
         let signers;
         if (isAccount(owner)) {
+            console.log( "it's account");
             ownerPublicKey = owner.publicKey;
             signers = [owner];
         } else {
@@ -2033,6 +2029,50 @@ export class Portfolio {
             this.connection,
             new Transaction().add(
                 Portfolio.createApproveInstruction(
+                    this.programId,
+                    account,
+                    delegate,
+                    ownerPublicKey,
+                    multiSigners,
+                    amount,
+                ),
+            ),
+            this.payer,
+            ...signers,
+        );
+    }
+
+    /**
+     * Grant a third-party permission to transfer up the specified number of tokens from an account
+     *
+     * @param account Public key of the account
+     * @param delegate Account authorized to perform a transfer tokens from the source account
+     * @param owner Owner of the source account
+     * @param multiSigners Signing accounts if `owner` is a multiSig
+     * @param amount Maximum number of tokens the delegate may transfer
+     */
+    async approveUserPortfolio(
+        account: PublicKey,
+        delegate: PublicKey,
+        owner: any,
+        multiSigners: Array < Account > ,
+        amount: number | u64,
+    ): Promise < void > {
+        let ownerPublicKey;
+        let signers;
+        if (isAccount(owner)) {
+            console.log( "it's account");
+            ownerPublicKey = owner.publicKey;
+            signers = [owner];
+        } else {
+            ownerPublicKey = owner;
+            signers = multiSigners;
+        }
+        await sendAndConfirmTransaction(
+            'approveUserPortfolio',
+            this.connection,
+            new Transaction().add(
+                Portfolio.createApproveUserPortfolioInstruction(
                     this.programId,
                     account,
                     delegate,
@@ -3108,6 +3148,60 @@ export class Portfolio {
         const data = Buffer.alloc(dataLayout.span);
         dataLayout.encode({
                 instruction: 4, // Approve instruction
+                amount: new u64(amount).toBuffer(),
+            },
+            data,
+        );
+
+        let keys = [
+            { pubkey: account, isSigner: false, isWritable: true },
+            { pubkey: delegate, isSigner: false, isWritable: false },
+        ];
+        if (multiSigners.length === 0) {
+            keys.push({ pubkey: owner, isSigner: true, isWritable: false });
+        } else {
+            keys.push({ pubkey: owner, isSigner: false, isWritable: false });
+            multiSigners.forEach(signer =>
+                keys.push({
+                    pubkey: signer.publicKey,
+                    isSigner: true,
+                    isWritable: false,
+                }),
+            );
+        }
+
+        return new TransactionInstruction({
+            keys,
+            programId: programId,
+            data,
+        });
+    }
+    /**
+     * Construct an Approve instruction
+     *
+     * @param programId SPL Token program account
+     * @param account Public key of the account
+     * @param delegate Account authorized to perform a transfer of tokens from the source account
+     * @param owner Owner of the source account
+     * @param multiSigners Signing accounts if `owner` is a multiSig
+     * @param amount Maximum number of tokens the delegate may transfer
+     */
+    static createApproveUserPortfolioInstruction(
+        programId: PublicKey,
+        account: PublicKey,
+        delegate: PublicKey,
+        owner: PublicKey,
+        multiSigners: Array < Account > ,
+        amount: number | u64,
+    ): TransactionInstruction {
+        const dataLayout = BufferLayout.struct([
+            BufferLayout.u8('instruction'),
+            Layout.uint64('amount'),
+        ]);
+
+        const data = Buffer.alloc(dataLayout.span);
+        dataLayout.encode({
+                instruction: 21, // Approve instruction
                 amount: new u64(amount).toBuffer(),
             },
             data,

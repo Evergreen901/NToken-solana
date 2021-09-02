@@ -33,6 +33,7 @@ let managerPortfolioWBTC: Account;
 let managerPortfolioUSDC: Account;
 let creatorPublicAddress: Account;
 let UserPortfolioAccount : Account;
+let portfolioAddress : Account;
 
 
 // Accounts setup in createAccount and used by all subsequent tests
@@ -43,6 +44,7 @@ let usdcAccount: PublicKey;
 let accountKey: PublicKey;
 let UserAccountAsset: Account;
 let UserAccountUsdc: Account;
+let ownerPortfolio : Account;
 
 function assert(condition, message) {
     if (!condition) {
@@ -344,7 +346,7 @@ export async function createPortfolio() : Promise<void> {
   let assetToSoldIntoAsset9  = splmAsset1;
 
 
-  testAccount = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash /*, creatorAccount*/ ,
+   portfolioAddress = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash /*, creatorAccount*/ ,
      amountAsset1 , splmAsset1 , periodAsset1 , assetToSoldIntoAsset1 ,
      amountAsset2 , splmAsset2 , periodAsset2 , assetToSoldIntoAsset2 ,
      amountAsset3 , splmAsset3 , periodAsset3 , assetToSoldIntoAsset3 ,
@@ -363,8 +365,10 @@ export async function createPortfolio() : Promise<void> {
 }
 
 export async function createUserPortfolio(): Promise < void > {
-    let owner = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
-  let portfolio_address = new PublicKey("2miGqxYAjpv2huXSEk3q8tUDzjvuxoVruW3EQabg6JCT");
+    //let owner = new Account();
+    ownerPortfolio = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
+  let portfolio_address = portfolioAddress.publicKey;
+ //let portfolio_address = new PublicKey("2miGqxYAjpv2huXSEk3q8tUDzjvuxoVruW3EQabg6JCT");
   let delegate = programId ;
   let delegated_amount = 5;
     let splu_asset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
@@ -385,7 +389,7 @@ export async function createUserPortfolio(): Promise < void > {
     
     let splu_asset9 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
     
-      UserPortfolioAccount = await testToken.createUserPortfolio(owner,portfolio_address,delegate , delegated_amount,
+      UserPortfolioAccount = await testToken.createUserPortfolio(ownerPortfolio,portfolio_address,delegate , delegated_amount,
        splu_asset1,
        splu_asset2,
        splu_asset3,
@@ -419,14 +423,15 @@ export async function createUserPortfolio(): Promise < void > {
    //   delegate the amount to programId 
 
  
-console.log ("UserPortfolioAccount : ", UserPortfolioAccount.publicKey.toString());
-
+//console.log ("UserPortfolioAccount : ", UserPortfolioAccount.publicKey.toString());
+//let owner = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
 
   let account_deposit = UserPortfolioAccount;
   let delegate = programId;
-  let owner ;
   let amount_delegated=5;
-  // await testToken.approve(accountDeposit, delegate, payer, [], amountDelegated);
+  console.log ("ownerPortfolio : ", ownerPortfolio.publicKey.toString());
+  // await testToken.approve(testAccount, delegate, testAccountOwner, [], 5);
+   await testToken.approveUserPortfolio(account_deposit.publicKey, delegate, ownerPortfolio , [], 5);
 
    // infoMangerPortfolio = await asset.getAccountInfoNew(assetAccount);
    // console.log("after transferFrom infoassetAccount mint --" + infoMangerPortfolio.mint + " --owner --" + infoMangerPortfolio.owner + " -amount --" + infoMangerPortfolio.amount + "-- allownace --" + infoMangerPortfolio.delegatedAmount)
@@ -437,14 +442,15 @@ console.log ("UserPortfolioAccount : ", UserPortfolioAccount.publicKey.toString(
 
     //let accountManagerPortfolioWBTC = await asset.createAccountNew(managerPortfolioWBTC.publicKey);
 
-/*
-    let accountInfo = await testToken.getAccountPortfolioInfo(UserPortfolioAccount.publicKey);
+
+    let accountInfo = await testToken.getAccountUserPortfolioInfo(UserPortfolioAccount.publicKey);
     console.log("**********Info Portfolio Account **************");
-    console.log("mint nWBTC -- " + accountInfo.mint + " -- owner UserA --" + accountInfo.owner + " -- amount --" + accountInfo.amount +
-     " -- amount wbtc --" + accountInfo.asset + " amount usdc --" + accountInfo.usdc+" --delegatedAmount : " + accountInfo.delegatedAmount)
+    console.log("user_portfolio_address : " + accountInfo.user_portfolio_address +"--- portfolio_address : "+accountInfo.portfolio_address+ " -- owner  :" + accountInfo.owner +
+     " -- delegated amount :" + accountInfo.delegatedAmount +
+     " -- delegate :" + accountInfo.delegate + " -- splu_asset1 :" + accountInfo.splu_asset1+" --splu_asset2 : " + accountInfo.splu_asset2)
     console.log("***end info Portfolio Account ******")
 
- */
+ 
 
 
     let portfolio_address = new PublicKey("2miGqxYAjpv2huXSEk3q8tUDzjvuxoVruW3EQabg6JCT");

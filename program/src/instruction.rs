@@ -130,6 +130,26 @@ pub enum TokenInstruction {
         /// The amount of tokens the delegate is approved for.
         amount: u64,
     },
+
+/// Approves a delegate.  A delegate is given the authority over tokens on
+/// behalf of the source account's owner.
+///
+/// Accounts expected by this instruction:
+///
+///   * Single owner
+///   0. `[writable]` The source account.
+///   1. `[]` The delegate.
+///   2. `[signer]` The source account owner.
+///
+///   * Multisignature owner
+///   0. `[writable]` The source account.
+///   1. `[]` The delegate.
+///   2. `[]` The source account's multisignature owner.
+///   3. ..3+M `[signer]` M signer accounts
+    ApproveUserPortfolio {
+        /// The amount of tokens the delegate is approved for.
+        amount: u64,
+    },
     /// Revokes the delegate's authority.
     ///
     /// Accounts expected by this instruction:
@@ -472,7 +492,7 @@ impl TokenInstruction {
                 let &m = rest.get(0).ok_or(InvalidInstruction)?;
                 Self::InitializeMultisig { m }
             }
-            3 | 4 | 7 | 8 | 18 => {
+            3 | 4 | 21 |7 | 8 | 18 => {
                 let amount = rest
                     .get(..8)
                     .and_then(|slice| slice.try_into().ok())
@@ -481,6 +501,7 @@ impl TokenInstruction {
                 match tag {
                     3 => Self::Transfer { amount },
                     4 => Self::Approve { amount },
+                    21 => Self::ApproveUserPortfolio { amount },
                     7 => Self::MintTo { amount },
                     8 => Self::Burn { amount },
                     18 => Self::Withdraw {amount},
@@ -792,6 +813,10 @@ impl TokenInstruction {
                 buf.extend_from_slice(&amount.to_le_bytes());
             }
             &Self::Approve { amount } => {
+                buf.push(4);
+                buf.extend_from_slice(&amount.to_le_bytes());
+            }
+            &Self::ApproveUserPortfolio { amount } => {
                 buf.push(4);
                 buf.extend_from_slice(&amount.to_le_bytes());
             }
@@ -1385,6 +1410,34 @@ pub fn approve(
     amount: u64,
 ) -> Result<Instruction, ProgramError> {
     let data = TokenInstruction::Approve { amount }.pack();
+
+    let mut accounts = Vec::with_capacity(3 + signer_pubkeys.len());
+    accounts.push(AccountMeta::new(*source_pubkey, false));
+    accounts.push(AccountMeta::new_readonly(*delegate_pubkey, false));
+    accounts.push(AccountMeta::new_readonly(
+        *owner_pubkey,
+        signer_pubkeys.is_empty(),
+    ));
+    for signer_pubkey in signer_pubkeys.iter() {
+        accounts.push(AccountMeta::new_readonly(**signer_pubkey, true));
+    }
+
+    Ok(Instruction {
+        program_id: *token_program_id,
+        accounts,
+        data,
+    })
+}
+/// Creates an `Approve` instruction.
+pub fn approveUserPortfolio(
+    token_program_id: &Pubkey,
+    source_pubkey: &Pubkey,
+    delegate_pubkey: &Pubkey,
+    owner_pubkey: &Pubkey,
+    signer_pubkeys: &[&Pubkey],
+    amount: u64,
+) -> Result<Instruction, ProgramError> {
+    let data = TokenInstruction::ApproveUserPortfolio { amount }.pack();
 
     let mut accounts = Vec::with_capacity(3 + signer_pubkeys.len());
     accounts.push(AccountMeta::new(*source_pubkey, false));

@@ -612,10 +612,10 @@ impl Pack for Portfolio {
 pub struct UserPortfolio {
     /// The new account.
     pub user_portfolio_account: Pubkey,
-    /// portfolio depends of new account
-    pub portfolio_address: Pubkey,
     /// The owner of this account.
     pub owner: Pubkey,
+    /// portfolio depends of new account
+    pub portfolio_address: Pubkey,
     /// If `delegate` is `Some` then `delegated_amount` represents
     /// the amount authorized by the delegate
     pub delegate: Pubkey,
@@ -653,13 +653,14 @@ impl Pack for UserPortfolio {
     const LEN: usize = 424;
     fn unpack_from_slice(src: &[u8]) -> Result<Self, ProgramError> {
         let src = array_ref![src, 0, 424];
-        let (user_portfolio_account,portfolio_address,owner ,delegate, delegated_amount, splu_asset1,  splu_asset2,
+        let (user_portfolio_account,owner, portfolio_address,delegate, delegated_amount, splu_asset1,  splu_asset2,
             splu_asset3, splu_asset4,  splu_asset5, splu_asset6,  splu_asset7, splu_asset8, splu_asset9) =
             array_refs![src,32,32, 32, 32, 8, 32, 32 , 32, 32 , 32, 32 , 32, 32 , 32 ];
         Ok(UserPortfolio {
             user_portfolio_account: Pubkey::new_from_array(*user_portfolio_account),
-            portfolio_address: Pubkey::new_from_array(*portfolio_address),
             owner: Pubkey::new_from_array(*owner),
+            portfolio_address: Pubkey::new_from_array(*portfolio_address),
+          
            // delegate: unpack_coption_key(delegate)?,
             delegate: Pubkey::new_from_array(*delegate),
             delegated_amount: u64::from_le_bytes(*delegated_amount),
@@ -682,8 +683,8 @@ impl Pack for UserPortfolio {
         let dst = array_mut_ref![dst, 0, 424];
         let (
             user_portfolio_account_dst,
-            portfolio_address_dst,
             owner_dst,
+            portfolio_address_dst,
             delegate_dst,
             delegated_amount_dst,
             splu_asset1_dst,
@@ -699,8 +700,8 @@ impl Pack for UserPortfolio {
         ) = mut_array_refs![dst,32,32, 32,32 , 8 ,  32, 32 ,  32, 32 , 32, 32 , 32,  32  , 32];
         let UserPortfolio {
             user_portfolio_account,
-            portfolio_address,
             owner,
+            portfolio_address,
             delegate,
             delegated_amount,
             ref splu_asset1, 
@@ -715,8 +716,8 @@ impl Pack for UserPortfolio {
 
         } = self;
         user_portfolio_account_dst.copy_from_slice(user_portfolio_account.as_ref());
-        portfolio_address_dst.copy_from_slice(portfolio_address.as_ref());
         owner_dst.copy_from_slice(owner.as_ref());
+        portfolio_address_dst.copy_from_slice(portfolio_address.as_ref());
         //pack_coption_key(delegate, delegate_dst);
         delegate_dst.copy_from_slice(delegate.as_ref());
         *delegated_amount_dst = delegated_amount.to_le_bytes();
