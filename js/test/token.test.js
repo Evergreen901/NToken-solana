@@ -5,7 +5,8 @@ import {ASSOCIATED_TOKEN_PROGRAM_ID, Portfolio, TOKEN_PROGRAM_ID,PortfolioLayout
 import { sendAndConfirmTransaction } from '../client/util/send-and-confirm-transaction';
 //import { Store } from '../cli/store/store/config.json';
 let config=require('../cli/store/store/config.json')
-
+let portfolioAddress:Account;
+let testToken:Portfolio;
 describe('Token', () => {
   it('createTransfer', () => {
     const ix = Portfolio.createTransferCheckedInstruction(
@@ -108,13 +109,13 @@ describe('Token', () => {
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 let programId = new PublicKey(config.tokenProgramId);
   let payer=new Account();
-  let testToken = new Portfolio(
+   testToken = new Portfolio(
     connection,
     new PublicKey("6ykyxd7bZFnvEHq61vnd69BkU3gabiDmKGEQb4sGiPQG"),
     programId,
     payer
 ); 
- let portfolioAddress = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash,
+  portfolioAddress = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash,
     amountAsset1 , splmAsset1 , periodAsset1 , assetToSoldIntoAsset1 ,
     amountAsset2 , splmAsset2 , periodAsset2 , assetToSoldIntoAsset2 ,
     amountAsset3 , splmAsset3 , periodAsset3 , assetToSoldIntoAsset3 ,
@@ -136,7 +137,35 @@ let programId = new PublicKey(config.tokenProgramId);
     expect(infoPortfolio.periodAsset4.property).to.eql(periodAsset4); 
     expect(infoPortfolio.addressAsset5).to.eql(splmAsset5);
   });
-   it('createInitUserPortfolio', () => {
+   it('createInitUserPortfolio',async () => {
+     let ownerPortfolio = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
+     let splu_asset1 = new PublicKey ("GjMDerPggqZiELiqFd195nfMVLM6ypK8vHBVYcStSeGG");
+    let  splu_asset2 = new PublicKey ("FGsWNma9oCE13NLcCvPrhomgA4eHFZmUo2M2uWroVpp7");
+     let splu_asset3 = new PublicKey ("34mKewueSpsCHRJyyasu5Lca5oZWCMn7BBP3uFtfKwAZ");
+     let splu_asset4 = new PublicKey ("7bfsMMK1YvyjDyqtaF7rtaWs8YghYbaUBHk4ct57WC3K");
+     let splu_asset5 = new PublicKey ("4wwvysJ1XNN8RoaZvxwbPfgvXZ47gPCU3S33cSZLAipt");
+     let splu_asset6 = new PublicKey ("3FUk2jBEoQn9ViaM3oa9MhXRNeiUQ5Sn4sNsWYBR4jFv");
+     let splu_asset7 = new PublicKey ("35iFLMZYjUHtTQDWwAKPyC3VBj9cW2526TNgiZ6QBSY8");
+     let splu_asset8 = new PublicKey ("8oJQ25rCvgYjA6p4v5NxHqLpc6LDrsXunticEEqLUxtH");
+     let splu_asset9 =new PublicKey("Dfzx8QRHdr7oduQtfBcqpwU3fSvxHDTR9o47TKY9hNU8");
+     let delegate =new PublicKey("SE3zVMvGX7kSHRK3rGH7K1bHZgnmHSGEvGNiYHrPhfF")
+    let delegated_amount = 5;
+    let  UserPortfolioAccount = await testToken.createUserPortfolio(ownerPortfolio,portfolioAddress.publicKey,delegate , delegated_amount,
+      splu_asset1,
+      splu_asset2,
+      splu_asset3,
+      splu_asset4,
+      splu_asset5,
+      splu_asset6,
+      splu_asset7,
+      splu_asset8,
+      splu_asset9);
+
+    let infoUserPortfolio =await testToken.getAccountUserPortfolioInfo(UserPortfolioAccount.publicKey);
+    
+    expect(infoUserPortfolio.portfolio_address).to.eql(portfolioAddress.publicKey);
+    expect(infoUserPortfolio.user_portfolio_address.toBase58()).to.eql(UserPortfolioAccount.publicKey.toBase58());
+  
     
   }); 
 });
