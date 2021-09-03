@@ -105,48 +105,36 @@ describe('Token', () => {
   let splmAsset9  = splmAsset1;
   let periodAsset9 =3;
   let assetToSoldIntoAsset9  = splmAsset1;
-let cratorAccount=new Account();
-//const store = new Store();
-
-console.log(config);
-const transaction = new Transaction();
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
-const newAccountPortfolio = new Account();
 let programId = new PublicKey(config.tokenProgramId);
-transaction.add(
-  SystemProgram.createAccount({
-      fromPubkey: owner.publicKey,
-      newAccountPubkey: newAccountPortfolio.publicKey,
-      lamports: 10000,
-      space: PortfolioLayout.span,
-      programId:programId,
-  }),
-);
-transaction.add(Portfolio.createInitPortfolioInstruction(
-      programId,
-      owner.publicKey,
-      metaDataUrl,metaDataHash,newAccountPortfolio.publicKey,
-      amountAsset1,splmAsset1,periodAsset1,assetToSoldIntoAsset1,
-      amountAsset2,splmAsset2,periodAsset2,assetToSoldIntoAsset2,
-      amountAsset3,splmAsset3,periodAsset3,assetToSoldIntoAsset3,
-      amountAsset4,splmAsset4,periodAsset4,assetToSoldIntoAsset4,
-      amountAsset5,splmAsset5,periodAsset5,assetToSoldIntoAsset5,
-      amountAsset6,splmAsset6,periodAsset6,assetToSoldIntoAsset6,
-      amountAsset7,splmAsset7,periodAsset7,assetToSoldIntoAsset7,
-      amountAsset8,splmAsset8,periodAsset8,assetToSoldIntoAsset8,
-      amountAsset9,splmAsset9,periodAsset9,assetToSoldIntoAsset9,
-    ));
-  await sendAndConfirmTransaction(
-      'createPortfolio and InitializePortfolio',
-      connection,
-      transaction,
-      owner,
-      newAccountPortfolio
-  )
-  console.log(newAccountPortfolio.publicKey.toBase58())
-    /* expect(ix.programId).to.eql(programId);
-    expect(ix.keys).to.have.length(21);
-    expect(ix.data).to.have.length(21); */
+  let payer=new Account();
+  let testToken = new Portfolio(
+    connection,
+    new PublicKey("6ykyxd7bZFnvEHq61vnd69BkU3gabiDmKGEQb4sGiPQG"),
+    programId,
+    payer
+); 
+ let portfolioAddress = await testToken.createPortfolio(owner , metaDataUrl , metaDataHash,
+    amountAsset1 , splmAsset1 , periodAsset1 , assetToSoldIntoAsset1 ,
+    amountAsset2 , splmAsset2 , periodAsset2 , assetToSoldIntoAsset2 ,
+    amountAsset3 , splmAsset3 , periodAsset3 , assetToSoldIntoAsset3 ,
+    amountAsset4 , splmAsset4 , periodAsset4 , assetToSoldIntoAsset4 ,
+    amountAsset5 , splmAsset5 , periodAsset5 , assetToSoldIntoAsset5 ,
+    amountAsset6 , splmAsset6 , periodAsset6 , assetToSoldIntoAsset6 ,
+    amountAsset7 , splmAsset7 , periodAsset7 , assetToSoldIntoAsset7 ,
+    amountAsset8 , splmAsset8 , periodAsset8 , assetToSoldIntoAsset8 ,
+    amountAsset9 , splmAsset9 , periodAsset9 , assetToSoldIntoAsset9);
+
+    let infoPortfolio=await testToken.getPortfolioInfo(portfolioAddress.publicKey);
+   
+    expect(infoPortfolio.portfolioAddress).to.eql(portfolioAddress.publicKey);
+    expect(infoPortfolio.metadataHash.property).to.eql(metaDataHash[0]);
+    expect(infoPortfolio.amountAsset1.property).to.eql(amountAsset1);
+    expect(infoPortfolio.amountAsset2.property).to.eql(amountAsset2);
+    expect(infoPortfolio.assetToSoldIntoAsset1).to.eql(assetToSoldIntoAsset1);
+    expect(infoPortfolio.assetToSoldIntoAsset2).to.eql(assetToSoldIntoAsset2);
+    expect(infoPortfolio.periodAsset4.property).to.eql(periodAsset4); 
+    expect(infoPortfolio.addressAsset5).to.eql(splmAsset5);
   });
   /* it('createInitUserPortfolio', () => {
     const ix = Portfolio.createInitMintInstruction(

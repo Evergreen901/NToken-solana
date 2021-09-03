@@ -275,15 +275,15 @@
      /**
       * The address of this account
       */
-     portfoliAddress: PublicKey,
+     portfolioAddress: PublicKey,
        /**
       * the address of the creator
       */
-     creatorPortfolio: publicKey,
+     creatorPortfolio : publicKey,
      /**
       * Owner of this account
       */
-     owner: PublicKey,
+     owner : PublicKey,
  
         /**
       * metadata url
@@ -293,28 +293,28 @@
      /**
       * metadata hash
       */
-     metadataHash: u32,
+     metadataHash : u32,
   
      /**
       * initialized account 
       */
-      is_initialize:null | u64,
+      is_initialize :null | u64,
      /**
       * The amount of first asset
       */
-     amountAsset1: null | u8,
+     amountAsset1 : null | u8,
      /**
       * The address of first asset
       */
-     addressAsset1: null | PublicKey,
+     addressAsset1 : null | PublicKey,
      /**
       * The period of first asset
       */
-     periodAsset1: null | u8,
+     periodAsset1 : null | u8,
      /**
       * The asset solde of first asset
       */
-     assetToSoldIntoAsset1: null | PublicKey,
+     assetToSoldIntoAsset1 : null | PublicKey,
      /**
       * The amount of asset
       */
@@ -1754,7 +1754,7 @@
      async getAccountUserPortfolioInfo(
          account: PublicKey,
          commitment ? : Commitment,
-     ): Promise < AccountInfo > {
+     ): Promise < UserPortfolioInfo > {
          const info = await this.connection.getAccountInfo(account, commitment);
          if (info === null) {
              throw new Error(FAILED_TO_FIND_ACCOUNT);
@@ -1790,7 +1790,89 @@
      }
  
  
-     
+          /**
+      * Retrieve portfolio information
+      *
+      * @param account Public key of the account
+      */
+           async getPortfolioInfo(
+            account: PublicKey,
+            commitment ? : Commitment,
+        ): Promise <PortfolioInfo> {
+            const info = await this.connection.getAccountInfo(account, commitment);
+            if (info === null) {
+                throw new Error(FAILED_TO_FIND_ACCOUNT);
+            }
+           if (!info.owner.equals(this.programId)) {
+                throw new Error(INVALID_ACCOUNT_OWNER);
+            }
+            if (info.data.length != PortfolioLayout.span) {
+                throw new Error(`Invalid account size`);
+            }
+    
+            const data = Buffer.from(info.data);
+             
+            const accountInfo = PortfolioLayout.decode(data);
+        
+            //console.log ("accountInfo : ", JSON.stringify(accountInfo));
+           accountInfo.portfolioAddress  = new PublicKey(accountInfo.portfolioAddress);
+            accountInfo.creatorPortfolio = new PublicKey( accountInfo.creatorPortfolio);
+           // accountInfo.owner  = new PublicKey(accountInfo.owner);
+
+            //accountInfo.metadataUrl = Buffer.alloc(128, metadataUrl, "ascii");
+            accountInfo.metadataHash =  BufferLayout.u8(accountInfo.metadataHash);
+
+            accountInfo.amountAsset1 =  BufferLayout.u8(accountInfo.amountAsset1); 
+            accountInfo.addressAsset1 = new PublicKey(accountInfo.addressAsset1);
+            accountInfo.periodAsset1 =  BufferLayout.u8(accountInfo.periodAsset1);// u8.fromBuffer(accountInfo.periodAsset1);
+            accountInfo.assetToSoldIntoAsset1 = new PublicKey(accountInfo.assetToSoldIntoAsset1);
+
+            accountInfo.amountAsset2 =  BufferLayout.u8(accountInfo.amountAsset2);
+            accountInfo.addressAsset2 = new PublicKey(accountInfo.addressAsset2);
+            accountInfo.periodAsset2 =  BufferLayout.u8(accountInfo.periodAsset2);// u8.fromBuffer(accountInfo.periodAsset1);
+            accountInfo.assetToSoldIntoAsset2 = new PublicKey(accountInfo.assetToSoldIntoAsset2);
+
+            accountInfo.amountAsset3 =  BufferLayout.u8(accountInfo.amountAsset3);
+            accountInfo.addressAsset3 = new PublicKey(accountInfo.addressAsset3);
+            accountInfo.periodAsset3 =  BufferLayout.u8(accountInfo.periodAsset3);// u8.fromBuffer(accountInfo.periodAsset1);
+            accountInfo.assetToSoldIntoAsset3 = new PublicKey(accountInfo.assetToSoldIntoAsset3);
+
+            accountInfo.amountAsset4 = BufferLayout.u8(accountInfo.amountAsset4);
+            accountInfo.addressAsset4 = new PublicKey(accountInfo.addressAsset4);
+            accountInfo.periodAsset4 = BufferLayout.u8(accountInfo.periodAsset4);// u8.fromBuffer(accountInfo.periodAsset1);
+            accountInfo.assetToSoldIntoAsset4 = new PublicKey(accountInfo.assetToSoldIntoAsset4);
+
+            accountInfo.amountAsset5 = BufferLayout.u8(accountInfo.amountAsset5);
+            accountInfo.addressAsset5 = new PublicKey(accountInfo.addressAsset5);
+            accountInfo.periodAsset5 = BufferLayout.u8(accountInfo.periodAsset5);// u8.fromBuffer(accountInfo.periodAsset1);
+            accountInfo.assetToSoldIntoAsset5 = new PublicKey(accountInfo.assetToSoldIntoAsset5);
+
+            accountInfo.amountAsset6 = BufferLayout.u8(accountInfo.amountAsset6);
+            accountInfo.addressAsset6 = new PublicKey(accountInfo.addressAsset6);
+            accountInfo.periodAsset6 = BufferLayout.u8(accountInfo.periodAsset6);// u8.fromBuffer(accountInfo.periodAsset1);
+            accountInfo.assetToSoldIntoAsset6 = new PublicKey(accountInfo.assetToSoldIntoAsset6);
+
+            accountInfo.amountAsset7 = BufferLayout.u8(accountInfo.amountAsset7);
+            accountInfo.addressAsset7 = new PublicKey(accountInfo.addressAsset7);
+            accountInfo.periodAsset7 = BufferLayout.u8(accountInfo.periodAsset7);// u8.fromBuffer(accountInfo.periodAsset1);
+            accountInfo.assetToSoldIntoAsset7 = new PublicKey(accountInfo.assetToSoldIntoAsset7);
+
+            accountInfo.amountAsset8 = BufferLayout.u8(accountInfo.amountAsset8);
+            accountInfo.addressAsset8 = new PublicKey(accountInfo.addressAsset8);
+            accountInfo.periodAsset8 = BufferLayout.u8(accountInfo.periodAsset8);// u8.fromBuffer(accountInfo.periodAsset1);
+            accountInfo.assetToSoldIntoAsset8 = new PublicKey(accountInfo.assetToSoldIntoAsset8);
+
+            accountInfo.amountAsset9 = BufferLayout.u8(accountInfo.amountAsset9);
+            accountInfo.addressAsset9 = new PublicKey(accountInfo.addressAsset9);
+            accountInfo.periodAsset9 = BufferLayout.u8(accountInfo.periodAsset9);// u8.fromBuffer(accountInfo.periodAsset1);
+            accountInfo.assetToSoldIntoAsset9 = new PublicKey(accountInfo.assetToSoldIntoAsset9);
+         
+
+
+
+            return accountInfo;
+        }
+    
      /**
       * Retrieve account information
       *
