@@ -136,15 +136,7 @@ let programId = new PublicKey(config.tokenProgramId);
     expect(infoPortfolio.periodAsset4.property).to.eql(periodAsset4); 
     expect(infoPortfolio.addressAsset5).to.eql(splmAsset5);
   });
-  /* it('createInitUserPortfolio', () => {
-    const ix = Portfolio.createInitMintInstruction(
-      TOKEN_PROGRAM_ID,
-      new Account().publicKey,
-      9,
-      new Account().publicKey,
-      null,
-    );
-    expect(ix.programId).to.eql(TOKEN_PROGRAM_ID);
-    expect(ix.keys).to.have.length(3);
-  }); */
+   it('createInitUserPortfolio', () => {
+    
+  }); 
 });

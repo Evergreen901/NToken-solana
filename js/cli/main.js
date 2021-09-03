@@ -38,10 +38,10 @@ async function main() {
   await createPortfolio();
 
   console.log("Run test: createUserPortfolio");
- // await createUserPortfolio();
+ await createUserPortfolio();
 
   console.log("Run test: deposit portfolio");
-  //await runDepositPortfolio();
+  await runDepositPortfolio();
 
   /*  console.log("Run test: createAccount");
    await createAccount();
